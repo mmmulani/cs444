@@ -22,12 +22,12 @@ class DFA(object):
         True, if an arc was taken
         False, otherwise
     """
-    pass
+    raise Exception('No _delta() was defined!')
 
   def is_final(self):
-    return True
+    raise Exception('No is_final() was defined!')
 
   def recreate(self):
     """Creates a new instance of this DFA, with an empty lexeme and the same
       parsing rules."""
-    pass
+    raise Exception('No recreate() was defined!')
