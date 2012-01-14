@@ -29,5 +29,16 @@ class DFA(object):
 
   def recreate(self):
     """Creates a new instance of this DFA, with an empty lexeme and the same
-      parsing rules."""
+      parsing rules.
+    """
     raise Exception('No recreate() was defined!')
+
+  def accepts_string(self, input):
+    """Tests the string against the DFA. Returns true if the DFA accepts the
+      entire input.
+    """
+    for x in input:
+      if not self.delta(x):
+        return False
+
+    return self.is_final()
