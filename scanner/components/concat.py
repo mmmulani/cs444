@@ -9,11 +9,8 @@ class Concat(DFA):
     super(Concat, self).__init__()
 
   def _delta(self, x):
-    machine_a_accepted = False
     if self.still_running_a:
-      machine_a_accepted = self.machine_a.delta(x)
-      if not machine_a_accepted:
-        self.still_running_a = False
+      self.still_running_a = self.machine_a.delta(x)
 
     new_machine_b_list = []
     for m in self.machine_b_list:
@@ -25,7 +22,7 @@ class Concat(DFA):
 
     self.machine_b_list = new_machine_b_list
 
-    return machine_a_accepted or len(new_machine_b_list) > 0
+    return self.still_running_a or len(new_machine_b_list) > 0
 
   def is_final(self):
     return any([m.is_final() for m in self.machine_b_list])

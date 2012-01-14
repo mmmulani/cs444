@@ -24,5 +24,8 @@ class OneOrMore(DFA):
 
     return len(new_machine_list) > 0
 
+  def is_final(self):
+    return any([m.is_final() for m in self.machine_list])
+
   def recreate(self):
     return OneOrMore(self.original_machine.recreate())
