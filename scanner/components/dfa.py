@@ -1,9 +1,8 @@
-class DFA:
+class DFA(object):
   """Blah"""
-  lexeme = ''
 
   def __init__(self):
-    pass
+    self.lexeme = ''
 
   def delta(self, x):
     """Transition function
@@ -27,3 +26,8 @@ class DFA:
 
   def is_final(self):
     return True
+
+  def recreate(self):
+    """Creates a new instance of this DFA, with an empty lexeme and the same
+      parsing rules."""
+    pass

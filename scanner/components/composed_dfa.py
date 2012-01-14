@@ -2,8 +2,9 @@ from dfa import DFA
 
 class ComposedDFA(DFA):
   """Blah"""
-
-  machine = None
+  def __init__(self):
+    self.machine = None
+    super(ComposedDFA, self).__init__()
 
   def delta(self, x):
     return self.machine.delta(x)
@@ -13,3 +14,6 @@ class ComposedDFA(DFA):
 
   def lexeme(self):
     return self.machine.lexeme()
+
+  def recreate(self):
+    return ComposedDFA(self.machine.recreate())
