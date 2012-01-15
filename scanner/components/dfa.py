@@ -1,9 +1,8 @@
-class DFA:
+class DFA(object):
   """Blah"""
-  lexeme = ''
 
   def __init__(self):
-    pass
+    self.lexeme = ''
 
   def delta(self, x):
     """Transition function
@@ -23,7 +22,23 @@ class DFA:
         True, if an arc was taken
         False, otherwise
     """
-    pass
+    raise Exception('No _delta() was defined!')
 
   def is_final(self):
-    return True
+    raise Exception('No is_final() was defined!')
+
+  def recreate(self):
+    """Creates a new instance of this DFA, with an empty lexeme and the same
+      parsing rules.
+    """
+    raise Exception('No recreate() was defined!')
+
+  def accepts_string(self, input):
+    """Tests the string against the DFA. Returns true if the DFA accepts the
+      entire input.
+    """
+    for x in input:
+      if not self.delta(x):
+        return False
+
+    return self.is_final()

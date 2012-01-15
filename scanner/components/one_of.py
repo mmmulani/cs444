@@ -1,10 +1,10 @@
 from dfa import DFA
 
 class OneOf(DFA):
-  machine_list = []
-
   def __init__(self, *args):
-    self.machine_list = list(args) 
+    self.original_machine_list = list(args)
+    self.machine_list = list(args)
+    super(OneOf, self).__init__()
 
   def _delta(self, x):
     """
@@ -18,8 +18,12 @@ class OneOf(DFA):
         new_machines.append(m)
 
     self.machine_list = new_machines
-    
+
     return len(self.machine_list) > 0
-  
+
   def is_final(self):
     return any([m.is_final() for m in self.machine_list])
+
+  def recreate(self):
+    new_dfas = [m.recreate() for m in self.original_machine_list]
+    return OneOf(*new_dfas)
