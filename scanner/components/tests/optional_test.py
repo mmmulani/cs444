@@ -3,7 +3,7 @@ import unittest
 from ..concat import Concat
 from ..one_or_more import OneOrMore
 from ..optional import Optional
-from ..string import String
+from ..string_dfa import String
 from ..zero_or_more import ZeroOrMore
 
 class TestOptional(unittest.TestCase):

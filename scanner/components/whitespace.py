@@ -1,7 +1,7 @@
 from composed_dfa import ComposedDFA
 from concat import Concat
 from one_of import OneOf
-from string import String
+from string_dfa import String
 
 class Whitespace(ComposedDFA):
   def __init__(self):

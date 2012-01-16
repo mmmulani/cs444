@@ -2,9 +2,10 @@ from dfa import DFA
 
 class OneOf(DFA):
   def __init__(self, *args):
+    super(OneOf, self).__init__()
+
     self.original_machine_list = list(args)
     self.machine_list = list(args)
-    super(OneOf, self).__init__()
 
   def _delta(self, x):
     """

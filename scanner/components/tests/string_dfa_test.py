@@ -1,26 +1,26 @@
 import unittest
 
-from ..string import String
+from ..string_dfa import String
 
 class TestString(unittest.TestCase):
 
   def test_correct_character(self):
-    machine = string.String('d')
+    machine = String('d')
     self.assertTrue(machine.delta('d'))
     self.assertTrue(machine.is_final())
 
   def test_incorrect_character(self):
-    machine = string.String('d')
+    machine = String('d')
     self.assertFalse(machine.delta('x'))
     self.assertFalse(machine.is_final())
 
   def test_correct_string(self):
-    machine = string.String('foobarbaz')
-    self.assertTrue(machine.accepts_string('foorbarbaz'))
+    machine = String('foobarbaz')
+    self.assertTrue(machine.accepts_string('foobarbaz'))
     self.assertTrue(machine.is_final())
 
   def test_incorrect_string(self):
-    machine = string.String('foobarbaz')
+    machine = String('foobarbaz')
     self.assertFalse(machine.accepts_string('foofoo'))
     self.assertFalse(machine.is_final())
 
