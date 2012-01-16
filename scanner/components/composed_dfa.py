@@ -1,7 +1,10 @@
 from dfa import DFA
 
 class ComposedDFA(DFA):
-  """Blah"""
+  """A Composition DFA
+  This is a DFA created by composing one or more of another DFA using the
+  one_of, one_or_more, or concat compositions.
+  """
   def __init__(self):
     self.machine = None
     super(ComposedDFA, self).__init__()
