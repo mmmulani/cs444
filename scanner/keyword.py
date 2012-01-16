@@ -4,7 +4,7 @@ from components.string_dfa import String
 
 class Keyword(ComposedDFA):
 
-  KEYWORDS = [    
+  KEYWORDS = [
       "abstract",
       "boolean",
       "break",
