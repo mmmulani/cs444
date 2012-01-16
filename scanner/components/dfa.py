@@ -1,5 +1,7 @@
 class DFA(object):
-  """Blah"""
+  """A DFA Object
+  This is the base DFA object which each part of the scanner will subclass.
+  """
 
   def __init__(self):
     self.lexeme = ''
