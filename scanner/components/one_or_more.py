@@ -19,7 +19,7 @@ class OneOrMore(DFA):
           create_new_dfa = True
 
     if create_new_dfa:
-      new_machine_list.append(self.original_machine.recreate())
+      new_machine_list.append(self.original_machine.clone())
     self.machine_list = new_machine_list
 
     return len(new_machine_list) > 0
@@ -27,5 +27,5 @@ class OneOrMore(DFA):
   def is_final(self):
     return any([m.is_final() for m in self.machine_list])
 
-  def recreate(self):
-    return OneOrMore(self.original_machine.recreate())
+  def clone(self):
+    return OneOrMore(self.original_machine.clone())

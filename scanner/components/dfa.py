@@ -1,5 +1,7 @@
 class DFA(object):
-  """Blah"""
+  """A DFA Object
+  This is the base DFA object which each part of the scanner will subclass.
+  """
 
   def __init__(self):
     self.lexeme = ''
@@ -22,16 +24,17 @@ class DFA(object):
         True, if an arc was taken
         False, otherwise
     """
-    raise Exception('No _delta() was defined!')
+    raise Exception('Must override _delta()!')
 
   def is_final(self):
-    raise Exception('No is_final() was defined!')
+    raise Exception('Must override is_final()!')
 
-  def recreate(self):
-    """Creates a new instance of this DFA, with an empty lexeme and the same
-      parsing rules.
+  def clone(self):
+    """Clone this DFA.
+    Creates a new instance of this DFA, with an empty lexeme and the same
+    parsing rules.
     """
-    raise Exception('No recreate() was defined!')
+    raise Exception('No clone() was defined!')
 
   def accepts_string(self, input):
     """Tests the string against the DFA. Returns true if the DFA accepts the

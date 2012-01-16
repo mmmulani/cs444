@@ -11,5 +11,5 @@ class Char(DFA):
   def is_final(self):
     return self.lexeme == self.char
 
-  def recreate(self):
+  def clone(self):
     return Char(self.char)

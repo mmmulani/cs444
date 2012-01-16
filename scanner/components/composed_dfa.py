@@ -1,7 +1,10 @@
 from dfa import DFA
 
 class ComposedDFA(DFA):
-  """Blah"""
+  """A Composition DFA
+  This is a DFA created by composing one or more of another DFA using the
+  one_of, one_or_more, or concat compositions.
+  """
   def __init__(self):
     if not self.machine:
       raise Exception('self.machine must be set at initialization')
@@ -17,5 +20,5 @@ class ComposedDFA(DFA):
   def lexeme(self):
     return self.machine.lexeme()
 
-  def recreate(self):
-    return ComposedDFA(self.machine.recreate())
+  def clone(self):
+    return ComposedDFA(self.machine.clone())

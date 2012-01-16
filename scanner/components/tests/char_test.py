@@ -3,15 +3,16 @@ import unittest
 from .. import char
 
 class TestChar(unittest.TestCase):
+  def setUp(self):
+    self.machine = char.Char('d')
+
   def test_correct_character(self):
-    machine = char.Char('d')
-    self.assertTrue(machine.delta('d'))
-    self.assertTrue(machine.is_final())
+    self.assertTrue(self.machine.delta('d'))
+    self.assertTrue(self.machine.is_final())
 
   def test_incorrect_character(self):
-    machine = char.Char('d')
-    self.assertFalse(machine.delta('x'))
-    self.assertFalse(machine.is_final())
+    self.assertFalse(self.machine.delta('x'))
+    self.assertFalse(self.machine.is_final())
 
 if __name__ == '__main__':
   unittest.main()

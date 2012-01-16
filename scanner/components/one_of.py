@@ -24,6 +24,6 @@ class OneOf(DFA):
   def is_final(self):
     return any([m.is_final() for m in self.machine_list])
 
-  def recreate(self):
-    new_dfas = [m.recreate() for m in self.original_machine_list]
+  def clone(self):
+    new_dfas = [m.clone() for m in self.original_machine_list]
     return OneOf(*new_dfas)

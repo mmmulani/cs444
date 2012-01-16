@@ -10,5 +10,5 @@ class ZeroOrMore(ComposedDFA):
   def is_final(self):
     return len(self.lexeme) == 0 or self.machine.is_final()
 
-  def recreate(self):
-    return ZeroOrMore(self.machine.recreate())
+  def clone(self):
+    return ZeroOrMore(self.machine.clone())
