@@ -36,9 +36,9 @@ class DFA(object):
     """
     raise Exception('No clone() was defined!')
 
-  def accepts_string(self, input):
-    """Tests the string against the DFA. Returns true if the DFA accepts the
-      entire input.
+  def accepts(self, input):
+    """Tests the string against the DFA.
+    Returns true if the DFA accepts the entire input.
     """
     for x in input:
       if not self.delta(x):
