@@ -4,7 +4,9 @@ import unittest
 
 class OperatorTest(unittest.TestCase):
   def test_operators(self):
-    '''Test all the valid operators according to the Java spec.'''
+    '''Test all valid operators.
+    List taken from the Java Specification.
+    '''
     ops = [
         '=', '>', '<', '!', '~', '?', ':',
         '==', '<=', '>=', '!=', '&&', '||', '++', '--',
@@ -18,9 +20,15 @@ class OperatorTest(unittest.TestCase):
       self.assertEqual(m.lexeme, op)
 
   def test_non_operators(self):
-    '''Test things that look like operators, but aren't valid ones.'''
-    # TODO(songandrew): fix this
-    self.assertTrue(True)
+    '''Test non-operators.
+    Tests things that look like operators, but are not valid operators.
+    '''
+    non_ops = [
+        '=<', '=>', '!!=', '=!', '<<<=', '&&=', '+-', '<<<']
+
+    for op in non_ops:
+      m = operator.Operator()
+      self.assertFalse(m.accepts(op))
 
 if __name__ == '__main__':
   unittest.main()
