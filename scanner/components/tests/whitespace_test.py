@@ -6,6 +6,7 @@ from ..one_or_more import OneOrMore
 class TestWhitespace(unittest.TestCase):
 
   def test_line_terminator(self):
+    '''Test valid line terminators.'''
     self.assertTrue(LineTerminator().accepts('\n'))
     self.assertTrue(LineTerminator().accepts('\r'))
     self.assertTrue(LineTerminator().accepts('\r\n'))
@@ -15,6 +16,7 @@ class TestWhitespace(unittest.TestCase):
     self.assertFalse(LineTerminator().accepts('\n\n'))
 
   def test_whitespace(self):
+    '''Test valid whitespace tokens'''
     self.assertTrue(Whitespace().accepts(' '))
     self.assertTrue(Whitespace().accepts('\t'))
     self.assertTrue(Whitespace().accepts('\f'))
