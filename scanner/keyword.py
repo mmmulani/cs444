@@ -58,4 +58,6 @@ class Keyword(ComposedDFA):
   def __init__(self):
     machine_list = [String(x) for x in Keyword.KEYWORDS]
     self.machine = OneOf(*machine_list)
+
+    # NOTE: This must be called last as self.machine must be set.
     super(Keyword, self).__init__()
