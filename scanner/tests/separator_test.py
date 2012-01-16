@@ -1,4 +1,4 @@
-from .. import separator 
+from .. import separator
 
 import unittest
 
@@ -32,6 +32,7 @@ class SeparatorTest(unittest.TestCase):
     self.assertTrue(m.is_final())
     self.assertFalse(m.delta('('))
     self.assertFalse(m.is_final())
+    self.assertEqual(m.lexeme, '(')
 
     m = separator.Separator()
     # First one should pass and be final.  Second character should fail.
@@ -39,6 +40,7 @@ class SeparatorTest(unittest.TestCase):
     self.assertTrue(m.is_final())
     self.assertFalse(m.delta(')'))
     self.assertFalse(m.is_final())
+    self.assertEqual(m.lexeme, '(')
 
     m = separator.Separator()
     # First one should pass and be final.  Second character should fail.
@@ -46,6 +48,7 @@ class SeparatorTest(unittest.TestCase):
     self.assertTrue(m.is_final())
     self.assertFalse(m.delta('.'))
     self.assertFalse(m.is_final())
+    self.assertEqual(m.lexeme, '.')
 
 if __name__ == '__main__':
   unittest.main()
