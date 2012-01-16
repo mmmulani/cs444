@@ -18,7 +18,7 @@ class Concat(DFA):
         new_machine_b_list.append(m)
 
     if self.still_running_a and self.machine_a.is_final():
-      new_machine_b_list.append(self.original_machine_b.recreate())
+      new_machine_b_list.append(self.original_machine_b.clone())
 
     self.machine_b_list = new_machine_b_list
 
@@ -27,5 +27,5 @@ class Concat(DFA):
   def is_final(self):
     return any([m.is_final() for m in self.machine_b_list])
 
-  def recreate(self):
-    return Concat(self.machine_a.recreate(), self.original_machine_b.recreate())
+  def clone(self):
+    return Concat(self.machine_a.clone(), self.original_machine_b.clone())

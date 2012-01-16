@@ -15,5 +15,5 @@ class ComposedDFA(DFA):
   def lexeme(self):
     return self.machine.lexeme()
 
-  def recreate(self):
-    return ComposedDFA(self.machine.recreate())
+  def clone(self):
+    return ComposedDFA(self.machine.clone())
