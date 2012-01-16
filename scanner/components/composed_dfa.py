@@ -20,12 +20,6 @@ class ComposedDFA(DFA):
 
     return self.machine.is_final()
 
-  def lexeme(self):
-    if not self.machine:
-      raise Exception('self.machine must be set at initialization')
-
-    return self.machine.lexeme()
-
   def clone(self):
     if not self.machine:
       raise Exception('self.machine must be set at initialization')
