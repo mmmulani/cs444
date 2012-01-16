@@ -6,7 +6,9 @@ class ComposedDFA(DFA):
   one_of, one_or_more, or concat compositions.
   """
   def __init__(self):
-    self.machine = None
+    if not self.machine:
+      raise Exception('self.machine must be set at initialization')
+
     super(ComposedDFA, self).__init__()
 
   def delta(self, x):
