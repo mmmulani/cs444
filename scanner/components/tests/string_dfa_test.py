@@ -24,5 +24,10 @@ class TestString(unittest.TestCase):
     self.assertFalse(machine.accepts_string('foofoo'))
     self.assertFalse(machine.is_final())
 
+  def test_prefix_match(self):
+    machine = String('abc')
+    self.assertFalse(machine.accepts_string('abcd'))
+    self.assertFalse(machine.is_final())
+
 if __name__ == '__main__':
   unittest.main()

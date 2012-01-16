@@ -7,7 +7,8 @@ class String(DFA):
     super(String, self).__init__()
 
   def _delta(self, x):
-    if self.cur_pos >= 0 and self.string[self.cur_pos] == x:
+    if (self.cur_pos >= 0 and self.cur_pos < len(self.string) and
+        self.string[self.cur_pos] == x):
       self.cur_pos += 1
       return True
     else:
