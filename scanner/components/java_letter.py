@@ -1,20 +1,17 @@
-from dfa import DFA
+import composed_dfa
+import char_range
+import one_of
 
-class JavaLetter(DFA):
+class JavaLetter(composed_dfa.ComposedDFA):
   """ Recognizes the "Java letter" characters, which are
       the uppercase letters (A-Z), lowercase letters (a-z),
       underscore (_) and dollar sign ($)
   """
-  java_letters = set(
-    [chr(x) for x in (range(65,91) + range(97,123) + [36, 95])])
   def __init__(self):
+    self.machine = one_of.OneOf(
+        char_range.CharRange(65, 90),
+        char_range.CharRange(97, 122),
+        char_range.CharRange(36, 36),
+        char_range.CharRange(95, 95))
+
     super(JavaLetter, self).__init__()
-
-  def _delta(self, x):
-    return (x in self.java_letters) and len(self.lexeme) == 0
-
-  def is_final(self):
-    return len(self.lexeme) == 1
-
-  def clone(self):
-    return JavaLetter()
