@@ -30,4 +30,4 @@ class ComposedDFA(DFA):
     if not self.machine:
       raise Exception('self.machine must be set at initialization')
 
-    return ComposedDFA(self.machine.clone())
+    return self.machine.clone()
