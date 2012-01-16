@@ -6,6 +6,10 @@ class Concat(DFA):
     self.still_running_a = True
     self.original_machine_b = machine_b
     self.machine_b_list = []
+
+    if self.machine_a.is_final():
+      self.machine_b_list.append(self.original_machine_b.recreate())
+
     super(Concat, self).__init__()
 
   def _delta(self, x):
