@@ -25,3 +25,11 @@ class ComposedDFA(DFA):
       raise Exception('self.machine must be set at initialization')
 
     return self.machine.clone()
+
+  def get_lexeme(self):
+    return self.machine.lexeme
+
+  def set_lexeme(self, string):
+    self.machine.lexeme = string
+
+  lexeme = property(get_lexeme, set_lexeme)
