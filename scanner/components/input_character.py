@@ -1,18 +1,15 @@
-from dfa import DFA
+import char_range
+import composed_dfa
+import one_of
 
-class InputCharacter(DFA):
-  """This DFA is meant to recognize any ASCII character except the carriage
+class InputCharacter(composed_dfa.ComposedDFA):
+  '''This DFA is meant to recognize any ASCII character except the carriage
     return (13) and line feed (10).
-  """
-  letters = set([chr(x) for x in (range(0,10) + [11, 12] + range(14, 128))])
+  '''
   def __init__(self):
+    self.machine = one_of.OneOf(
+        char_range.CharRange(0, 9),
+        char_range.CharRange(11, 12),
+        char_range.CharRange(14, 127))
+
     super(InputCharacter, self).__init__()
-
-  def _delta(self, x):
-    return (x in self.letters) and len(self.lexeme) == 0
-
-  def is_final(self):
-    return len(self.lexeme) == 1
-
-  def clone(self):
-    return InputCharacter()
