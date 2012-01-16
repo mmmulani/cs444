@@ -2,7 +2,7 @@ from dfa import DFA
 
 class JavaDigit(DFA):
   """ Recognizes the digits 0-9 """
-  
+
   java_digits = set([chr(x) for x in range(48,58)])
   def __init__(self):
     super(JavaDigit, self).__init__()
