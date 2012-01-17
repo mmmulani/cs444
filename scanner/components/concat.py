@@ -1,6 +1,8 @@
 from dfa import DFA
 
 class Concat(DFA):
+  '''A DFA that is the concatenation of other DFAs'''
+
   def __init__(self, machine_a, machine_b):
     self.machine_a = machine_a
     self.still_running_a = True
