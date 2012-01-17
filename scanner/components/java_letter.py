@@ -1,6 +1,6 @@
 import composed_dfa
-import char_range
 import one_of
+import one_of_chars
 
 class JavaLetter(composed_dfa.ComposedDFA):
   """ Recognizes the "Java letter" characters, which are
@@ -8,10 +8,7 @@ class JavaLetter(composed_dfa.ComposedDFA):
       underscore (_) and dollar sign ($)
   """
   def __init__(self):
-    self.machine = one_of.OneOf(
-        char_range.CharRange(65, 90),
-        char_range.CharRange(97, 122),
-        char_range.CharRange(36, 36),
-        char_range.CharRange(95, 95))
+    self.machine = one_of_chars.OneOfChars(
+      list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$'))
 
     super(JavaLetter, self).__init__()
