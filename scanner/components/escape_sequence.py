@@ -25,14 +25,10 @@ class EscapeSequence(composed_dfa.ComposedDFA):
     escape_mach.extend([
         concat.Concat(string_dfa.String('\\'), octal.clone()),
         concat.Concat(
-          concat.Concat(string_dfa.String('\\'), octal.clone()),
-          octal.clone()),
+          string_dfa.String('\\'), octal.clone(), octal.clone()),
         concat.Concat(
-          concat.Concat(
-            concat.Concat(
-              string_dfa.String('\\'), ZeroToThree()),
-            octal.clone()),
-          octal.clone())])
+          string_dfa.String('\\'), ZeroToThree(), octal.clone(), octal.clone())
+      ])
 
     self.machine = one_of.OneOf(*escape_mach)
 
