@@ -69,3 +69,18 @@ class EscapeSequenceTest(unittest.TestCase):
     self.assertFalse(m.clone().accepts('\\500'))
     self.assertFalse(m.clone().accepts('\\192'))
     self.assertFalse(m.clone().accepts('\\488'))
+
+  ## Tests for ZeroToThree ##
+  def test_valid_zero_to_three_digit(self):
+    '''Test valid 0-3 digits'''
+    m = escape_sequence.ZeroToThree()
+
+    for x in range(4):
+      self.assertTrue(m.clone().accepts(str(x)))
+
+  def test_invalid_zero_to_three_digit(self):
+    '''Test non-0 to 3 digits'''
+    m = escape_sequence.ZeroToThree()
+
+    for x in range(4, 10):
+      self.assertFalse(m.clone().accepts(str(x)))

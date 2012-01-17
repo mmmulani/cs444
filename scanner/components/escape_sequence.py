@@ -1,9 +1,18 @@
+import char_range
 import composed_dfa
 import concat
 import octal_digit
 import one_of
 import string_dfa
-import zero_to_three
+
+class ZeroToThree(composed_dfa.ComposedDFA):
+  '''Recognizes the digits 0, 1, 2, 3'''
+
+  def __init__(self):
+    self.machine = char_range.CharRange(48, 51)
+
+    # NOTE: This must be called last as self.machine must be set.
+    super(ZeroToThree, self).__init__()
 
 class EscapeSequence(composed_dfa.ComposedDFA):
   '''DFA for recognizing escape sequences'''
@@ -21,7 +30,7 @@ class EscapeSequence(composed_dfa.ComposedDFA):
         concat.Concat(
           concat.Concat(
             concat.Concat(
-              string_dfa.String('\\'), zero_to_three.ZeroToThree()),
+              string_dfa.String('\\'), ZeroToThree()),
             octal.clone()),
           octal.clone())])
 
