@@ -6,24 +6,17 @@ class ComposedDFA(DFA):
   one_of, one_or_more, or concat compositions.
   """
   def __init__(self):
+    if not self.machine:
+      raise Exception('self.machine must be set at initialization')
     super(ComposedDFA, self).__init__()
 
   def delta(self, x):
-    if not self.machine:
-      raise Exception('self.machine must be set at initialization')
-
     return self.machine.delta(x)
 
   def is_final(self):
-    if not self.machine:
-      raise Exception('self.machine must be set at initialization')
-
     return self.machine.is_final()
 
   def clone(self):
-    if not self.machine:
-      raise Exception('self.machine must be set at initialization')
-
     return self.machine.clone()
 
   def get_lexeme(self):
