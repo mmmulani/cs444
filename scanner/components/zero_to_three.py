@@ -1,5 +1,5 @@
-import composed_dfa
 import char_range
+import composed_dfa
 
 class ZeroToThree(composed_dfa.ComposedDFA):
   '''Recognizes the digits 0, 1, 2, 3'''
