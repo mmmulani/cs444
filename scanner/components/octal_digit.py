@@ -1,5 +1,5 @@
-import composed_dfa
 import char_range
+import composed_dfa
 
 class OctalDigit(composed_dfa.ComposedDFA):
   '''Recognizes any digit from 0-7'''
