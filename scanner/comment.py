@@ -9,8 +9,11 @@ from components.zero_or_more import ZeroOrMore
 
 class EndOfLineComment(ComposedDFA):
   def __init__(self):
-    self.machine = Concat(String('//'),
-      Concat(ZeroOrMore(InputCharacter()), LineTerminator()))
+    self.machine = Concat(
+      String('//'),
+      ZeroOrMore(InputCharacter()),
+      LineTerminator()
+    )
     super(EndOfLineComment, self).__init__()
 
 class TraditionalComment(ComposedDFA):
