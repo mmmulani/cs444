@@ -6,7 +6,7 @@ class InputCharacter(composed_dfa.ComposedDFA):
     return (13) and line feed (10).
   '''
   def __init__(self):
-    chars = [chr(x) for x in set(range(0, 128)) - { 10, 13 }]
+    chars = [chr(x) for x in set(range(0, 128)) - set([10, 13])]
     self.machine = OneOfChars(chars)
 
     super(InputCharacter, self).__init__()
