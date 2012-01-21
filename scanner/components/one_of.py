@@ -4,8 +4,16 @@ class OneOf(DFA):
   def __init__(self, *args):
     super(OneOf, self).__init__()
 
-    self.original_machine_list = list(args)
-    self.machine_list = list(args)
+    # Handle the case where an argument is OneOf(...)
+    machine_list = []
+    for m in args:
+      if (isinstance(m, OneOf)):
+        machine_list.extend(m.original_machine_list)
+      else:
+        machine_list.append(m)
+
+    self.original_machine_list = machine_list
+    self.machine_list = machine_list
 
   def _delta(self, x):
     """

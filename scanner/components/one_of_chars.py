@@ -1,4 +1,5 @@
 import dfa
+import types
 
 class OneOfChars(dfa.DFA):
   '''Recognize a single character based on the list of characters provided.
@@ -8,7 +9,14 @@ class OneOfChars(dfa.DFA):
   '''
 
   def __init__(self, chars):
-    self.chars = set(chars)
+    ''' Micro-optimize the case where we are cloning. This ends up saving us a
+      lot of time overall.
+    '''
+    if isinstance(chars, types.ListType):
+      self.chars = set(chars)
+    else:
+      self.chars = chars
+
     super(OneOfChars, self).__init__()
 
   def _delta(self, x):
@@ -18,4 +26,4 @@ class OneOfChars(dfa.DFA):
     return len(self.lexeme) == 1
 
   def clone(self):
-    return OneOfChars(list(self.chars))
+    return OneOfChars(self.chars)
