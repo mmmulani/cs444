@@ -1,7 +1,7 @@
 import unittest
 
 from ..whitespace import LineTerminator, Whitespace
-from ..one_or_more import OneOrMore
+from ..components.one_or_more import OneOrMore
 
 class TestWhitespace(unittest.TestCase):
 
