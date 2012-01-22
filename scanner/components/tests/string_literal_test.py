@@ -45,3 +45,4 @@ class StringLiteralTest(unittest.TestCase):
 
     self.assertFalse(m.clone().accepts("'a'"))
     self.assertFalse(m.clone().accepts("'ab'"))
+    self.assertFalse(m.clone().accepts('"two " string "literals"'))
