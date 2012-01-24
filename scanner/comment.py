@@ -4,8 +4,8 @@ from components.dfa import DFA
 from components.input_character import InputCharacter
 from components.one_of import OneOf
 from components.string_dfa import String
-from components.whitespace import LineTerminator
 from components.zero_or_more import ZeroOrMore
+from whitespace import LineTerminator
 
 class EndOfLineComment(ComposedDFA):
   def __init__(self):
