@@ -14,3 +14,6 @@ class Literal(ComposedDFA):
                          BooleanLiteral(), CharacterLiteral(), 
                          StringLiteral(), NullLiteral())
     super(Literal, self).__init__()
+
+  def clone(self):
+    return Literal()

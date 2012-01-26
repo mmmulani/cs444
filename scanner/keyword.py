@@ -61,3 +61,6 @@ class Keyword(ComposedDFA):
 
     # NOTE: This must be called last as self.machine must be set.
     super(Keyword, self).__init__()
+
+  def clone(self):
+    return Keyword()

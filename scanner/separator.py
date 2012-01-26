@@ -10,3 +10,6 @@ class Separator(composed_dfa.ComposedDFA):
 
     # NOTE: This must be called last as self.machine must be set.
     super(Separator, self).__init__()
+
+  def clone(self):
+    return Separator()

@@ -8,6 +8,9 @@ class Whitespace(ComposedDFA):
     self.machine = OneOf(LineTerminator(), String(' '), String('\t'), String('\f'))
     super(Whitespace, self).__init__()
 
+  def clone(self):
+    return Whitespace()
+
 class LineTerminator(ComposedDFA):
   def __init__(self):
     self.machine = OneOf(String('\r'), String('\n'), Concat(String('\r'),

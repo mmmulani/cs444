@@ -53,3 +53,6 @@ class Comment(ComposedDFA):
     self.machine = OneOf(TraditionalComment(), EndOfLineComment())
 
     super(Comment, self).__init__()
+
+  def clone(self):
+    return Comment()

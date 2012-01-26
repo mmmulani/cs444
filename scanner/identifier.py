@@ -18,3 +18,6 @@ class Identifier(ComposedDFA):
     self.machine = Concat(
         JavaLetter(), ZeroOrMore(OneOf(JavaLetter(), JavaDigit())))
     super(Identifier, self).__init__()
+
+  def clone(self):
+    return Identifier()

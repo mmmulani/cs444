@@ -10,3 +10,6 @@ class Operator(composed_dfa.ComposedDFA):
     self.machine = one_of.OneOf(*comps)
 
     super(Operator, self).__init__()
+
+  def clone(self):
+    return Operator()
