@@ -28,7 +28,21 @@ class Token:
 
 class Scanner(object):
   '''Scanner object
-  Responsible for scanning/tokenizing valid JOS programs given as a string'''
+  Responsible for scanning/tokenizing valid JOS programs given as a string
+
+  EXAMPLE 1:
+    import scanner
+    s = scanner.Scanner('this is my string')
+    for t in s.scan():
+      print t
+
+  EXAMPLE 2:
+    import scanner
+    tokens = scanner.Scanner.get_token_list('this string')
+    assertEqual(tokens[0], (Token.IDENTIFIER, 'this'))
+    assertEqual(tokens[1], (Token.WHITESPACE, ' '))
+    assertEqual(tokens[2], (Token.IDENTIFIER, 'string'))
+  '''
 
   # These machines are kept in priority order.
   machines = [
@@ -49,7 +63,7 @@ class Scanner(object):
     self.s = s
 
   def scan(self):
-    '''Generator which produces tokens'''
+    '''Generator which produces one token at a time.'''
     i = 0
 
     while i < len(self.s):
