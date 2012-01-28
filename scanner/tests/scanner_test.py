@@ -28,3 +28,14 @@ class TestScanner(unittest.TestCase):
         (Token.WHITESPACE, ' '),
         (Token.WHITESPACE, ' ')],
         toks)
+
+  def test_precedence(self):
+    '''Test precedence of tokens'''
+    toks = Scanner.get_token_list('static')
+    self.assertListEqual([(Token.KEYWORD, 'static')], toks)
+
+    toks = Scanner.get_token_list('public')
+    self.assertListEqual([(Token.KEYWORD, 'public')], toks)
+
+    toks = Scanner.get_token_list('/* a comment */')
+    self.assertListEqual([(Token.COMMENT, '/* a comment */')], toks)
