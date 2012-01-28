@@ -13,7 +13,8 @@ def main():
 
   lex = scanner.Scanner(s)
   for t in lex.scan():
-    print t
+    if t[0] != scanner.Token.WHITESPACE:
+      print t
 
 if __name__ == '__main__':
   main()
