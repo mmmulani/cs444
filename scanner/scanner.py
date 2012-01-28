@@ -65,7 +65,6 @@ class Scanner(object):
     '''Get the next token start from position i of the string'''
     cur_machines = [m.clone() for m in Scanner.machines]
     last_final = None
-    l = 0
 
     for c in self.s[i:]:
       cur_machines = [m for m in cur_machines if m.delta(c)]
