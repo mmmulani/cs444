@@ -1,4 +1,4 @@
-﻿Type
+Type
 PrimitiveType
 ReferenceType
 NumericType
@@ -11,7 +11,6 @@ ClassType
 InterfaceType
 TypeName
 ArrayType
-Type
 PackageName
 Identifier
 PackageOrTypeName
@@ -64,7 +63,6 @@ Block
 ConstructorModifiers
 ConstructorDeclarator
 ConstructorBody
-SimpleTypeName
 ConstructorModifier
 ExplicitConstructorInvocation
 BlockStatements
@@ -187,3 +185,5 @@ CharacterLiteral
 StringLiteral
 NullLiteral
 ExpressionName
+Comma
+Final

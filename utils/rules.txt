@@ -87,7 +87,8 @@ MethodDeclarator Identifier ( FormalParameterList_OPT )
 MethodDeclarator MethodDeclarator [ ]
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
-FormalParameter final_OPT Type VariableDeclaratorId
+Final final
+FormalParameter Final_OPT Type VariableDeclaratorId
 MethodModifiers MethodModifier
 MethodModifiers MethodModifiers MethodModifier
 MethodModifier public
@@ -107,7 +108,7 @@ MethodBody ;
 InstanceInitializer Block
 StaticInitializer static Block
 ConstructorDeclaration ConstructorModifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
-ConstructorDeclarator SimpleTypeName ( FormalParameterList_OPT )
+ConstructorDeclarator Identifier ( FormalParameterList_OPT )
 ConstructorModifiers ConstructorModifier
 ConstructorModifiers ConstructorModifiers ConstructorModifier
 ConstructorModifier public
@@ -154,7 +155,7 @@ BlockStatement LocalVariableDeclarationStatement
 BlockStatement ClassDeclaration
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
-LocalVariableDeclaration final_OPT Type VariableDeclarators
+LocalVariableDeclaration Final_OPT Type VariableDeclarators
 VariableDeclarators VariableDeclarator
 VariableDeclarators VariableDeclarators , VariableDeclarator
 VariableDeclarator VariableDeclaratorId
@@ -229,7 +230,8 @@ Catches CatchClause
 Catches Catches CatchClause
 CatchClause catch ( FormalParameter ) Block
 Finally finally Block
-ArrayInitializer { VariableInitializers_OPT ,_OPT }
+Comma ,
+ArrayInitializer { VariableInitializers_OPT Comma_OPT }
 VariableInitializers VariableInitializer
 VariableInitializers VariableInitializers , VariableInitializer
 Primary PrimaryNoNewArray

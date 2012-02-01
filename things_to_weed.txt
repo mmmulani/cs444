@@ -1,0 +1,2 @@
+As per http://java.sun.com/docs/books/jls/first_edition/html/8.doc.html#41652,
+the name of a constructor must match the name of the class that contains it.
