@@ -1,4 +1,4 @@
-﻿Type:
+Type:
         PrimitiveType
         ReferenceType
 
@@ -323,7 +323,7 @@ InterfaceModifiers:
         InterfaceModifiers InterfaceModifier
 
 
-InterfaceModifier: one of
+InterfaceModifier:
         public
         protected
         private
@@ -621,7 +621,7 @@ VariableInitializer:
         ArrayInitializer
 
 
-Primary:[a]
+Primary:
         PrimaryNoNewArray
         ArrayCreationExpression
 

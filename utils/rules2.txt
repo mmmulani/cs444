@@ -1,0 +1,352 @@
+Type PrimitiveType
+Type ReferenceType
+PrimitiveType NumericType
+PrimitiveType boolean
+NumericType IntegralType
+NumericType FloatingPointType
+IntegralType byte
+IntegralType short
+IntegralType int
+IntegralType long
+IntegralType char
+FloatingPointType float
+FloatingPointType double
+ReferenceType ClassOrInterfaceType
+ReferenceType ArrayType
+ClassOrInterfaceType ClassType
+ClassOrInterfaceType InterfaceType
+ClassType TypeName
+InterfaceType TypeName
+ArrayType Type [ ]
+PackageName Identifier
+PackageName PackageName . Identifier
+TypeName Identifier
+TypeName PackageOrTypeName . Identifier
+ExpressionName Identifier
+ExpressionName AmbiguousName . Identifier
+MethodName Identifier
+MethodName AmbiguousName . Identifier
+PackageOrTypeName Identifier
+PackageOrTypeName PackageOrTypeName . Identifier
+AmbiguousName Identifier
+AmbiguousName AmbiguousName . Identifier
+CompilationUnit PackageDeclaration_OPT ImportDeclarations_OPT TypeDeclarations_OPT
+ImportDeclarations ImportDeclaration
+ImportDeclarations ImportDeclarations ImportDeclaration
+TypeDeclarations TypeDeclaration
+TypeDeclarations TypeDeclarations TypeDeclaration
+PackageDeclaration package PackageName ;
+ImportDeclaration SingleTypeImportDeclaration
+ImportDeclaration TypeImportOnDemandDeclaration
+SingleTypeImportDeclaration import TypeName ;
+TypeImportOnDemandDeclaration import PackageOrTypeName . * ;
+TypeDeclaration ClassDeclaration
+TypeDeclaration InterfaceDeclaration
+TypeDeclaration ;
+ClassDeclaration ClassModifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBody
+ClassModifiers ClassModifier
+ClassModifiers ClassModifiers ClassModifier
+ClassModifier public
+ClassModifier protected
+ClassModifier private
+ClassModifier abstract
+ClassModifier static
+ClassModifier final
+ClassModifier strictfp
+Super extends ClassType
+ClassType TypeName
+Interfaces implements InterfaceTypeList
+InterfaceTypeList InterfaceType
+InterfaceTypeList InterfaceTypeList , InterfaceType
+ClassBody { ClassBodyDeclarations_OPT }
+ClassBodyDeclarations ClassBodyDeclaration
+ClassBodyDeclarations ClassBodyDeclarations ClassBodyDeclaration
+ClassBodyDeclaration ClassMemberDeclaration
+ClassBodyDeclaration InstanceInitializer
+ClassBodyDeclaration StaticInitializer
+ClassBodyDeclaration ConstructorDeclaration
+ClassMemberDeclaration FieldDeclaration
+ClassMemberDeclaration MethodDeclaration
+ClassMemberDeclaration ClassDeclaration
+ClassMemberDeclaration InterfaceDeclaration
+ClassMemberDeclaration ;
+FieldDeclaration FieldModifiers_OPT Type VariableDeclarators ;
+VariableDeclarators VariableDeclarator
+VariableDeclarators VariableDeclarators , VariableDeclarator
+VariableDeclarator VariableDeclaratorId
+VariableDeclarator VariableDeclaratorId = VariableInitializer
+VariableDeclaratorId Identifier
+VariableDeclaratorId VariableDeclaratorId [ ]
+VariableInitializer Expression
+VariableInitializer ArrayInitializer
+FieldModifiers FieldModifier
+FieldModifiers FieldModifiers FieldModifier
+FieldModifier public
+FieldModifier protected
+FieldModifier private
+FieldModifier static
+FieldModifier final
+FieldModifier transient
+FieldModifier volatile
+MethodDeclaration MethodHeader MethodBody
+MethodHeader MethodModifiers_OPT ResultType MethodDeclarator Throws_OPT
+ResultType Type
+ResultType void
+MethodDeclarator Identifer ( FormalParameterList_OPT )
+MethodDeclarator MethodDeclarator [ ]
+FormalParameterList FormalParameter
+FormalParameterList FormalParameterList , FormalParameter
+FormalParameter final_OPT Type VariableDeclaratorId
+MethodModifiers MethodModifier
+MethodModifiers MethodModifiers MethodModifier
+MethodModifier public
+MethodModifier protected
+MethodModifier private
+MethodModifier abstract
+MethodModifier static
+MethodModifier final
+MethodModifier synchronized
+MethodModifier native
+MethodModifier strictfp
+Throws throws ClassTypeList
+ClassTypeList ClassType
+ClassTypeList ClassTypeList , ClassType
+MethodBody Block
+MethodBody ;
+InstanceInitializer Block
+StaticInitializer static Block
+ConstructorDeclaration ConstructorModifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
+ConstructorDeclarator SimpleTypeName ( FormalParameterList_OPT )
+ConstructorModifiers ConstructorModifier
+ConstructorModifiers ConstructorModifiers ConstructorModifier
+ConstructorModifier public
+ConstructorModifier protected
+ConstructorModifier private
+ConstructorBody { ExplicitConstructorInvocation_OPT BlockStatements_OPT }
+ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
+ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
+ExplicitConstructorInvocation Primary.super ( ArgumentList_OPT ) ;
+InterfaceDeclaration InterfaceModifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
+InterfaceModifiers InterfaceModifier
+InterfaceModifiers InterfaceModifiers InterfaceModifier
+InterfaceModifier public
+InterfaceModifier protected
+InterfaceModifier private
+InterfaceModifier abstract
+InterfaceModifier static
+InterfaceModifier strictfp
+ExtendsInterfaces extends InterfaceType
+ExtendsInterfaces ExtendsInterfaces , InterfaceType
+InterfaceType TypeName
+InterfaceBody { InterfaceMemberDeclarations_OPT }
+InterfaceMemberDeclarations InterfaceMemberDeclaration
+InterfaceMemberDeclarations InterfaceMemberDeclarations InterfaceMemberDeclaration
+InterfaceMemberDeclaration ConstantDeclaration
+InterfaceMemberDeclaration AbstractMethodDeclaration
+InterfaceMemberDeclaration ClassDeclaration
+InterfaceMemberDeclaration InterfaceDeclaration
+InterfaceMemberDeclaration ;
+ConstantDeclaration ConstantModifiers_OPT Type VariableDeclarators
+ConstantModifiers ConstantModifier
+ConstantModifiers ConstantModifiers ConstantModifer
+ConstantModifier public
+ConstantModifier static
+ConstantModifier final
+AbstractMethodDeclaration AbstractMethodModifiers_OPT ResultType MethodDeclarator Throws_OPT ;
+AbstractMethodModifiers AbstractMethodModifier
+AbstractMethodModifiers AbstractMethodModifiers AbstractMethodModifier
+AbstractMethodModifier public
+AbstractMethodModifier abstract
+Block { BlockStatements_OPT }
+BlockStatements BlockStatement
+BlockStatements BlockStatements BlockStatement
+BlockStatement LocalVariableDeclarationStatement
+BlockStatement ClassDeclaration
+BlockStatement Statement
+LocalVariableDeclarationStatement LocalVariableDeclaration ;
+LocalVariableDeclaration final_OPT Type VariableDeclarators
+VariableDeclarators VariableDeclarator
+VariableDeclarators VariableDeclarators , VariableDeclarator
+VariableDeclarator VariableDeclaratorId
+VariableDeclarator VariableDeclaratorId = VariableInitializer
+VariableDeclaratorId Identifier
+VariableDeclaratorId VariableDeclaratorId [ ]
+VariableInitializer Expression
+VariableInitializer ArrayInitializer
+Statement StatementWithoutTrailingSubstatement
+Statement LabeledStatement
+Statement IfThenStatement
+Statement IfThenElseStatement
+Statement WhileStatement
+Statement ForStatement
+StatementWithoutTrailingSubstatement Block
+StatementWithoutTrailingSubstatement EmptyStatement
+StatementWithoutTrailingSubstatement ExpressionStatement
+StatementWithoutTrailingSubstatement SwitchStatement
+StatementWithoutTrailingSubstatement DoStatement
+StatementWithoutTrailingSubstatement BreakStatement
+StatementWithoutTrailingSubstatement ContinueStatement
+StatementWithoutTrailingSubstatement ReturnStatement
+StatementWithoutTrailingSubstatement SynchronizedStatement
+StatementWithoutTrailingSubstatement ThrowStatement
+StatementWithoutTrailingSubstatement TryStatement
+StatementNoShortIf StatementWithoutTrailingSubstatement
+StatementNoShortIf LabeledStatementNoShortIf
+StatementNoShortIf IfThenElseStatementNoShortIf
+StatementNoShortIf WhileStatementNoShortIf
+StatementNoShortIf ForStatementNoShortIf
+IfThenStatement if ( Expression ) Statement
+IfThenElseStatement if ( Expression ) StatementNoShortIf else Statement
+IfThenElseStatementNoShortIf if ( Expression ) StatementNoShortIf else StatementNoShortIf
+EmptyStatement ;
+LabeledStatement Identifier : Statement
+LabeledStatementNoShortIf Identifier : StatementNoShortIf
+ExpressionStatement StatementExpression ;
+StatementExpression Assignment
+StatementExpression PreIncrementExpression
+StatementExpression PreDecrementExpression
+StatementExpression PostIncrementExpression
+StatementExpression PostDecrementExpression
+StatementExpression MethodInvocation
+StatementExpression ClassInstanceCreationExpression
+SwitchStatement switch ( Expression ) SwitchBlock
+SwitchBlock { SwitchBlockStatementGroups_OPT SwitchLabels_OPT }
+SwitchBlockStatementGroups SwitchBlockStatementGroup
+SwitchBlockStatementGroups SwitchBlockStatementGroups SwitchBlockStatementGroup
+SwitchBlockStatementGroup SwitchLabels BlockStatements
+SwitchLabels SwitchLabel
+SwitchLabels SwitchLabels SwitchLabel
+SwitchLabel case ConstantExpression :
+SwitchLabel default :
+WhileStatement while ( Expression ) Statement
+WhileStatementNoShortIf while ( Expression ) StatementNoShortIf
+DoStatement do Statement while ( Expression ) ;
+ForStatement for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) Statement
+ForStatementNoShortIf for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) StatementNoShortIf
+ForInit StatementExpressionList
+ForInit LocalVariableDeclaration
+ForUpdate StatementExpressionList
+StatementExpressionList StatementExpression
+StatementExpressionList StatementExpressionList , StatementExpression
+BreakStatement break Identifier_OPT ;
+ContinueStatement continue Identifier_OPT ;
+ReturnStatement return Expression_OPT ;
+ThrowStatement throw Expression ;
+SynchronizedStatement synchronized ( Expression ) Block
+TryStatement try Block Catches
+TryStatement try Block Catches_OPT Finally
+Catches CatchClause
+Catches Catches CatchClause
+CatchClause catch ( FormalParameter ) Block
+Finally finally Block
+FormalParameter final_OPT Type VariableDeclaratorId
+VariableDeclaratorId Identifier
+VariableDeclaratorId VariableDeclaratorId [ ]
+ArrayInitializer { VariableInitializers_OPT ,_OPT }
+VariableInitializers VariableInitializer
+VariableInitializers VariableInitializers , VariableInitializer
+VariableInitializer Expression
+VariableInitializer ArrayInitializer
+Primary PrimaryNoNewArray
+Primary ArrayCreationExpression
+PrimaryNoNewArray Literal
+PrimaryNoNewArray this
+PrimaryNoNewArray ( Expression )
+PrimaryNoNewArray ClassInstanceCreationExpression
+PrimaryNoNewArray FieldAccess
+PrimaryNoNewArray MethodInvocation
+PrimaryNoNewArray ArrayAccess
+Literal IntegerLiteral
+Literal FloatingPointLiteral
+Literal BooleanLiteral
+Literal CharacterLiteral
+Literal StringLiteral
+Literal NullLiteral
+ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
+ArgumentList Expression
+ArgumentList ArgumentList , Expression
+ArrayCreationExpression new PrimitiveType DimExprs Dimsopt
+ArrayCreationExpression new TypeName DimExprs Dimsopt
+DimExprs DimExpr
+DimExprs DimExprs DimExpr
+DimExpr [ Expression ]
+Dims [ ]
+Dims Dims [ ]
+FieldAccess Primary . Identifier
+FieldAccess super . Identifier
+MethodInvocation MethodName ( ArgumentList_OPT )
+MethodInvocation Primary . Identifier ( ArgumentList_OPT )
+MethodInvocation super . Identifier ( ArgumentList_OPT )
+ArrayAccess ExpressionName [ Expression ]
+ArrayAccess PrimaryNoNewArray [ Expression ]
+PostfixExpression Primary
+PostfixExpression ExpressionName
+PostfixExpression PostIncrementExpression
+PostfixExpression PostDecrementExpression
+PostIncrementExpression PostfixExpression ++
+PostDecrementExpression PostfixExpression --
+UnaryExpression PreIncrementExpression
+UnaryExpression PreDecrementExpression
+UnaryExpression + UnaryExpression
+UnaryExpression - UnaryExpression
+UnaryExpression UnaryExpressionNotPlusMinus
+PreIncrementExpression ++ UnaryExpression
+PreDecrementExpression -- UnaryExpression
+UnaryExpressionNotPlusMinus PostfixExpression
+UnaryExpressionNotPlusMinus ~ UnaryExpression
+UnaryExpressionNotPlusMinus ! UnaryExpression
+UnaryExpressionNotPlusMinus CastExpression
+CastExpression ( PrimitiveType Dims_OPT ) UnaryExpression
+CastExpression ( ReferenceType ) UnaryExpressionNotPlusMinus
+MultiplicativeExpression UnaryExpression
+MultiplicativeExpression MultiplicativeExpression * UnaryExpression
+MultiplicativeExpression MultiplicativeExpression / UnaryExpression
+MultiplicativeExpression MultiplicativeExpression % UnaryExpression
+AdditiveExpression MultiplicativeExpression
+AdditiveExpression AdditiveExpression + MultiplicativeExpression
+AdditiveExpression AdditiveExpression - MultiplicativeExpression
+ShiftExpression AdditiveExpression
+ShiftExpression ShiftExpression << AdditiveExpression
+ShiftExpression ShiftExpression >> AdditiveExpression
+ShiftExpression ShiftExpression >>> AdditiveExpression
+RelationalExpression ShiftExpression
+RelationalExpression RelationalExpression < ShiftExpression
+RelationalExpression RelationalExpression > ShiftExpression
+RelationalExpression RelationalExpression <= ShiftExpression
+RelationalExpression RelationalExpression >= ShiftExpression
+RelationalExpression RelationalExpression instanceof ReferenceType
+EqualityExpression RelationalExpression
+EqualityExpression EqualityExpression == RelationalExpression
+EqualityExpression EqualityExpression != RelationalExpression
+AndExpression EqualityExpression
+AndExpression AndExpression & EqualityExpression
+ExclusiveOrExpression AndExpression
+ExclusiveOrExpression ExclusiveOrExpression ^ AndExpression
+InclusiveOrExpression ExclusiveOrExpression
+InclusiveOrExpression InclusiveOrExpression | ExclusiveOrExpression
+ConditionalAndExpression InclusiveOrExpression
+ConditionalAndExpression ConditionalAndExpression && InclusiveOrExpression
+ConditionalOrExpression ConditionalAndExpression
+ConditionalOrExpression ConditionalOrExpression || ConditionalAndExpression
+ConditionalExpression ConditionalOrExpression
+ConditionalExpression ConditionalOrExpression ? Expression : ConditionalExpression
+AssignmentExpression ConditionalExpression
+AssignmentExpression Assignment
+Assignment LeftHandSide AssignmentOperator AssignmentExpression
+LeftHandSide ExpressionName
+LeftHandSide FieldAccess
+LeftHandSide ArrayAccess
+AssignmentOperator =
+AssignmentOperator *=
+AssignmentOperator /=
+AssignmentOperator %=
+AssignmentOperator +=
+AssignmentOperator -=
+AssignmentOperator <<=
+AssignmentOperator >>=
+AssignmentOperator >>>=
+AssignmentOperator &=
+AssignmentOperator ^=
+AssignmentOperator |=
+Expression AssignmentExpression
+ConstantExpression Expression
