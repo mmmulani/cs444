@@ -83,7 +83,7 @@ MethodDeclaration MethodHeader MethodBody
 MethodHeader MethodModifiers_OPT ResultType MethodDeclarator Throws_OPT
 ResultType Type
 ResultType void
-MethodDeclarator Identifer ( FormalParameterList_OPT )
+MethodDeclarator Identifier ( FormalParameterList_OPT )
 MethodDeclarator MethodDeclarator [ ]
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
@@ -116,7 +116,7 @@ ConstructorModifier private
 ConstructorBody { ExplicitConstructorInvocation_OPT BlockStatements_OPT }
 ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
 ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
-ExplicitConstructorInvocation Primary.super ( ArgumentList_OPT ) ;
+ExplicitConstructorInvocation Primary . super ( ArgumentList_OPT ) ;
 InterfaceDeclaration InterfaceModifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
 InterfaceModifiers InterfaceModifier
 InterfaceModifiers InterfaceModifiers InterfaceModifier
@@ -138,7 +138,7 @@ InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
 ConstantDeclaration ConstantModifiers_OPT Type VariableDeclarators
 ConstantModifiers ConstantModifier
-ConstantModifiers ConstantModifiers ConstantModifer
+ConstantModifiers ConstantModifiers ConstantModifier
 ConstantModifier public
 ConstantModifier static
 ConstantModifier final
@@ -250,8 +250,8 @@ Literal NullLiteral
 ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression
-ArrayCreationExpression new PrimitiveType DimExprs Dimsopt
-ArrayCreationExpression new TypeName DimExprs Dimsopt
+ArrayCreationExpression new PrimitiveType DimExprs Dims_OPT
+ArrayCreationExpression new TypeName DimExprs Dims_OPT
 DimExprs DimExpr
 DimExprs DimExprs DimExpr
 DimExpr [ Expression ]

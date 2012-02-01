@@ -179,3 +179,11 @@ LeftHandSide
 AssignmentOperator
 Expression
 ConstantExpression
+ExpressionName
+IntegerLiteral
+FloatingPointLiteral
+BooleanLiteral
+CharacterLiteral
+StringLiteral
+NullLiteral
+ExpressionName
