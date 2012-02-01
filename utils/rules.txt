@@ -15,7 +15,6 @@ ReferenceType ClassOrInterfaceType
 ReferenceType ArrayType
 ClassOrInterfaceType ClassType
 ClassOrInterfaceType InterfaceType
-ClassType TypeName
 InterfaceType TypeName
 ArrayType Type [ ]
 PackageName Identifier
@@ -71,14 +70,6 @@ ClassMemberDeclaration ClassDeclaration
 ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
 FieldDeclaration FieldModifiers_OPT Type VariableDeclarators ;
-VariableDeclarators VariableDeclarator
-VariableDeclarators VariableDeclarators , VariableDeclarator
-VariableDeclarator VariableDeclaratorId
-VariableDeclarator VariableDeclaratorId = VariableInitializer
-VariableDeclaratorId Identifier
-VariableDeclaratorId VariableDeclaratorId [ ]
-VariableInitializer Expression
-VariableInitializer ArrayInitializer
 FieldModifiers FieldModifier
 FieldModifiers FieldModifiers FieldModifier
 FieldModifier public
@@ -137,7 +128,6 @@ InterfaceModifier static
 InterfaceModifier strictfp
 ExtendsInterfaces extends InterfaceType
 ExtendsInterfaces ExtendsInterfaces , InterfaceType
-InterfaceType TypeName
 InterfaceBody { InterfaceMemberDeclarations_OPT }
 InterfaceMemberDeclarations InterfaceMemberDeclaration
 InterfaceMemberDeclarations InterfaceMemberDeclarations InterfaceMemberDeclaration
@@ -239,14 +229,9 @@ Catches CatchClause
 Catches Catches CatchClause
 CatchClause catch ( FormalParameter ) Block
 Finally finally Block
-FormalParameter final_OPT Type VariableDeclaratorId
-VariableDeclaratorId Identifier
-VariableDeclaratorId VariableDeclaratorId [ ]
 ArrayInitializer { VariableInitializers_OPT ,_OPT }
 VariableInitializers VariableInitializer
 VariableInitializers VariableInitializers , VariableInitializer
-VariableInitializer Expression
-VariableInitializer ArrayInitializer
 Primary PrimaryNoNewArray
 Primary ArrayCreationExpression
 PrimaryNoNewArray Literal
