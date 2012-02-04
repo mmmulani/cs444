@@ -2,14 +2,16 @@
 import scanner.scanner as scanner
 
 import os
+import sys
 
 def main():
-  files = os.listdir('./a1-test')
-  file = files[0]
+  if len(sys.argv) == 1:
+    # No command line arguments provided
+    sys.stderr.write('Please provide an input file.\n')
+    sys.exit(42)
 
-  f = open('./a1-test/' + file)
+  f = open('./a1-test/' + sys.argv[1])
   s = f.read()
-  print s
 
   lex = scanner.Scanner(s)
   for t in lex.scan():
