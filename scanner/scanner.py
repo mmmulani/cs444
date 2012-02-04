@@ -6,8 +6,8 @@ import operator
 import separator
 import whitespace
 
-class Token:
-  '''Token enumeration.'''
+class TokenType:
+  '''Enumeration of token types.'''
   WHITESPACE = 'WHITESPACE'
   COMMENT = 'COMMENT'
   IDENTIFIER = 'IDENTIFIER'
@@ -25,6 +25,17 @@ class Token:
       comment.Comment: COMMENT,
       whitespace.Whitespace: WHITESPACE
   }
+
+class Token(object):
+  '''A single token'''
+  def __init__(self, type, lex):
+    self.type = type
+    self.lexeme = lex
+
+  def __repr__(self):
+    return str((self.type, self.lexeme))
+  def __str__(self):
+    return str((self.type, self.lexeme))
 
 class Scanner(object):
   '''Scanner object
@@ -73,7 +84,7 @@ class Scanner(object):
         raise Exception('Scanning error: <{0}>'.format(self.s[i:]))
       yield tok
 
-      i += len(tok[1])
+      i += len(tok.lexeme)
 
   def _get_next_token(self, i):
     '''Get the next token start from position i of the string'''
@@ -95,4 +106,19 @@ class Scanner(object):
     return last_final
 
   def _get_token_from_machine(self, m):
-    return (Token.token_map[type(m)], m.lexeme)
+    return Token(TokenType.token_map[type(m)], m.lexeme)
+
+class TokenConverter:
+  @staticmethod
+  def convert(toks):
+    ret = []
+    for t in toks:
+      if t.type == TokenType.WHITESPACE:
+        continue
+      ret.append(TokenConverter._convert_token(t))
+    return ret
+
+  @staticmethod
+  def _convert_token(t):
+    if t.type == TokenType.IDENTIFIER:
+      return Token('BLARGH', t.lexeme)

@@ -10,8 +10,8 @@ from components.string_literal import StringLiteral
 class Literal(ComposedDFA):
 
   def __init__(self):
-    self.machine = OneOf(IntegerLiteral(), FloatingPointLiteral(), 
-                         BooleanLiteral(), CharacterLiteral(), 
+    self.machine = OneOf(IntegerLiteral(), FloatingPointLiteral(),
+                         BooleanLiteral(), CharacterLiteral(),
                          StringLiteral(), NullLiteral())
     super(Literal, self).__init__()
 
