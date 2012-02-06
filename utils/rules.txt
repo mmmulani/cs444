@@ -188,7 +188,7 @@ LocalVariableDeclaration Type VariableDeclarator
 # VariableDeclarator Identifier = VariableInitializer
 # VariableDeclaratorId Identifier
 VariableDeclarator Identifier = Expression
-VariableDeclarator Identifier
+# VariableDeclarator Identifier
 # VariableInitializer Expression
 # VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
