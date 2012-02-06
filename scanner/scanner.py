@@ -6,26 +6,6 @@ import operator
 import separator
 import whitespace
 
-class TokenType:
-  '''Enumeration of token types.'''
-  WHITESPACE = 'WHITESPACE'
-  COMMENT = 'COMMENT'
-  IDENTIFIER = 'IDENTIFIER'
-  KEYWORD = 'KEYWORD'
-  LITERAL = 'LITERAL'
-  SEPARATOR = 'SEPARATOR'
-  OPERATOR = 'OPERATOR'
-
-  token_map = {
-      operator.Operator: OPERATOR,
-      separator.Separator: SEPARATOR,
-      literal.Literal: LITERAL,
-      keyword.Keyword: KEYWORD,
-      identifier.Identifier: IDENTIFIER,
-      comment.Comment: COMMENT,
-      whitespace.Whitespace: WHITESPACE
-  }
-
 class Token(object):
   '''A single token'''
   def __init__(self, type, lex):
@@ -111,9 +91,11 @@ class Scanner(object):
 class TokenConverter:
   @staticmethod
   def convert(toks):
+    '''Convert a list of tokens into their more specific types'''
     ret = []
     for t in toks:
       if t.type == TokenType.WHITESPACE:
+        # Strip whitespace from input.
         continue
       ret.append(TokenConverter._convert_token(t))
     return ret
@@ -121,4 +103,62 @@ class TokenConverter:
   @staticmethod
   def _convert_token(t):
     if t.type == TokenType.IDENTIFIER:
-      return Token('BLARGH', t.lexeme)
+      # Don't need to do anything here.
+      pass
+    if t.type == TokenType.SEPARATOR:
+      return Token(TokenConverter._get_separator_type(t.lexeme), t.lexeme)
+    if t.type == TokenType.OPERATOR:
+      return t
+      # return Token(TokenConverter._get_operator_type(t.lexeme), t.lexeme)
+
+  @staticmethod
+  def _get_separator_type(lex):
+    return Token(TokenType.separator_map[lex], lex)
+
+  @staticmethod
+  def _get_operator_type(lex):
+    return Token(TokenType.operator_map[lex], lex)
+
+class TokenType:
+  '''Enumeration of token types.'''
+  # High-level token types.
+  WHITESPACE = 'WHITESPACE'
+  COMMENT = 'COMMENT'
+  IDENTIFIER = 'IDENTIFIER'
+  KEYWORD = 'KEYWORD'
+  LITERAL = 'LITERAL'
+  SEPARATOR = 'SEPARATOR'
+  OPERATOR = 'OPERATOR'
+
+  token_map = {
+      operator.Operator: OPERATOR,
+      separator.Separator: SEPARATOR,
+      literal.Literal: LITERAL,
+      keyword.Keyword: KEYWORD,
+      identifier.Identifier: IDENTIFIER,
+      comment.Comment: COMMENT,
+      whitespace.Whitespace: WHITESPACE
+  }
+
+  # Separator types.
+  LBRACKET = '('
+  RBRACKET = ')'
+  LBRACE = '{'
+  RBRACE = '}'
+  LSQUARE = '['
+  RSQUARE = ']'
+  SEMICOLON = ';'
+  COMMA = ','
+  DOT = '.'
+
+  separator_map = {
+      '(': LBRACKET,
+      ')': RBRACKET,
+      '{': LBRACE,
+      '}': RBRACE,
+      '[': LSQUARE,
+      ']': RSQUARE,
+      ';': SEMICOLON,
+      ',': COMMA,
+      '.': DOT
+  }
