@@ -3,20 +3,14 @@ PrimitiveType
 ReferenceType
 NumericType
 IntegralType
-# FloatingPointType
 ReferenceType
 ClassOrInterfaceType
 ArrayType
 ClassType
 InterfaceType
-# TypeName
 ArrayType
-# PackageName
 Identifier
 Identifiers
-# PackageOrTypeName
-# AmbiguousName
-# MethodName
 CompilationUnit
 PackageDeclaration
 ImportDeclarations
@@ -30,47 +24,29 @@ InterfaceDeclaration
 Super
 Interfaces
 ClassBody
-# REPLACE ALL THE MODIFIERS!
 Modifiers
 Modifier
-# ClassModifiers
-# ClassModifier
 InterfaceTypeList
 ClassBodyDeclarations
 ClassBodyDeclaration
 ClassMemberDeclaration
-# InstanceInitializer
-# StaticInitializer
 ConstructorDeclaration
 FieldDeclaration
 MethodDeclaration
-# VariableDeclarators
 VariableDeclarator
-# VariableDeclaratorId
 Expression
-# ArrayInitializer
-# FieldModifiers
-# FieldModifier
 MethodHeader
 MethodBody
-# MethodModifiers
-# MethodModifier
 ResultType
 MethodDeclarator
-# Throws
 FormalParameterList
 ClassTypeList
 FormalParameter
 Block
-# ConstructorModifiers
-# ConstructorModifier
 ConstructorDeclarator
 ConstructorBody
-# ExplicitConstructorInvocation
 BlockStatements
 ArgumentList
-# InterfaceModifiers
-# InterfaceModifier
 ExtendsInterfaces
 InterfaceBody
 InterfaceBody
@@ -78,45 +54,26 @@ InterfaceMemberDeclarations
 InterfaceMemberDeclaration
 ConstantDeclaration
 AbstractMethodDeclaration
-# ConstantModifiers
-# ConstantModifier
-# AbstractMethodModifiers
-# AbstractMethodModifier
 BlockStatement
 LocalVariableDeclarationStatement
 Statement
 LocalVariableDeclaration
 StatementWithoutTrailingSubstatement
-# LabeledStatement
 IfThenStatement
 IfThenElseStatement
 WhileStatement
 ForStatement
 ExpressionStatement
-# SwitchStatement
-# DoStatement
 ReturnStatement
-# SynchronizedStatement
-# TryStatement
 StatementNoShortIf
-# LabeledStatementNoShortIf
 IfThenElseStatementNoShortIf
 WhileStatementNoShortIf
 ForStatementNoShortIf
 EmptyStatement
 StatementExpression
 Assignment
-# PreIncrementExpression
-# PreDecrementExpression
-# PostIncrementExpression
-# PostDecrementExpression
 MethodInvocation
 ClassInstanceCreationExpression
-# SwitchBlock
-# SwitchBlockStatementGroups
-# SwitchBlockStatementGroup
-# SwitchLabels
-# SwitchLabel
 ConstantExpression
 WhileStatement
 WhileStatementNoShortIf
@@ -126,28 +83,16 @@ BlockStatements
 ForInit
 ForUpdate
 ForStatementNoShortIf
-# StatementExpressionList
 LocalVariableDeclaration
 StatementExpression
-# BreakStatement
-# ContinueStatement
 ReturnStatement
-# ThrowStatement
-# Catches
-# Finally
-# CatchClause
 FormalParameter
-# VariableInitializers
-# VariableInitializer
 Primary
 PrimaryNoNewArray
 Literal
 ClassInstanceCreationExpression
 ArgumentList
 ArrayCreationExpression
-# DimExprs
-# DimExpr
-# Dims
 Dim
 FieldAccess
 MethodInvocation
@@ -158,26 +103,18 @@ UnaryExpressionNotPlusMinus
 CastExpression
 MultiplicativeExpression
 AdditiveExpression
-# ShiftExpression
 RelationalExpression
 EqualityExpression
-# AndExpression
-# ExclusiveOrExpression
-# InclusiveOrExpression
 ConditionalAndExpression
 ConditionalOrExpression
 ConditionalExpression
 AssignmentExpression
 LeftHandSide
-# AssignmentOperator
 Expression
 ConstantExpression
-# ExpressionName
 IntegerLiteral
-# FloatingPointLiteral
 BooleanLiteral
 CharacterLiteral
 StringLiteral
 NullLiteral
 Comma
-# Final

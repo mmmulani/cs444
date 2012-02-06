@@ -1,60 +1,36 @@
 !
 !=
 %
-# %=
-# &
 &&
-# &=
 (
 )
 *
-# *=
 +
-# ++
-# +=
 ,
 -
-# --
-# -=
 .
 /
-# /=
 :
 ;
 <
-# <<
-# <<=
 <=
 =
 =
 ==
 >
 >=
-# >>
-# >>=
-# >>>
-# >>>=
-# ?
 [
 ]
-# ^
-# ^=
 abstract
 boolean
-# break
 byte
-# case
-# catch
 char
 class
-# continue
-# default
 do
 double
 else
 extends
 final
-# finally
 float
 for
 if
@@ -67,26 +43,17 @@ long
 native
 new
 package
-# private
 protected
 public
 return
 short
 static
-# strictfp
 super
-# switch
-# synchronized
 this
-# throw
-# throws
-# transient
 try
 void
-# volatile
 while
 {
-# |
 |=
 ||
 }

@@ -3,37 +3,18 @@ Type ReferenceType
 PrimitiveType NumericType
 PrimitiveType boolean
 NumericType IntegralType
-# NumericType FloatingPointType
 IntegralType byte
 IntegralType short
 IntegralType int
-# IntegralType long
 IntegralType char
-# FloatingPointType float
-# FloatingPointType double
 ReferenceType ClassOrInterfaceType
 ReferenceType ArrayType
-# ClassType and InterfaceType both go to TypeName
-# ClassOrInterfaceType ClassType
-# ClassOrInterfaceType InterfaceType
 ClassOrInterfaceType Identifiers
 InterfaceType Identifiers
-# ArrayType Type [ ]
 ArrayType PrimitiveType [ ]
 ArrayType Identifiers [ ]
-# ---------
 Identifiers Identifier
 Identifiers Identifiers . Identifier
-# --- END IDENTIFIERS
-# PackageName Identifier
-# PackageName PackageName . Identifier
-# TypeName Identifiers
-# ExpressionName Identifiers
-# MethodName Identifiers
-# PackageOrTypeName Identifier
-# PackageOrTypeName PackageOrTypeName . Identifier
-# AmbiguousName Identifier
-# AmbiguousName AmbiguousName . Identifier
 CompilationUnit PackageDeclaration_OPT ImportDeclarations_OPT TypeDeclarations_OPT
 ImportDeclarations ImportDeclaration
 ImportDeclarations ImportDeclarations ImportDeclaration
@@ -47,8 +28,6 @@ TypeImportOnDemandDeclaration import Identifiers . * ;
 TypeDeclaration ClassDeclaration
 TypeDeclaration InterfaceDeclaration
 TypeDeclaration ;
-# ----------------
-# Begin new super modifier
 Modifiers Modifier
 Modifiers Modifiers Modifier
 Modifier public
@@ -57,22 +36,7 @@ Modifier abstract
 Modifier static
 Modifier final
 Modifier native
-# Modifier private
-# Modifier volatile
-# Modifier strictfp
-# Modifier transient
-# Modifier synchronized
-# ---- END -------
 ClassDeclaration Modifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBody
-# ClassModifiers ClassModifier
-# ClassModifiers ClassModifiers ClassModifier
-# ClassModifier public
-# ClassModifier protected
-# ClassModifier private
-# ClassModifier abstract
-# ClassModifier static
-# ClassModifier final
-# ClassModifier strictfp
 Super extends ClassType
 ClassType Identifiers
 Interfaces implements InterfaceTypeList
@@ -85,72 +49,25 @@ ClassBodyDeclaration ClassMemberDeclaration
 ClassBodyDeclaration ConstructorDeclaration
 ClassMemberDeclaration FieldDeclaration
 ClassMemberDeclaration MethodDeclaration
-# ClassBodyDeclaration InstanceInitializer
-# ClassBodyDeclaration StaticInitializer
-# ClassMemberDeclaration ClassDeclaration
 ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
-# FieldDeclaration Modifiers_OPT Type VariableDeclarators ;
 FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
-# FieldModifiers FieldModifier
-# FieldModifiers FieldModifiers FieldModifier
-# FieldModifier public
-# FieldModifier protected
-# FieldModifier private
-# FieldModifier static
-# FieldModifier final
-# FieldModifier transient
-# FieldModifier volatile
 MethodDeclaration MethodHeader MethodBody
-# MethodHeader Modifiers_OPT ResultType MethodDeclarator Throws_OPT
 MethodHeader Modifiers_OPT ResultType MethodDeclarator
 ResultType Type
 ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
-# Final final
-# FormalParameter Final_OPT Type Identifier
 FormalParameter Type Identifier
-# MethodModifiers MethodModifier
-# MethodModifiers MethodModifiers MethodModifier
-# MethodModifier public
-# MethodModifier protected
-# MethodModifier private
-# MethodModifier abstract
-# MethodModifier static
-# MethodModifier final
-# MethodModifier synchronized
-# MethodModifier native
-# MethodModifier strictfp
-# Throws throws ClassTypeList
 ClassTypeList ClassType
 ClassTypeList ClassTypeList , ClassType
 MethodBody Block
 MethodBody ;
-# InstanceInitializer Block
-# StaticInitializer static Block
-# ConstructorDeclaration Modifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
 ConstructorDeclaration Modifiers_OPT ConstructorDeclarator ConstructorBody
 ConstructorDeclarator Identifier ( FormalParameterList_OPT )
-# ConstructorModifiers ConstructorModifier
-# ConstructorModifiers ConstructorModifiers ConstructorModifier
-# ConstructorModifier public
-# ConstructorModifier protected
-# ConstructorModifier private
 ConstructorBody { BlockStatements_OPT }
-# ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
-# ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
-# ExplicitConstructorInvocation Primary . super ( ArgumentList_OPT ) ;
 InterfaceDeclaration Modifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
-# InterfaceModifiers InterfaceModifier
-# InterfaceModifiers InterfaceModifiers InterfaceModifier
-# InterfaceModifier public
-# InterfaceModifier protected
-# InterfaceModifier private
-# InterfaceModifier abstract
-# InterfaceModifier static
-# InterfaceModifier strictfp
 ExtendsInterfaces extends InterfaceType
 ExtendsInterfaces ExtendsInterfaces , InterfaceType
 InterfaceBody { InterfaceMemberDeclarations_OPT }
@@ -161,19 +78,8 @@ InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
-# ConstantDeclaration Modifiers_OPT Type VariableDeclarators
 ConstantDeclaration Modifiers_OPT Type VariableDeclarator
-# ConstantModifiers ConstantModifier
-# ConstantModifiers ConstantModifiers ConstantModifier
-# ConstantModifier public
-# ConstantModifier static
-# ConstantModifier final
-# AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator Throws_OPT ;
 AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator ;
-# AbstractMethodModifiers AbstractMethodModifier
-# AbstractMethodModifiers AbstractMethodModifiers AbstractMethodModifier
-# AbstractMethodModifier public
-# AbstractMethodModifier abstract
 Block { BlockStatements_OPT }
 BlockStatements BlockStatement
 BlockStatements BlockStatements BlockStatement
@@ -181,91 +87,38 @@ BlockStatement LocalVariableDeclarationStatement
 BlockStatement ClassDeclaration
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
-# LocalVariableDeclaration Final_OPT Type VariableDeclarators
-# LocalVariableDeclaration Final_OPT Type VariableDeclarator
 LocalVariableDeclaration Type VariableDeclarator
-# VariableDeclarators VariableDeclarator
-# VariableDeclarators VariableDeclarators , VariableDeclarator
-# VariableDeclarator VariableDeclaratorId
-# VariableDeclarator VariableDeclaratorId = VariableInitializer
-# VariableDeclarator Identifier = VariableInitializer
-# VariableDeclaratorId Identifier
 VariableDeclarator Identifier = Expression
-# VariableDeclarator Identifier
-# VariableInitializer Expression
-# VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
 Statement IfThenStatement
 Statement IfThenElseStatement
 Statement WhileStatement
 Statement ForStatement
-# Statement LabeledStatement
 StatementWithoutTrailingSubstatement Block
 StatementWithoutTrailingSubstatement EmptyStatement
 StatementWithoutTrailingSubstatement ExpressionStatement
 StatementWithoutTrailingSubstatement ReturnStatement
-# StatementWithoutTrailingSubstatement TryStatement
-# StatementWithoutTrailingSubstatement SynchronizedStatement
-# StatementWithoutTrailingSubstatement ThrowStatement
-# StatementWithoutTrailingSubstatement ContinueStatement
-# StatementWithoutTrailingSubstatement BreakStatement
-# StatementWithoutTrailingSubstatement SwitchStatement
-# StatementWithoutTrailingSubstatement DoStatement
 StatementNoShortIf StatementWithoutTrailingSubstatement
 StatementNoShortIf IfThenElseStatementNoShortIf
 StatementNoShortIf WhileStatementNoShortIf
 StatementNoShortIf ForStatementNoShortIf
-# StatementNoShortIf LabeledStatementNoShortIf
 IfThenStatement if ( Expression ) Statement
 IfThenElseStatement if ( Expression ) StatementNoShortIf else Statement
 IfThenElseStatementNoShortIf if ( Expression ) StatementNoShortIf else StatementNoShortIf
 EmptyStatement ;
-# LabeledStatement Identifier : Statement
-# LabeledStatementNoShortIf Identifier : StatementNoShortIf
 ExpressionStatement StatementExpression ;
 StatementExpression Assignment
-# StatementExpression PreIncrementExpression
-# StatementExpression PreDecrementExpression
-# StatementExpression PostIncrementExpression
-# StatementExpression PostDecrementExpression
 StatementExpression MethodInvocation
 StatementExpression ClassInstanceCreationExpression
-# SwitchStatement switch ( Expression ) SwitchBlock
-# SwitchBlock { SwitchBlockStatementGroups_OPT SwitchLabels_OPT }
-# SwitchBlockStatementGroups SwitchBlockStatementGroup
-# SwitchBlockStatementGroups SwitchBlockStatementGroups SwitchBlockStatementGroup
-# SwitchBlockStatementGroup SwitchLabels BlockStatements
-# SwitchLabels SwitchLabel
-# SwitchLabels SwitchLabels SwitchLabel
-# SwitchLabel case ConstantExpression :
-# SwitchLabel default :
 WhileStatement while ( Expression ) Statement
 WhileStatementNoShortIf while ( Expression ) StatementNoShortIf
-# DoStatement do Statement while ( Expression ) ;
 ForStatement for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) Statement
 ForStatementNoShortIf for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) StatementNoShortIf
-# ForInit StatementExpressionList
 ForInit StatementExpression
 ForInit LocalVariableDeclaration
-# ForUpdate StatementExpressionList
 ForUpdate StatementExpression
-# StatementExpressionList StatementExpression
-# StatementExpressionList StatementExpressionList , StatementExpression
-# BreakStatement break Identifier_OPT ;
-# ContinueStatement continue Identifier_OPT ;
 ReturnStatement return Expression_OPT ;
-# ThrowStatement throw Expression ;
-# SynchronizedStatement synchronized ( Expression ) Block
-# TryStatement try Block Catches
-# TryStatement try Block Catches_OPT Finally
-# Catches CatchClause
-# Catches Catches CatchClause
-# CatchClause catch ( FormalParameter ) Block
-# Finally finally Block
 Comma ,
-# ArrayInitializer { VariableInitializers_OPT Comma_OPT }
-# VariableInitializers VariableInitializer
-# VariableInitializers VariableInitializers , VariableInitializer
 Primary PrimaryNoNewArray
 Primary ArrayCreationExpression
 PrimaryNoNewArray Literal
@@ -276,7 +129,6 @@ PrimaryNoNewArray FieldAccess
 PrimaryNoNewArray MethodInvocation
 PrimaryNoNewArray ArrayAccess
 Literal IntegerLiteral
-# Literal FloatingPointLiteral
 Literal BooleanLiteral
 Literal CharacterLiteral
 Literal StringLiteral
@@ -284,43 +136,23 @@ Literal NullLiteral
 ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression
-# ArrayCreationExpression new PrimitiveType DimExprs Dims_OPT
-# ArrayCreationExpression new Identifiers DimExprs Dims_OPT
 ArrayCreationExpression new PrimitiveType [ Expression ]
 ArrayCreationExpression new Identifiers [ Expression ]
-# DimExprs DimExpr
-# DimExprs DimExprs DimExpr
-# DimExpr [ Expression ]
-# Dims [ ]
-# Dims Dims [ ]
 Dim [ ]
 FieldAccess Primary . Identifier
 FieldAccess super . Identifier
 MethodInvocation Identifiers ( ArgumentList_OPT )
 MethodInvocation Primary . Identifier ( ArgumentList_OPT )
-# MethodInvocation super . Identifier ( ArgumentList_OPT )
 ArrayAccess Identifiers [ Expression ]
 ArrayAccess PrimaryNoNewArray [ Expression ]
 PostfixExpression Primary
 PostfixExpression Identifiers
-# PostfixExpression PostIncrementExpression
-# PostfixExpression PostDecrementExpression
-# PostIncrementExpression PostfixExpression ++
-# PostDecrementExpression PostfixExpression --
-# UnaryExpression PreIncrementExpression
-# UnaryExpression PreDecrementExpression
-# UnaryExpression + UnaryExpression
 UnaryExpression - UnaryExpression
 UnaryExpression UnaryExpressionNotPlusMinus
-# PreIncrementExpression ++ UnaryExpression
-# PreDecrementExpression -- UnaryExpression
 UnaryExpressionNotPlusMinus PostfixExpression
 UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
 UnaryExpressionNotPlusMinus CastExpression
-# S-R conflict on Dims because reference type can also define dimensions.
-# CastExpression ( PrimitiveType Dims_OPT ) UnaryExpression
-# CastExpression ( ReferenceType ) UnaryExpressionNotPlusMinus
 CastExpression ( PrimitiveType ) UnaryExpression
 CastExpression ( ReferenceType ) UnaryExpression
 MultiplicativeExpression UnaryExpression
@@ -330,15 +162,6 @@ MultiplicativeExpression MultiplicativeExpression % UnaryExpression
 AdditiveExpression MultiplicativeExpression
 AdditiveExpression AdditiveExpression + MultiplicativeExpression
 AdditiveExpression AdditiveExpression - MultiplicativeExpression
-# ShiftExpression AdditiveExpression
-# ShiftExpression ShiftExpression << AdditiveExpression
-# ShiftExpression ShiftExpression >> AdditiveExpression
-# ShiftExpression ShiftExpression >>> AdditiveExpression
-# RelationalExpression ShiftExpression
-# RelationalExpression RelationalExpression < ShiftExpression
-# RelationalExpression RelationalExpression > ShiftExpression
-# RelationalExpression RelationalExpression <= ShiftExpression
-# RelationalExpression RelationalExpression >= ShiftExpression
 RelationalExpression AdditiveExpression
 RelationalExpression RelationalExpression < AdditiveExpression
 RelationalExpression RelationalExpression > AdditiveExpression
@@ -348,38 +171,16 @@ RelationalExpression RelationalExpression instanceof ReferenceType
 EqualityExpression RelationalExpression
 EqualityExpression EqualityExpression == RelationalExpression
 EqualityExpression EqualityExpression != RelationalExpression
-# AndExpression EqualityExpression
-# AndExpression AndExpression & EqualityExpression
-# ExclusiveOrExpression AndExpression
-# ExclusiveOrExpression ExclusiveOrExpression ^ AndExpression
-# InclusiveOrExpression ExclusiveOrExpression
-# InclusiveOrExpression InclusiveOrExpression | ExclusiveOrExpression
-# ConditionalAndExpression InclusiveOrExpression
-# ConditionalAndExpression ConditionalAndExpression && InclusiveOrExpression
 ConditionalAndExpression EqualityExpression
 ConditionalAndExpression ConditionalAndExpression && EqualityExpression
 ConditionalOrExpression ConditionalAndExpression
 ConditionalOrExpression ConditionalOrExpression || ConditionalAndExpression
 ConditionalExpression ConditionalOrExpression
-# ConditionalExpression ConditionalOrExpression ? Expression : ConditionalExpression
 AssignmentExpression ConditionalExpression
 AssignmentExpression Assignment
-# Assignment LeftHandSide AssignmentOperator AssignmentExpression
 Assignment LeftHandSide = AssignmentExpression
 LeftHandSide Identifiers
 LeftHandSide FieldAccess
 LeftHandSide ArrayAccess
-# AssignmentOperator =
-# AssignmentOperator *=
-# AssignmentOperator /=
-# AssignmentOperator %=
-# AssignmentOperator +=
-# AssignmentOperator -=
-# AssignmentOperator <<=
-# AssignmentOperator >>=
-# AssignmentOperator >>>=
-# AssignmentOperator &=
-# AssignmentOperator ^=
-# AssignmentOperator |=
 Expression AssignmentExpression
 ConstantExpression Expression
