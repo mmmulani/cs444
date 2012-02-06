@@ -47,7 +47,6 @@ MethodDeclaration
 VariableDeclarators
 VariableDeclarator
 # VariableDeclaratorId
-VariableInitializer
 Expression
 # ArrayInitializer
 # FieldModifiers
@@ -110,10 +109,10 @@ ForStatementNoShortIf
 EmptyStatement
 StatementExpression
 Assignment
-PreIncrementExpression
-PreDecrementExpression
-PostIncrementExpression
-PostDecrementExpression
+# PreIncrementExpression
+# PreDecrementExpression
+# PostIncrementExpression
+# PostDecrementExpression
 MethodInvocation
 ClassInstanceCreationExpression
 SwitchStatement
@@ -144,8 +143,6 @@ Catches
 Finally
 CatchClause
 FormalParameter
-VariableDeclaratorId
-ArrayInitializer
 # VariableInitializers
 # VariableInitializer
 Primary
@@ -167,18 +164,18 @@ UnaryExpressionNotPlusMinus
 CastExpression
 MultiplicativeExpression
 AdditiveExpression
-ShiftExpression
+# ShiftExpression
 RelationalExpression
 EqualityExpression
-AndExpression
-ExclusiveOrExpression
-InclusiveOrExpression
+# AndExpression
+# ExclusiveOrExpression
+# InclusiveOrExpression
 ConditionalAndExpression
 ConditionalOrExpression
 ConditionalExpression
 AssignmentExpression
 LeftHandSide
-AssignmentOperator
+# AssignmentOperator
 Expression
 ConstantExpression
 # ExpressionName

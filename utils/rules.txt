@@ -108,7 +108,7 @@ MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
 Final final
-FormalParameter Final_OPT Type VariableDeclaratorId
+FormalParameter Final_OPT Type Identifier
 # MethodModifiers MethodModifier
 # MethodModifiers MethodModifiers MethodModifier
 # MethodModifier public
@@ -183,7 +183,7 @@ VariableDeclarators VariableDeclarators , VariableDeclarator
 VariableDeclarator Identifier
 # VariableDeclarator Identifier = VariableInitializer
 VariableDeclarator Identifier = Expression
-# VariableDeclaratorId Identifier Dim_OPT
+# VariableDeclaratorId Identifier
 # VariableInitializer Expression
 # VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
@@ -216,10 +216,10 @@ LabeledStatement Identifier : Statement
 LabeledStatementNoShortIf Identifier : StatementNoShortIf
 ExpressionStatement StatementExpression ;
 StatementExpression Assignment
-StatementExpression PreIncrementExpression
-StatementExpression PreDecrementExpression
-StatementExpression PostIncrementExpression
-StatementExpression PostDecrementExpression
+# StatementExpression PreIncrementExpression
+# StatementExpression PreDecrementExpression
+# StatementExpression PostIncrementExpression
+# StatementExpression PostDecrementExpression
 StatementExpression MethodInvocation
 StatementExpression ClassInstanceCreationExpression
 SwitchStatement switch ( Expression ) SwitchBlock
@@ -293,17 +293,17 @@ ArrayAccess Identifiers [ Expression ]
 ArrayAccess PrimaryNoNewArray [ Expression ]
 PostfixExpression Primary
 PostfixExpression Identifiers
-PostfixExpression PostIncrementExpression
-PostfixExpression PostDecrementExpression
-PostIncrementExpression PostfixExpression ++
-PostDecrementExpression PostfixExpression --
-UnaryExpression PreIncrementExpression
-UnaryExpression PreDecrementExpression
-UnaryExpression + UnaryExpression
+# PostfixExpression PostIncrementExpression
+# PostfixExpression PostDecrementExpression
+# PostIncrementExpression PostfixExpression ++
+# PostDecrementExpression PostfixExpression --
+# UnaryExpression PreIncrementExpression
+# UnaryExpression PreDecrementExpression
+# UnaryExpression + UnaryExpression
 UnaryExpression - UnaryExpression
 UnaryExpression UnaryExpressionNotPlusMinus
-PreIncrementExpression ++ UnaryExpression
-PreDecrementExpression -- UnaryExpression
+# PreIncrementExpression ++ UnaryExpression
+# PreDecrementExpression -- UnaryExpression
 UnaryExpressionNotPlusMinus PostfixExpression
 UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
@@ -320,48 +320,56 @@ MultiplicativeExpression MultiplicativeExpression % UnaryExpression
 AdditiveExpression MultiplicativeExpression
 AdditiveExpression AdditiveExpression + MultiplicativeExpression
 AdditiveExpression AdditiveExpression - MultiplicativeExpression
-ShiftExpression AdditiveExpression
-ShiftExpression ShiftExpression << AdditiveExpression
-ShiftExpression ShiftExpression >> AdditiveExpression
-ShiftExpression ShiftExpression >>> AdditiveExpression
-RelationalExpression ShiftExpression
-RelationalExpression RelationalExpression < ShiftExpression
-RelationalExpression RelationalExpression > ShiftExpression
-RelationalExpression RelationalExpression <= ShiftExpression
-RelationalExpression RelationalExpression >= ShiftExpression
+# ShiftExpression AdditiveExpression
+# ShiftExpression ShiftExpression << AdditiveExpression
+# ShiftExpression ShiftExpression >> AdditiveExpression
+# ShiftExpression ShiftExpression >>> AdditiveExpression
+# RelationalExpression ShiftExpression
+# RelationalExpression RelationalExpression < ShiftExpression
+# RelationalExpression RelationalExpression > ShiftExpression
+# RelationalExpression RelationalExpression <= ShiftExpression
+# RelationalExpression RelationalExpression >= ShiftExpression
+RelationalExpression AdditiveExpression
+RelationalExpression RelationalExpression < AdditiveExpression
+RelationalExpression RelationalExpression > AdditiveExpression
+RelationalExpression RelationalExpression <= AdditiveExpression
+RelationalExpression RelationalExpression >= AdditiveExpression
 RelationalExpression RelationalExpression instanceof ReferenceType
 EqualityExpression RelationalExpression
 EqualityExpression EqualityExpression == RelationalExpression
 EqualityExpression EqualityExpression != RelationalExpression
-AndExpression EqualityExpression
-AndExpression AndExpression & EqualityExpression
-ExclusiveOrExpression AndExpression
-ExclusiveOrExpression ExclusiveOrExpression ^ AndExpression
-InclusiveOrExpression ExclusiveOrExpression
-InclusiveOrExpression InclusiveOrExpression | ExclusiveOrExpression
-ConditionalAndExpression InclusiveOrExpression
-ConditionalAndExpression ConditionalAndExpression && InclusiveOrExpression
+# AndExpression EqualityExpression
+# AndExpression AndExpression & EqualityExpression
+# ExclusiveOrExpression AndExpression
+# ExclusiveOrExpression ExclusiveOrExpression ^ AndExpression
+# InclusiveOrExpression ExclusiveOrExpression
+# InclusiveOrExpression InclusiveOrExpression | ExclusiveOrExpression
+# ConditionalAndExpression InclusiveOrExpression
+# ConditionalAndExpression ConditionalAndExpression && InclusiveOrExpression
+ConditionalAndExpression EqualityExpression
+ConditionalAndExpression ConditionalAndExpression && EqualityExpression
 ConditionalOrExpression ConditionalAndExpression
 ConditionalOrExpression ConditionalOrExpression || ConditionalAndExpression
 ConditionalExpression ConditionalOrExpression
-ConditionalExpression ConditionalOrExpression ? Expression : ConditionalExpression
+# ConditionalExpression ConditionalOrExpression ? Expression : ConditionalExpression
 AssignmentExpression ConditionalExpression
 AssignmentExpression Assignment
-Assignment LeftHandSide AssignmentOperator AssignmentExpression
+# Assignment LeftHandSide AssignmentOperator AssignmentExpression
+Assignment LeftHandSide = AssignmentExpression
 LeftHandSide Identifiers
 LeftHandSide FieldAccess
 LeftHandSide ArrayAccess
-AssignmentOperator =
-AssignmentOperator *=
-AssignmentOperator /=
-AssignmentOperator %=
-AssignmentOperator +=
-AssignmentOperator -=
-AssignmentOperator <<=
-AssignmentOperator >>=
-AssignmentOperator >>>=
-AssignmentOperator &=
-AssignmentOperator ^=
-AssignmentOperator |=
+# AssignmentOperator =
+# AssignmentOperator *=
+# AssignmentOperator /=
+# AssignmentOperator %=
+# AssignmentOperator +=
+# AssignmentOperator -=
+# AssignmentOperator <<=
+# AssignmentOperator >>=
+# AssignmentOperator >>>=
+# AssignmentOperator &=
+# AssignmentOperator ^=
+# AssignmentOperator |=
 Expression AssignmentExpression
 ConstantExpression Expression
