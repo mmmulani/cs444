@@ -53,15 +53,15 @@ Modifiers Modifier
 Modifiers Modifiers Modifier
 Modifier public
 Modifier protected
-Modifier private
 Modifier abstract
 Modifier static
 Modifier final
-Modifier strictfp
-Modifier transient
-Modifier volatile
-Modifier synchronized
 Modifier native
+# Modifier private
+# Modifier volatile
+# Modifier strictfp
+# Modifier transient
+# Modifier synchronized
 # ---- END -------
 ClassDeclaration Modifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBody
 # ClassModifiers ClassModifier
@@ -108,8 +108,9 @@ ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
-Final final
-FormalParameter Final_OPT Type Identifier
+# Final final
+# FormalParameter Final_OPT Type Identifier
+FormalParameter Type Identifier
 # MethodModifiers MethodModifier
 # MethodModifiers MethodModifiers MethodModifier
 # MethodModifier public
@@ -178,7 +179,8 @@ BlockStatement ClassDeclaration
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
 # LocalVariableDeclaration Final_OPT Type VariableDeclarators
-LocalVariableDeclaration Final_OPT Type VariableDeclarator
+# LocalVariableDeclaration Final_OPT Type VariableDeclarator
+LocalVariableDeclaration Type VariableDeclarator
 # VariableDeclarators VariableDeclarator
 # VariableDeclarators VariableDeclarators , VariableDeclarator
 # VariableDeclarator VariableDeclaratorId

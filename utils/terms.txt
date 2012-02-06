@@ -67,23 +67,23 @@ long
 native
 new
 package
-private
+# private
 protected
 public
 return
 short
 static
-strictfp
+# strictfp
 super
 switch
 synchronized
 this
 throw
 throws
-transient
+# transient
 try
 void
-volatile
+# volatile
 while
 {
 # |
