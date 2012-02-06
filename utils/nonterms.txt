@@ -74,7 +74,6 @@ StatementExpression
 Assignment
 MethodInvocation
 ClassInstanceCreationExpression
-ConstantExpression
 WhileStatement
 WhileStatementNoShortIf
 StatementNoShortIf
@@ -111,7 +110,6 @@ ConditionalExpression
 AssignmentExpression
 LeftHandSide
 Expression
-ConstantExpression
 IntegerLiteral
 BooleanLiteral
 CharacterLiteral

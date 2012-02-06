@@ -183,4 +183,3 @@ LeftHandSide Identifiers
 LeftHandSide FieldAccess
 LeftHandSide ArrayAccess
 Expression AssignmentExpression
-ConstantExpression Expression
