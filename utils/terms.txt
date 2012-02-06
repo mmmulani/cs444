@@ -41,14 +41,14 @@
 # ^=
 abstract
 boolean
-break
+# break
 byte
-case
+# case
 catch
 char
 class
-continue
-default
+# continue
+# default
 do
 double
 else
@@ -75,7 +75,7 @@ short
 static
 # strictfp
 super
-switch
+# switch
 synchronized
 this
 throw

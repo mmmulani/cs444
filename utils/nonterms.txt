@@ -87,22 +87,20 @@ LocalVariableDeclarationStatement
 Statement
 LocalVariableDeclaration
 StatementWithoutTrailingSubstatement
-LabeledStatement
+# LabeledStatement
 IfThenStatement
 IfThenElseStatement
 WhileStatement
 ForStatement
 ExpressionStatement
-SwitchStatement
-DoStatement
-BreakStatement
-ContinueStatement
+# SwitchStatement
+# DoStatement
 ReturnStatement
-SynchronizedStatement
+# SynchronizedStatement
 ThrowStatement
 TryStatement
 StatementNoShortIf
-LabeledStatementNoShortIf
+# LabeledStatementNoShortIf
 IfThenElseStatementNoShortIf
 WhileStatementNoShortIf
 ForStatementNoShortIf
@@ -115,30 +113,27 @@ Assignment
 # PostDecrementExpression
 MethodInvocation
 ClassInstanceCreationExpression
-SwitchStatement
-SwitchBlock
-SwitchBlockStatementGroups
-SwitchBlockStatementGroup
-SwitchLabels
-SwitchLabel
+# SwitchBlock
+# SwitchBlockStatementGroups
+# SwitchBlockStatementGroup
+# SwitchLabels
+# SwitchLabel
 ConstantExpression
 WhileStatement
 WhileStatementNoShortIf
 StatementNoShortIf
-DoStatement
 ForStatement
 BlockStatements
 ForInit
 ForUpdate
 ForStatementNoShortIf
-StatementExpressionList
+# StatementExpressionList
 LocalVariableDeclaration
 StatementExpression
-BreakStatement
-ContinueStatement
+# BreakStatement
+# ContinueStatement
 ReturnStatement
 ThrowStatement
-SynchronizedStatement
 Catches
 Finally
 CatchClause

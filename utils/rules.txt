@@ -192,33 +192,33 @@ VariableDeclarator Identifier = Expression
 # VariableInitializer Expression
 # VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
-Statement LabeledStatement
 Statement IfThenStatement
 Statement IfThenElseStatement
 Statement WhileStatement
 Statement ForStatement
+# Statement LabeledStatement
 StatementWithoutTrailingSubstatement Block
 StatementWithoutTrailingSubstatement EmptyStatement
 StatementWithoutTrailingSubstatement ExpressionStatement
-StatementWithoutTrailingSubstatement SwitchStatement
-StatementWithoutTrailingSubstatement DoStatement
-StatementWithoutTrailingSubstatement BreakStatement
-StatementWithoutTrailingSubstatement ContinueStatement
 StatementWithoutTrailingSubstatement ReturnStatement
-StatementWithoutTrailingSubstatement SynchronizedStatement
 StatementWithoutTrailingSubstatement ThrowStatement
 StatementWithoutTrailingSubstatement TryStatement
+# StatementWithoutTrailingSubstatement SynchronizedStatement
+# StatementWithoutTrailingSubstatement ContinueStatement
+# StatementWithoutTrailingSubstatement BreakStatement
+# StatementWithoutTrailingSubstatement SwitchStatement
+# StatementWithoutTrailingSubstatement DoStatement
 StatementNoShortIf StatementWithoutTrailingSubstatement
-StatementNoShortIf LabeledStatementNoShortIf
 StatementNoShortIf IfThenElseStatementNoShortIf
 StatementNoShortIf WhileStatementNoShortIf
 StatementNoShortIf ForStatementNoShortIf
+# StatementNoShortIf LabeledStatementNoShortIf
 IfThenStatement if ( Expression ) Statement
 IfThenElseStatement if ( Expression ) StatementNoShortIf else Statement
 IfThenElseStatementNoShortIf if ( Expression ) StatementNoShortIf else StatementNoShortIf
 EmptyStatement ;
-LabeledStatement Identifier : Statement
-LabeledStatementNoShortIf Identifier : StatementNoShortIf
+# LabeledStatement Identifier : Statement
+# LabeledStatementNoShortIf Identifier : StatementNoShortIf
 ExpressionStatement StatementExpression ;
 StatementExpression Assignment
 # StatementExpression PreIncrementExpression
@@ -227,30 +227,32 @@ StatementExpression Assignment
 # StatementExpression PostDecrementExpression
 StatementExpression MethodInvocation
 StatementExpression ClassInstanceCreationExpression
-SwitchStatement switch ( Expression ) SwitchBlock
-SwitchBlock { SwitchBlockStatementGroups_OPT SwitchLabels_OPT }
-SwitchBlockStatementGroups SwitchBlockStatementGroup
-SwitchBlockStatementGroups SwitchBlockStatementGroups SwitchBlockStatementGroup
-SwitchBlockStatementGroup SwitchLabels BlockStatements
-SwitchLabels SwitchLabel
-SwitchLabels SwitchLabels SwitchLabel
-SwitchLabel case ConstantExpression :
-SwitchLabel default :
+# SwitchStatement switch ( Expression ) SwitchBlock
+# SwitchBlock { SwitchBlockStatementGroups_OPT SwitchLabels_OPT }
+# SwitchBlockStatementGroups SwitchBlockStatementGroup
+# SwitchBlockStatementGroups SwitchBlockStatementGroups SwitchBlockStatementGroup
+# SwitchBlockStatementGroup SwitchLabels BlockStatements
+# SwitchLabels SwitchLabel
+# SwitchLabels SwitchLabels SwitchLabel
+# SwitchLabel case ConstantExpression :
+# SwitchLabel default :
 WhileStatement while ( Expression ) Statement
 WhileStatementNoShortIf while ( Expression ) StatementNoShortIf
-DoStatement do Statement while ( Expression ) ;
+# DoStatement do Statement while ( Expression ) ;
 ForStatement for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) Statement
 ForStatementNoShortIf for ( ForInit_OPT ; Expression_OPT ; ForUpdate_OPT ) StatementNoShortIf
-ForInit StatementExpressionList
+# ForInit StatementExpressionList
+ForInit StatementExpression
 ForInit LocalVariableDeclaration
-ForUpdate StatementExpressionList
-StatementExpressionList StatementExpression
-StatementExpressionList StatementExpressionList , StatementExpression
-BreakStatement break Identifier_OPT ;
-ContinueStatement continue Identifier_OPT ;
+# ForUpdate StatementExpressionList
+ForUpdate StatementExpression
+# StatementExpressionList StatementExpression
+# StatementExpressionList StatementExpressionList , StatementExpression
+# BreakStatement break Identifier_OPT ;
+# ContinueStatement continue Identifier_OPT ;
 ReturnStatement return Expression_OPT ;
 ThrowStatement throw Expression ;
-SynchronizedStatement synchronized ( Expression ) Block
+# SynchronizedStatement synchronized ( Expression ) Block
 TryStatement try Block Catches
 TryStatement try Block Catches_OPT Finally
 Catches CatchClause
