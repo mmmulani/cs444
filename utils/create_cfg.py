@@ -11,11 +11,17 @@ def main():
   with open(terms_file, 'r') as f:
     for line in f:
       terminal = line.strip()
+      if terminal[0] == '#':
+        continue
+
       terminals.add(terminal)
 
   with open(nonterms_file, 'r') as f:
     for line in f:
       nonterminal = line.strip()
+      if nonterminal[0] == '#':
+        continue
+
       nonterminals.add(nonterminal)
 
   # Each rule is a tuple of (symbol, derivation) and type (String, [String])
