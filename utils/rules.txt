@@ -82,11 +82,11 @@ ClassBody { ClassBodyDeclarations_OPT }
 ClassBodyDeclarations ClassBodyDeclaration
 ClassBodyDeclarations ClassBodyDeclarations ClassBodyDeclaration
 ClassBodyDeclaration ClassMemberDeclaration
-ClassBodyDeclaration InstanceInitializer
-ClassBodyDeclaration StaticInitializer
 ClassBodyDeclaration ConstructorDeclaration
 ClassMemberDeclaration FieldDeclaration
 ClassMemberDeclaration MethodDeclaration
+# ClassBodyDeclaration InstanceInitializer
+# ClassBodyDeclaration StaticInitializer
 # ClassMemberDeclaration ClassDeclaration
 ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
@@ -127,8 +127,8 @@ ClassTypeList ClassType
 ClassTypeList ClassTypeList , ClassType
 MethodBody Block
 MethodBody ;
-InstanceInitializer Block
-StaticInitializer static Block
+# InstanceInitializer Block
+# StaticInitializer static Block
 ConstructorDeclaration Modifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
 ConstructorDeclarator Identifier ( FormalParameterList_OPT )
 # ConstructorModifiers ConstructorModifier
@@ -136,10 +136,10 @@ ConstructorDeclarator Identifier ( FormalParameterList_OPT )
 # ConstructorModifier public
 # ConstructorModifier protected
 # ConstructorModifier private
-ConstructorBody { ExplicitConstructorInvocation_OPT BlockStatements_OPT }
-ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
-ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
-ExplicitConstructorInvocation Primary . super ( ArgumentList_OPT ) ;
+ConstructorBody { BlockStatements_OPT }
+# ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
+# ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
+# ExplicitConstructorInvocation Primary . super ( ArgumentList_OPT ) ;
 InterfaceDeclaration Modifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
 # InterfaceModifiers InterfaceModifier
 # InterfaceModifiers InterfaceModifiers InterfaceModifier
