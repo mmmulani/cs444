@@ -4,3 +4,5 @@ the name of a constructor must match the name of the class that contains it.
 Cast expressions with reference types should be followed by a unary 
 expression that does not start with a plus or minus.
 http://java.sun.com/docs/books/jls/first_edition/html/15.doc.html#238146
+
+Check modifiers based on context, e.g. no native classes
