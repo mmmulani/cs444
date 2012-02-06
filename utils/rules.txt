@@ -293,7 +293,7 @@ FieldAccess Primary . Identifier
 FieldAccess super . Identifier
 MethodInvocation Identifiers ( ArgumentList_OPT )
 MethodInvocation Primary . Identifier ( ArgumentList_OPT )
-MethodInvocation super . Identifier ( ArgumentList_OPT )
+# MethodInvocation super . Identifier ( ArgumentList_OPT )
 ArrayAccess Identifiers [ Expression ]
 ArrayAccess PrimaryNoNewArray [ Expression ]
 PostfixExpression Primary
