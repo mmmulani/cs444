@@ -6,6 +6,10 @@ def main():
   s = set()
   for line in f:
     line = line.strip()
+    if line[0] == '#':
+      # Don't bother checking comments
+      continue
+
     if line in s:
       print 'DUPE: ' + line
     else:
