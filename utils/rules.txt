@@ -13,18 +13,17 @@ FloatingPointType float
 FloatingPointType double
 ReferenceType ClassOrInterfaceType
 ReferenceType ArrayType
-ClassOrInterfaceType ClassType
-ClassOrInterfaceType InterfaceType
+# ClassType and InterfaceType both go to TypeName
+# ClassOrInterfaceType ClassType
+# ClassOrInterfaceType InterfaceType
+ClassOrInterfaceType TypeName
 InterfaceType TypeName
 ArrayType Type [ ]
 PackageName Identifier
 PackageName PackageName . Identifier
-TypeName Identifier
-TypeName PackageOrTypeName . Identifier
-ExpressionName Identifier
-ExpressionName AmbiguousName . Identifier
-MethodName Identifier
-MethodName AmbiguousName . Identifier
+TypeName PackageOrTypeName
+ExpressionName AmbiguousName
+MethodName AmbiguousName
 PackageOrTypeName Identifier
 PackageOrTypeName PackageOrTypeName . Identifier
 AmbiguousName Identifier
@@ -42,16 +41,32 @@ TypeImportOnDemandDeclaration import PackageOrTypeName . * ;
 TypeDeclaration ClassDeclaration
 TypeDeclaration InterfaceDeclaration
 TypeDeclaration ;
-ClassDeclaration ClassModifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBody
-ClassModifiers ClassModifier
-ClassModifiers ClassModifiers ClassModifier
-ClassModifier public
-ClassModifier protected
-ClassModifier private
-ClassModifier abstract
-ClassModifier static
-ClassModifier final
-ClassModifier strictfp
+# ----------------
+# Begin new super modifier
+Modifiers Modifier
+Modifiers Modifiers Modifier
+Modifier public
+Modifier protected
+Modifier private
+Modifier abstract
+Modifier static
+Modifier final
+Modifier strictfp
+Modifier transient
+Modifier volatile
+Modifier synchronized
+Modifier native
+# ---- END -------
+ClassDeclaration Modifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBody
+# ClassModifiers ClassModifier
+# ClassModifiers ClassModifiers ClassModifier
+# ClassModifier public
+# ClassModifier protected
+# ClassModifier private
+# ClassModifier abstract
+# ClassModifier static
+# ClassModifier final
+# ClassModifier strictfp
 Super extends ClassType
 ClassType TypeName
 Interfaces implements InterfaceTypeList
@@ -69,18 +84,18 @@ ClassMemberDeclaration MethodDeclaration
 ClassMemberDeclaration ClassDeclaration
 ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
-FieldDeclaration FieldModifiers_OPT Type VariableDeclarators ;
-FieldModifiers FieldModifier
-FieldModifiers FieldModifiers FieldModifier
-FieldModifier public
-FieldModifier protected
-FieldModifier private
-FieldModifier static
-FieldModifier final
-FieldModifier transient
-FieldModifier volatile
+FieldDeclaration Modifiers_OPT Type VariableDeclarators ;
+# FieldModifiers FieldModifier
+# FieldModifiers FieldModifiers FieldModifier
+# FieldModifier public
+# FieldModifier protected
+# FieldModifier private
+# FieldModifier static
+# FieldModifier final
+# FieldModifier transient
+# FieldModifier volatile
 MethodDeclaration MethodHeader MethodBody
-MethodHeader MethodModifiers_OPT ResultType MethodDeclarator Throws_OPT
+MethodHeader Modifiers_OPT ResultType MethodDeclarator Throws_OPT
 ResultType Type
 ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT )
@@ -89,17 +104,17 @@ FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
 Final final
 FormalParameter Final_OPT Type VariableDeclaratorId
-MethodModifiers MethodModifier
-MethodModifiers MethodModifiers MethodModifier
-MethodModifier public
-MethodModifier protected
-MethodModifier private
-MethodModifier abstract
-MethodModifier static
-MethodModifier final
-MethodModifier synchronized
-MethodModifier native
-MethodModifier strictfp
+# MethodModifiers MethodModifier
+# MethodModifiers MethodModifiers MethodModifier
+# MethodModifier public
+# MethodModifier protected
+# MethodModifier private
+# MethodModifier abstract
+# MethodModifier static
+# MethodModifier final
+# MethodModifier synchronized
+# MethodModifier native
+# MethodModifier strictfp
 Throws throws ClassTypeList
 ClassTypeList ClassType
 ClassTypeList ClassTypeList , ClassType
@@ -107,26 +122,26 @@ MethodBody Block
 MethodBody ;
 InstanceInitializer Block
 StaticInitializer static Block
-ConstructorDeclaration ConstructorModifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
+ConstructorDeclaration Modifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
 ConstructorDeclarator Identifier ( FormalParameterList_OPT )
-ConstructorModifiers ConstructorModifier
-ConstructorModifiers ConstructorModifiers ConstructorModifier
-ConstructorModifier public
-ConstructorModifier protected
-ConstructorModifier private
+# ConstructorModifiers ConstructorModifier
+# ConstructorModifiers ConstructorModifiers ConstructorModifier
+# ConstructorModifier public
+# ConstructorModifier protected
+# ConstructorModifier private
 ConstructorBody { ExplicitConstructorInvocation_OPT BlockStatements_OPT }
 ExplicitConstructorInvocation this ( ArgumentList_OPT ) ;
 ExplicitConstructorInvocation super ( ArgumentList_OPT ) ;
 ExplicitConstructorInvocation Primary . super ( ArgumentList_OPT ) ;
-InterfaceDeclaration InterfaceModifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
-InterfaceModifiers InterfaceModifier
-InterfaceModifiers InterfaceModifiers InterfaceModifier
-InterfaceModifier public
-InterfaceModifier protected
-InterfaceModifier private
-InterfaceModifier abstract
-InterfaceModifier static
-InterfaceModifier strictfp
+InterfaceDeclaration Modifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
+# InterfaceModifiers InterfaceModifier
+# InterfaceModifiers InterfaceModifiers InterfaceModifier
+# InterfaceModifier public
+# InterfaceModifier protected
+# InterfaceModifier private
+# InterfaceModifier abstract
+# InterfaceModifier static
+# InterfaceModifier strictfp
 ExtendsInterfaces extends InterfaceType
 ExtendsInterfaces ExtendsInterfaces , InterfaceType
 InterfaceBody { InterfaceMemberDeclarations_OPT }
@@ -137,17 +152,17 @@ InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
-ConstantDeclaration ConstantModifiers_OPT Type VariableDeclarators
-ConstantModifiers ConstantModifier
-ConstantModifiers ConstantModifiers ConstantModifier
-ConstantModifier public
-ConstantModifier static
-ConstantModifier final
-AbstractMethodDeclaration AbstractMethodModifiers_OPT ResultType MethodDeclarator Throws_OPT ;
-AbstractMethodModifiers AbstractMethodModifier
-AbstractMethodModifiers AbstractMethodModifiers AbstractMethodModifier
-AbstractMethodModifier public
-AbstractMethodModifier abstract
+ConstantDeclaration Modifiers_OPT Type VariableDeclarators
+# ConstantModifiers ConstantModifier
+# ConstantModifiers ConstantModifiers ConstantModifier
+# ConstantModifier public
+# ConstantModifier static
+# ConstantModifier final
+AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator Throws_OPT ;
+# AbstractMethodModifiers AbstractMethodModifier
+# AbstractMethodModifiers AbstractMethodModifiers AbstractMethodModifier
+# AbstractMethodModifier public
+# AbstractMethodModifier abstract
 Block { BlockStatements_OPT }
 BlockStatements BlockStatement
 BlockStatements BlockStatements BlockStatement
@@ -283,8 +298,11 @@ UnaryExpressionNotPlusMinus PostfixExpression
 UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
 UnaryExpressionNotPlusMinus CastExpression
-CastExpression ( PrimitiveType Dims_OPT ) UnaryExpression
-CastExpression ( ReferenceType ) UnaryExpressionNotPlusMinus
+# S-R conflict on Dims because reference type can also define dimensions.
+# CastExpression ( PrimitiveType Dims_OPT ) UnaryExpression
+# CastExpression ( ReferenceType ) UnaryExpressionNotPlusMinus
+CastExpression ( PrimitiveType ) UnaryExpression
+CastExpression ( ReferenceType ) UnaryExpression
 MultiplicativeExpression UnaryExpression
 MultiplicativeExpression MultiplicativeExpression * UnaryExpression
 MultiplicativeExpression MultiplicativeExpression / UnaryExpression

@@ -30,8 +30,11 @@ InterfaceDeclaration
 Super
 Interfaces
 ClassBody
-ClassModifiers
-ClassModifier
+# REPLACE ALL THE MODIFIERS!
+Modifiers
+Modifier
+# ClassModifiers
+# ClassModifier
 InterfaceTypeList
 ClassBodyDeclarations
 ClassBodyDeclaration
@@ -47,12 +50,12 @@ VariableDeclaratorId
 VariableInitializer
 Expression
 ArrayInitializer
-FieldModifiers
-FieldModifier
+# FieldModifiers
+# FieldModifier
 MethodHeader
 MethodBody
-MethodModifiers
-MethodModifier
+# MethodModifiers
+# MethodModifier
 ResultType
 MethodDeclarator
 Throws
@@ -60,26 +63,26 @@ FormalParameterList
 ClassTypeList
 FormalParameter
 Block
-ConstructorModifiers
+# ConstructorModifiers
+# ConstructorModifier
 ConstructorDeclarator
 ConstructorBody
-ConstructorModifier
 ExplicitConstructorInvocation
 BlockStatements
 ArgumentList
-InterfaceModifiers
+# InterfaceModifiers
+# InterfaceModifier
 ExtendsInterfaces
 InterfaceBody
-InterfaceModifier
 InterfaceBody
 InterfaceMemberDeclarations
 InterfaceMemberDeclaration
 ConstantDeclaration
 AbstractMethodDeclaration
-ConstantModifiers
-ConstantModifier
-AbstractMethodModifiers
-AbstractMethodModifier
+# ConstantModifiers
+# ConstantModifier
+# AbstractMethodModifiers
+# AbstractMethodModifier
 BlockStatement
 LocalVariableDeclarationStatement
 Statement
