@@ -22,7 +22,12 @@ def main():
   seen_rules = set()
   with open(rules_file, 'r') as f:
     for line in f:
-      symbols = line.strip().split(' ')
+      line = line.strip()
+
+      if line[0] == '#':
+        continue
+
+      symbols = line.split(' ')
       if len(symbols) < 2:
         print 'Line {0} does not have at least 2 symbols.'.format(f.lineno())
 
