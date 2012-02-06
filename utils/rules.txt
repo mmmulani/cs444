@@ -16,28 +16,32 @@ ReferenceType ArrayType
 # ClassType and InterfaceType both go to TypeName
 # ClassOrInterfaceType ClassType
 # ClassOrInterfaceType InterfaceType
-ClassOrInterfaceType TypeName
-InterfaceType TypeName
+ClassOrInterfaceType Identifiers
+InterfaceType Identifiers
 ArrayType Type [ ]
-PackageName Identifier
-PackageName PackageName . Identifier
-TypeName PackageOrTypeName
-ExpressionName AmbiguousName
-MethodName AmbiguousName
-PackageOrTypeName Identifier
-PackageOrTypeName PackageOrTypeName . Identifier
-AmbiguousName Identifier
-AmbiguousName AmbiguousName . Identifier
+# ---------
+Identifiers Identifier
+Identifiers Identifiers . Identifier
+# --- END IDENTIFIERS
+# PackageName Identifier
+# PackageName PackageName . Identifier
+# TypeName Identifiers
+# ExpressionName Identifiers
+# MethodName Identifiers
+# PackageOrTypeName Identifier
+# PackageOrTypeName PackageOrTypeName . Identifier
+# AmbiguousName Identifier
+# AmbiguousName AmbiguousName . Identifier
 CompilationUnit PackageDeclaration_OPT ImportDeclarations_OPT TypeDeclarations_OPT
 ImportDeclarations ImportDeclaration
 ImportDeclarations ImportDeclarations ImportDeclaration
 TypeDeclarations TypeDeclaration
 TypeDeclarations TypeDeclarations TypeDeclaration
-PackageDeclaration package PackageName ;
+PackageDeclaration package Identifiers ;
 ImportDeclaration SingleTypeImportDeclaration
 ImportDeclaration TypeImportOnDemandDeclaration
-SingleTypeImportDeclaration import TypeName ;
-TypeImportOnDemandDeclaration import PackageOrTypeName . * ;
+SingleTypeImportDeclaration import Identifiers ;
+TypeImportOnDemandDeclaration import Identifiers . * ;
 TypeDeclaration ClassDeclaration
 TypeDeclaration InterfaceDeclaration
 TypeDeclaration ;
@@ -68,7 +72,7 @@ ClassDeclaration Modifiers_OPT class Identifier Super_OPT Interfaces_OPT ClassBo
 # ClassModifier final
 # ClassModifier strictfp
 Super extends ClassType
-ClassType TypeName
+ClassType Identifiers
 Interfaces implements InterfaceTypeList
 InterfaceTypeList InterfaceType
 InterfaceTypeList InterfaceTypeList , InterfaceType
@@ -268,7 +272,7 @@ ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression
 ArrayCreationExpression new PrimitiveType DimExprs Dims_OPT
-ArrayCreationExpression new TypeName DimExprs Dims_OPT
+ArrayCreationExpression new Identifiers DimExprs Dims_OPT
 DimExprs DimExpr
 DimExprs DimExprs DimExpr
 DimExpr [ Expression ]
@@ -276,13 +280,13 @@ Dims [ ]
 Dims Dims [ ]
 FieldAccess Primary . Identifier
 FieldAccess super . Identifier
-MethodInvocation MethodName ( ArgumentList_OPT )
+MethodInvocation Identifiers ( ArgumentList_OPT )
 MethodInvocation Primary . Identifier ( ArgumentList_OPT )
 MethodInvocation super . Identifier ( ArgumentList_OPT )
-ArrayAccess ExpressionName [ Expression ]
+ArrayAccess Identifiers [ Expression ]
 ArrayAccess PrimaryNoNewArray [ Expression ]
 PostfixExpression Primary
-PostfixExpression ExpressionName
+PostfixExpression Identifiers
 PostfixExpression PostIncrementExpression
 PostfixExpression PostDecrementExpression
 PostIncrementExpression PostfixExpression ++
@@ -338,7 +342,7 @@ ConditionalExpression ConditionalOrExpression ? Expression : ConditionalExpressi
 AssignmentExpression ConditionalExpression
 AssignmentExpression Assignment
 Assignment LeftHandSide AssignmentOperator AssignmentExpression
-LeftHandSide ExpressionName
+LeftHandSide Identifiers
 LeftHandSide FieldAccess
 LeftHandSide ArrayAccess
 AssignmentOperator =

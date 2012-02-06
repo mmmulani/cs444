@@ -9,20 +9,20 @@ ClassOrInterfaceType
 ArrayType
 ClassType
 InterfaceType
-TypeName
+# TypeName
 ArrayType
-PackageName
+# PackageName
 Identifier
-PackageOrTypeName
-AmbiguousName
-MethodName
+Identifiers
+# PackageOrTypeName
+# AmbiguousName
+# MethodName
 CompilationUnit
 PackageDeclaration
 ImportDeclarations
 TypeDeclarations
 ImportDeclaration
 TypeDeclaration
-PackageName
 SingleTypeImportDeclaration
 TypeImportOnDemandDeclaration
 ClassDeclaration
@@ -180,13 +180,12 @@ LeftHandSide
 AssignmentOperator
 Expression
 ConstantExpression
-ExpressionName
+# ExpressionName
 IntegerLiteral
 FloatingPointLiteral
 BooleanLiteral
 CharacterLiteral
 StringLiteral
 NullLiteral
-ExpressionName
 Comma
 Final
