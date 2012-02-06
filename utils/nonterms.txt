@@ -1,6 +1,5 @@
 Type
 PrimitiveType
-ReferenceType
 NumericType
 IntegralType
 ReferenceType
