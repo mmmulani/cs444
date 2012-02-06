@@ -49,7 +49,7 @@ VariableDeclarator
 # VariableDeclaratorId
 VariableInitializer
 Expression
-ArrayInitializer
+# ArrayInitializer
 # FieldModifiers
 # FieldModifier
 MethodHeader
@@ -146,8 +146,8 @@ CatchClause
 FormalParameter
 VariableDeclaratorId
 ArrayInitializer
-VariableInitializers
-VariableInitializer
+# VariableInitializers
+# VariableInitializer
 Primary
 PrimaryNoNewArray
 Literal
@@ -183,7 +183,7 @@ Expression
 ConstantExpression
 # ExpressionName
 IntegerLiteral
-FloatingPointLiteral
+# FloatingPointLiteral
 BooleanLiteral
 CharacterLiteral
 StringLiteral

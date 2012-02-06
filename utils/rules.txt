@@ -181,10 +181,11 @@ VariableDeclarators VariableDeclarators , VariableDeclarator
 # VariableDeclarator VariableDeclaratorId
 # VariableDeclarator VariableDeclaratorId = VariableInitializer
 VariableDeclarator Identifier
-VariableDeclarator Identifier = VariableInitializer
+# VariableDeclarator Identifier = VariableInitializer
+VariableDeclarator Identifier = Expression
 # VariableDeclaratorId Identifier Dim_OPT
-VariableInitializer Expression
-VariableInitializer ArrayInitializer
+# VariableInitializer Expression
+# VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
 Statement LabeledStatement
 Statement IfThenStatement
@@ -252,9 +253,9 @@ Catches Catches CatchClause
 CatchClause catch ( FormalParameter ) Block
 Finally finally Block
 Comma ,
-ArrayInitializer { VariableInitializers_OPT Comma_OPT }
-VariableInitializers VariableInitializer
-VariableInitializers VariableInitializers , VariableInitializer
+# ArrayInitializer { VariableInitializers_OPT Comma_OPT }
+# VariableInitializers VariableInitializer
+# VariableInitializers VariableInitializers , VariableInitializer
 Primary PrimaryNoNewArray
 Primary ArrayCreationExpression
 PrimaryNoNewArray Literal
@@ -265,7 +266,7 @@ PrimaryNoNewArray FieldAccess
 PrimaryNoNewArray MethodInvocation
 PrimaryNoNewArray ArrayAccess
 Literal IntegerLiteral
-Literal FloatingPointLiteral
+# Literal FloatingPointLiteral
 Literal BooleanLiteral
 Literal CharacterLiteral
 Literal StringLiteral

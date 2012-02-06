@@ -9,3 +9,5 @@ Check modifiers based on context, e.g. no native classes
 
 Multidimensional arrays in primary expressions.
 e.g. a[1][2]
+
+Catch any oct, hex or long literals.
