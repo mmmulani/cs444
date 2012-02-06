@@ -102,7 +102,8 @@ FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 # FieldModifier transient
 # FieldModifier volatile
 MethodDeclaration MethodHeader MethodBody
-MethodHeader Modifiers_OPT ResultType MethodDeclarator Throws_OPT
+# MethodHeader Modifiers_OPT ResultType MethodDeclarator Throws_OPT
+MethodHeader Modifiers_OPT ResultType MethodDeclarator
 ResultType Type
 ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
@@ -122,14 +123,15 @@ FormalParameter Type Identifier
 # MethodModifier synchronized
 # MethodModifier native
 # MethodModifier strictfp
-Throws throws ClassTypeList
+# Throws throws ClassTypeList
 ClassTypeList ClassType
 ClassTypeList ClassTypeList , ClassType
 MethodBody Block
 MethodBody ;
 # InstanceInitializer Block
 # StaticInitializer static Block
-ConstructorDeclaration Modifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
+# ConstructorDeclaration Modifiers_OPT ConstructorDeclarator Throws_OPT ConstructorBody
+ConstructorDeclaration Modifiers_OPT ConstructorDeclarator ConstructorBody
 ConstructorDeclarator Identifier ( FormalParameterList_OPT )
 # ConstructorModifiers ConstructorModifier
 # ConstructorModifiers ConstructorModifiers ConstructorModifier
@@ -166,7 +168,8 @@ ConstantDeclaration Modifiers_OPT Type VariableDeclarator
 # ConstantModifier public
 # ConstantModifier static
 # ConstantModifier final
-AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator Throws_OPT ;
+# AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator Throws_OPT ;
+AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator ;
 # AbstractMethodModifiers AbstractMethodModifier
 # AbstractMethodModifiers AbstractMethodModifiers AbstractMethodModifier
 # AbstractMethodModifier public
@@ -201,9 +204,9 @@ StatementWithoutTrailingSubstatement Block
 StatementWithoutTrailingSubstatement EmptyStatement
 StatementWithoutTrailingSubstatement ExpressionStatement
 StatementWithoutTrailingSubstatement ReturnStatement
-StatementWithoutTrailingSubstatement ThrowStatement
-StatementWithoutTrailingSubstatement TryStatement
+# StatementWithoutTrailingSubstatement TryStatement
 # StatementWithoutTrailingSubstatement SynchronizedStatement
+# StatementWithoutTrailingSubstatement ThrowStatement
 # StatementWithoutTrailingSubstatement ContinueStatement
 # StatementWithoutTrailingSubstatement BreakStatement
 # StatementWithoutTrailingSubstatement SwitchStatement
@@ -251,14 +254,14 @@ ForUpdate StatementExpression
 # BreakStatement break Identifier_OPT ;
 # ContinueStatement continue Identifier_OPT ;
 ReturnStatement return Expression_OPT ;
-ThrowStatement throw Expression ;
+# ThrowStatement throw Expression ;
 # SynchronizedStatement synchronized ( Expression ) Block
-TryStatement try Block Catches
-TryStatement try Block Catches_OPT Finally
-Catches CatchClause
-Catches Catches CatchClause
-CatchClause catch ( FormalParameter ) Block
-Finally finally Block
+# TryStatement try Block Catches
+# TryStatement try Block Catches_OPT Finally
+# Catches CatchClause
+# Catches Catches CatchClause
+# CatchClause catch ( FormalParameter ) Block
+# Finally finally Block
 Comma ,
 # ArrayInitializer { VariableInitializers_OPT Comma_OPT }
 # VariableInitializers VariableInitializer

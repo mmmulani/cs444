@@ -44,7 +44,7 @@ boolean
 # break
 byte
 # case
-catch
+# catch
 char
 class
 # continue
@@ -54,7 +54,7 @@ double
 else
 extends
 final
-finally
+# finally
 float
 for
 if
@@ -76,10 +76,10 @@ static
 # strictfp
 super
 # switch
-synchronized
+# synchronized
 this
-throw
-throws
+# throw
+# throws
 # transient
 try
 void
