@@ -87,10 +87,11 @@ ClassBodyDeclaration StaticInitializer
 ClassBodyDeclaration ConstructorDeclaration
 ClassMemberDeclaration FieldDeclaration
 ClassMemberDeclaration MethodDeclaration
-ClassMemberDeclaration ClassDeclaration
+# ClassMemberDeclaration ClassDeclaration
 ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
-FieldDeclaration Modifiers_OPT Type VariableDeclarators ;
+# FieldDeclaration Modifiers_OPT Type VariableDeclarators ;
+FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 # FieldModifiers FieldModifier
 # FieldModifiers FieldModifiers FieldModifier
 # FieldModifier public
@@ -157,7 +158,8 @@ InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
-ConstantDeclaration Modifiers_OPT Type VariableDeclarators
+# ConstantDeclaration Modifiers_OPT Type VariableDeclarators
+ConstantDeclaration Modifiers_OPT Type VariableDeclarator
 # ConstantModifiers ConstantModifier
 # ConstantModifiers ConstantModifiers ConstantModifier
 # ConstantModifier public
@@ -175,15 +177,16 @@ BlockStatement LocalVariableDeclarationStatement
 BlockStatement ClassDeclaration
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
-LocalVariableDeclaration Final_OPT Type VariableDeclarators
-VariableDeclarators VariableDeclarator
-VariableDeclarators VariableDeclarators , VariableDeclarator
+# LocalVariableDeclaration Final_OPT Type VariableDeclarators
+LocalVariableDeclaration Final_OPT Type VariableDeclarator
+# VariableDeclarators VariableDeclarator
+# VariableDeclarators VariableDeclarators , VariableDeclarator
 # VariableDeclarator VariableDeclaratorId
 # VariableDeclarator VariableDeclaratorId = VariableInitializer
-VariableDeclarator Identifier
 # VariableDeclarator Identifier = VariableInitializer
-VariableDeclarator Identifier = Expression
 # VariableDeclaratorId Identifier
+VariableDeclarator Identifier = Expression
+VariableDeclarator Identifier
 # VariableInitializer Expression
 # VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement

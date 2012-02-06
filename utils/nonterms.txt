@@ -44,7 +44,7 @@ StaticInitializer
 ConstructorDeclaration
 FieldDeclaration
 MethodDeclaration
-VariableDeclarators
+# VariableDeclarators
 VariableDeclarator
 # VariableDeclaratorId
 Expression
