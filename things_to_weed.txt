@@ -6,3 +6,6 @@ expression that does not start with a plus or minus.
 http://java.sun.com/docs/books/jls/first_edition/html/15.doc.html#238146
 
 Check modifiers based on context, e.g. no native classes
+
+Multidimensional arrays in primary expressions.
+e.g. a[1][2]

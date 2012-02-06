@@ -3,14 +3,14 @@ Type ReferenceType
 PrimitiveType NumericType
 PrimitiveType boolean
 NumericType IntegralType
-NumericType FloatingPointType
+# NumericType FloatingPointType
 IntegralType byte
 IntegralType short
 IntegralType int
-IntegralType long
+# IntegralType long
 IntegralType char
-FloatingPointType float
-FloatingPointType double
+# FloatingPointType float
+# FloatingPointType double
 ReferenceType ClassOrInterfaceType
 ReferenceType ArrayType
 # ClassType and InterfaceType both go to TypeName
@@ -18,7 +18,9 @@ ReferenceType ArrayType
 # ClassOrInterfaceType InterfaceType
 ClassOrInterfaceType Identifiers
 InterfaceType Identifiers
-ArrayType Type [ ]
+# ArrayType Type [ ]
+ArrayType PrimitiveType [ ]
+ArrayType Identifiers [ ]
 # ---------
 Identifiers Identifier
 Identifiers Identifiers . Identifier
@@ -102,8 +104,7 @@ MethodDeclaration MethodHeader MethodBody
 MethodHeader Modifiers_OPT ResultType MethodDeclarator Throws_OPT
 ResultType Type
 ResultType void
-MethodDeclarator Identifier ( FormalParameterList_OPT )
-MethodDeclarator MethodDeclarator [ ]
+MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter
 Final final
@@ -177,10 +178,11 @@ LocalVariableDeclarationStatement LocalVariableDeclaration ;
 LocalVariableDeclaration Final_OPT Type VariableDeclarators
 VariableDeclarators VariableDeclarator
 VariableDeclarators VariableDeclarators , VariableDeclarator
-VariableDeclarator VariableDeclaratorId
-VariableDeclarator VariableDeclaratorId = VariableInitializer
-VariableDeclaratorId Identifier
-VariableDeclaratorId VariableDeclaratorId [ ]
+# VariableDeclarator VariableDeclaratorId
+# VariableDeclarator VariableDeclaratorId = VariableInitializer
+VariableDeclarator Identifier
+VariableDeclarator Identifier = VariableInitializer
+# VariableDeclaratorId Identifier Dim_OPT
 VariableInitializer Expression
 VariableInitializer ArrayInitializer
 Statement StatementWithoutTrailingSubstatement
@@ -271,13 +273,16 @@ Literal NullLiteral
 ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression
-ArrayCreationExpression new PrimitiveType DimExprs Dims_OPT
-ArrayCreationExpression new Identifiers DimExprs Dims_OPT
-DimExprs DimExpr
-DimExprs DimExprs DimExpr
-DimExpr [ Expression ]
-Dims [ ]
-Dims Dims [ ]
+# ArrayCreationExpression new PrimitiveType DimExprs Dims_OPT
+# ArrayCreationExpression new Identifiers DimExprs Dims_OPT
+ArrayCreationExpression new PrimitiveType [ Expression ]
+ArrayCreationExpression new Identifiers [ Expression ]
+# DimExprs DimExpr
+# DimExprs DimExprs DimExpr
+# DimExpr [ Expression ]
+# Dims [ ]
+# Dims Dims [ ]
+Dim [ ]
 FieldAccess Primary . Identifier
 FieldAccess super . Identifier
 MethodInvocation Identifiers ( ArgumentList_OPT )

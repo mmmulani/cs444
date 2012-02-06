@@ -3,7 +3,7 @@ PrimitiveType
 ReferenceType
 NumericType
 IntegralType
-FloatingPointType
+# FloatingPointType
 ReferenceType
 ClassOrInterfaceType
 ArrayType
@@ -46,7 +46,7 @@ FieldDeclaration
 MethodDeclaration
 VariableDeclarators
 VariableDeclarator
-VariableDeclaratorId
+# VariableDeclaratorId
 VariableInitializer
 Expression
 ArrayInitializer
@@ -154,9 +154,10 @@ Literal
 ClassInstanceCreationExpression
 ArgumentList
 ArrayCreationExpression
-DimExprs
-DimExpr
-Dims
+# DimExprs
+# DimExpr
+# Dims
+Dim
 FieldAccess
 MethodInvocation
 ArrayAccess
