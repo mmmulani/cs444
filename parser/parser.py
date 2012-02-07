@@ -54,8 +54,12 @@ class Parser(object):
         raise ParsingError('No shift rule found: error parsing tokens!')
       state_stack.append(shift)
 
-    root = TreeNode("Root", node_stack)
-    return root
+    # node_stack should be [BOF, CompilationUnit, EOF]
+    if (len(node_stack) != 3 or node_stack[0].value != 'BOF' or
+        node_stack[1].value != 'CompilationUnit' or
+        node_stack[2].value != 'EOF'):
+      raise ParsingError('Node stack incorrect after processing token list')
+    return node_stack[1]
 
   def _debug_output(self, tokens, i, node_stack):
     print "Tokens processed:"
