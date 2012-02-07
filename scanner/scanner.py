@@ -56,7 +56,7 @@ class Scanner(object):
   def scan(self):
     '''Generator which produces one token at a time.'''
     i = 0
-
+    yield Token('BOF', 'BOF')
     while i < len(self.s):
       tok = self._get_next_token(i)
       if tok is None:
@@ -65,6 +65,7 @@ class Scanner(object):
       yield tok
 
       i += len(tok.lexeme)
+    yield Token('EOF', 'EOF')
 
   def _get_next_token(self, i):
     '''Get the next token start from position i of the string'''
