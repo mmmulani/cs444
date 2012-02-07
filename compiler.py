@@ -15,6 +15,7 @@ def main():
   s = f.read()
   f.close()
 
+  # SCANNING!
   try:
     toks = scanner.TokenConverter.convert(
         scanner.Scanner.get_token_list(s))
@@ -22,6 +23,7 @@ def main():
     # Scanning failure.
     sys.exit(42)
 
+  # PARSING!
   try:
     p = parser.Parser()
     root = p.parse(toks)

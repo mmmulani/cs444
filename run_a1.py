@@ -17,7 +17,7 @@ for file in files:
   path = '{0}/{1}'.format(A1_FOLDER, file)
   f = open(path)
   ret = subprocess.call(['./joosc', path])
-  color = FAIL_COLOR 
+  color = FAIL_COLOR
   if (ret == 42 and file[:2] == 'Je') or \
       (ret == 0 and file[:2] != 'Je'):
     passing_tests.append(path)
