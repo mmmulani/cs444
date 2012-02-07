@@ -1,1 +1,4 @@
-compiler.py
+#!/bin/bash
+
+python compiler.py $1
+
