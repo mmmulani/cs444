@@ -58,3 +58,9 @@ while
 ||
 }
 ~
+Identifier
+IntegerLiteral
+BooleanLiteral
+CharacterLiteral
+StringLiteral
+NullLiteral

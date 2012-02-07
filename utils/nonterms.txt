@@ -9,7 +9,6 @@ ArrayType
 ClassType
 InterfaceType
 ArrayType
-Identifier
 Identifiers
 CompilationUnit
 PackageDeclaration
@@ -110,9 +109,4 @@ ConditionalExpression
 AssignmentExpression
 LeftHandSide
 Expression
-IntegerLiteral
-BooleanLiteral
-CharacterLiteral
-StringLiteral
-NullLiteral
 Comma

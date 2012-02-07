@@ -53,7 +53,8 @@ ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
 FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 MethodDeclaration MethodHeader MethodBody
-MethodHeader Modifiers_OPT ResultType MethodDeclarator
+MethodHeader Modifiers_OPT Type MethodDeclarator
+MethodHeader Modifiers_OPT void MethodDeclarator
 ResultType Type
 ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
@@ -79,7 +80,8 @@ InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
 ConstantDeclaration Modifiers_OPT Type VariableDeclarator
-AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator ;
+AbstractMethodDeclaration Modifiers_OPT Type MethodDeclarator ;
+AbstractMethodDeclaration Modifiers_OPT void MethodDeclarator ;
 Block { BlockStatements_OPT }
 BlockStatements BlockStatement
 BlockStatements BlockStatements BlockStatement
@@ -153,7 +155,7 @@ UnaryExpressionNotPlusMinus PostfixExpression
 UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
 UnaryExpressionNotPlusMinus CastExpression
-CastExpression ( PrimitiveType ) UnaryExpression
+CastExpression ( PrimitiveType Dim_OPT ) UnaryExpression
 CastExpression ( Expression ) UnaryExpressionNotPlusMinus
 CastExpression ( Identifiers Dim ) UnaryExpressionNotPlusMinus
 MultiplicativeExpression UnaryExpression

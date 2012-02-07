@@ -44,7 +44,7 @@ def main():
                'of terminals').format(nonterminal)
 
       for symbol in symbols[1:]:
-        if symbol[0] in string.ascii_uppercase:
+        if symbol in nonterminals or symbol[:-4] in nonterminals:
           if symbol[-4:] == '_OPT':
             normalized = symbol[:-4]
           else:
