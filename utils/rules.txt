@@ -130,11 +130,6 @@ PrimaryNoNewArray ClassInstanceCreationExpression
 PrimaryNoNewArray FieldAccess
 PrimaryNoNewArray MethodInvocation
 PrimaryNoNewArray ArrayAccess
-Literal IntegerLiteral
-Literal BooleanLiteral
-Literal CharacterLiteral
-Literal StringLiteral
-Literal NullLiteral
 ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression

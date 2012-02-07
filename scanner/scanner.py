@@ -115,7 +115,7 @@ class TokenConverter:
       return Token(t.lexeme, t.lexeme)
       # return Token(TokenConverter._get_keyword_type(t.lexeme), t.lexeme)
     elif t.type == TokenType.LITERAL:
-      return Token('StringLiteral', t.lexeme)
+      return t
 
     raise Exception('Conversion fail')
 
