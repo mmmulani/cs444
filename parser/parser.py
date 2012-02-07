@@ -1,5 +1,8 @@
 from tree_node import TreeNode
 
+class ParsingError(Exception):
+  pass
+
 class Parser(object):
   '''Parser object
   Takes a list of tokens, and returns a parse tree if the tokens can be
@@ -47,11 +50,10 @@ class Parser(object):
       shift = Shift.get((state_stack[-1], token), None)
       if shift == None:
         self._debug_output(tokens, i, node_stack)
-        raise Exception('Parsing error!')
+        raise ParsingError('No shift rule found: error parsing tokens!')
       state_stack.append(shift)
 
     # TODO (gnleece) is parse tree always between BOF and EOF?
-    assert(len(node_stack) == 3)
     return node_stack[1]
 
   def _debug_output(self, tokens, i, node_stack):
