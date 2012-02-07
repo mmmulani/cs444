@@ -53,7 +53,8 @@ ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
 FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 MethodDeclaration MethodHeader MethodBody
-MethodHeader Modifiers_OPT ResultType MethodDeclarator
+MethodHeader Modifiers_OPT Type MethodDeclarator
+MethodHeader Modifiers_OPT void MethodDeclarator
 ResultType Type
 ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
@@ -78,8 +79,9 @@ InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
-ConstantDeclaration Modifiers_OPT Type VariableDeclarator
-AbstractMethodDeclaration Modifiers_OPT ResultType MethodDeclarator ;
+ConstantDeclaration Modifiers_OPT Type VariableDeclarator ;
+AbstractMethodDeclaration Modifiers_OPT Type MethodDeclarator ;
+AbstractMethodDeclaration Modifiers_OPT void MethodDeclarator ;
 Block { BlockStatements_OPT }
 BlockStatements BlockStatement
 BlockStatements BlockStatements BlockStatement
@@ -128,11 +130,6 @@ PrimaryNoNewArray ClassInstanceCreationExpression
 PrimaryNoNewArray FieldAccess
 PrimaryNoNewArray MethodInvocation
 PrimaryNoNewArray ArrayAccess
-Literal IntegerLiteral
-Literal BooleanLiteral
-Literal CharacterLiteral
-Literal StringLiteral
-Literal NullLiteral
 ClassInstanceCreationExpression new ClassType ( ArgumentList_OPT )
 ArgumentList Expression
 ArgumentList ArgumentList , Expression
@@ -153,8 +150,9 @@ UnaryExpressionNotPlusMinus PostfixExpression
 UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
 UnaryExpressionNotPlusMinus CastExpression
-CastExpression ( PrimitiveType ) UnaryExpression
-CastExpression ( ReferenceType ) UnaryExpression
+CastExpression ( PrimitiveType Dim_OPT ) UnaryExpression
+CastExpression ( Expression ) UnaryExpressionNotPlusMinus
+CastExpression ( Identifiers Dim ) UnaryExpressionNotPlusMinus
 MultiplicativeExpression UnaryExpression
 MultiplicativeExpression MultiplicativeExpression * UnaryExpression
 MultiplicativeExpression MultiplicativeExpression / UnaryExpression

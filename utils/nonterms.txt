@@ -8,7 +8,6 @@ ArrayType
 ClassType
 InterfaceType
 ArrayType
-Identifier
 Identifiers
 CompilationUnit
 PackageDeclaration
@@ -87,7 +86,6 @@ ReturnStatement
 FormalParameter
 Primary
 PrimaryNoNewArray
-Literal
 ClassInstanceCreationExpression
 ArgumentList
 ArrayCreationExpression
@@ -109,9 +107,4 @@ ConditionalExpression
 AssignmentExpression
 LeftHandSide
 Expression
-IntegerLiteral
-BooleanLiteral
-CharacterLiteral
-StringLiteral
-NullLiteral
 Comma

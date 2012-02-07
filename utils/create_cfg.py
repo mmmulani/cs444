@@ -3,7 +3,10 @@ def main():
   nonterms_file = 'nonterms.txt'
   rules_file = 'rules.txt'
 
-  start_symbol = 'CompilationUnit'
+  start_state = 'CompilationUnit'
+  start_symbol = 'S'
+  bof_term = 'BOF'
+  eof_term = 'EOF'
 
   terminals = set()
   nonterminals = set()
@@ -16,6 +19,9 @@ def main():
 
       terminals.add(terminal)
 
+  terminals.add(bof_term)
+  terminals.add(eof_term)
+
   with open(nonterms_file, 'r') as f:
     for line in f:
       nonterminal = line.strip()
@@ -24,8 +30,11 @@ def main():
 
       nonterminals.add(nonterminal)
 
+  nonterminals.add(start_symbol)
+
   # Each rule is a tuple of (symbol, derivation) and type (String, [String])
   rules = []
+  rules.append((start_symbol, [bof_term, start_state, eof_term]))
   with open(rules_file, 'r') as f:
     for line in f:
       line = line.strip()

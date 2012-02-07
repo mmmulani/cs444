@@ -1,4 +1,4 @@
-from .. import operator
+from .. import operator_dfa
 
 import unittest
 
@@ -15,7 +15,7 @@ class OperatorTest(unittest.TestCase):
         '>>>=']
 
     for op in ops:
-      m = operator.Operator()
+      m = operator_dfa.Operator()
       self.assertTrue(m.accepts(op))
       self.assertEqual(m.lexeme, op)
 
@@ -27,7 +27,7 @@ class OperatorTest(unittest.TestCase):
         '=<', '=>', '!!=', '=!', '<<<=', '&&=', '+-', '<<<']
 
     for op in non_ops:
-      m = operator.Operator()
+      m = operator_dfa.Operator()
       self.assertFalse(m.accepts(op))
 
 if __name__ == '__main__':

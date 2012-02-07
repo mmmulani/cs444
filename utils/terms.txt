@@ -21,6 +21,11 @@
 >=
 [
 ]
+{
+}
+|=
+||
+~
 abstract
 boolean
 byte
@@ -53,8 +58,5 @@ this
 try
 void
 while
-{
-|=
-||
-}
-~
+Identifier
+Literal
