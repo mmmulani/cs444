@@ -101,6 +101,9 @@ MultiplicativeExpression
 AdditiveExpression
 RelationalExpression
 EqualityExpression
+AndExpression
+ExclusiveOrExpression
+InclusiveOrExpression
 ConditionalAndExpression
 ConditionalOrExpression
 ConditionalExpression

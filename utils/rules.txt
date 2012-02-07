@@ -91,6 +91,7 @@ BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
 LocalVariableDeclaration Type VariableDeclarator
 VariableDeclarator Identifier = Expression
+VariableDeclarator Identifier
 Statement StatementWithoutTrailingSubstatement
 Statement IfThenStatement
 Statement IfThenElseStatement
@@ -169,8 +170,16 @@ RelationalExpression RelationalExpression instanceof ReferenceType
 EqualityExpression RelationalExpression
 EqualityExpression EqualityExpression == RelationalExpression
 EqualityExpression EqualityExpression != RelationalExpression
-ConditionalAndExpression EqualityExpression
-ConditionalAndExpression ConditionalAndExpression && EqualityExpression
+# XXX
+AndExpression EqualityExpression
+AndExpression AndExpression & EqualityExpression
+ExclusiveOrExpression AndExpression
+ExclusiveOrExpression ExclusiveOrExpression ^ AndExpression
+InclusiveOrExpression ExclusiveOrExpression
+InclusiveOrExpression InclusiveOrExpression | ExclusiveOrExpression
+ConditionalAndExpression InclusiveOrExpression
+ConditionalAndExpression ConditionalAndExpression && InclusiveOrExpression
+# XXX
 ConditionalOrExpression ConditionalAndExpression
 ConditionalOrExpression ConditionalOrExpression || ConditionalAndExpression
 ConditionalExpression ConditionalOrExpression
