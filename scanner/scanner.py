@@ -103,7 +103,7 @@ class TokenConverter:
 
   @staticmethod
   def _convert_token(t):
-    if t.type == TokenType.IDENTIFIER:
+    if t.type == TokenType.IDENTIFIER or t.type == 'EOF' or t.type == 'BOF':
       return t
     elif t.type == TokenType.SEPARATOR:
       return Token(t.lexeme, t.lexeme)
@@ -116,6 +116,8 @@ class TokenConverter:
       # return Token(TokenConverter._get_keyword_type(t.lexeme), t.lexeme)
     elif t.type == TokenType.LITERAL:
       return Token('StringLiteral', t.lexeme)
+
+    raise Exception('Conversion fail')
 
 class TokenType:
   '''Enumeration of token types.'''

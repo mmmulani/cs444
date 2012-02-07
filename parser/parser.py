@@ -64,5 +64,5 @@ class Parser(object):
     print tokens[i:]
     print "\nTree stack:"
     for tree in node_stack:
-      tree.debug_print()
+      tree.pretty_print()
       print "------"
