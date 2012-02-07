@@ -9,8 +9,8 @@ class Parser(object):
   successfully parsed (otherwise, an exception is thrown)
   '''
 
-  def __init__(self, reduce_filename = "reduce_table", 
-               shift_filename = "shift_table"):
+  def __init__(self, reduce_filename = "utils/joos_reduce.txt",
+               shift_filename = "utils/joos_shift.txt"):
     self.reduce_filename = reduce_filename
     self.shift_filename = shift_filename
 
@@ -24,9 +24,10 @@ class Parser(object):
     
     node_stack = []
     state_stack = [0]
-    for i in range(0, len(tokens)):
+    for i in xrange(len(tokens)):
       token = tokens[i]
-      reduction = Reduce.get((state_stack[-1], token), None)
+      token_type, lexeme = token.type, token.lexeme
+      reduction = Reduce.get((state_stack[-1], token_type), None)
       while reduction is not None:
         # reduction is a list of symbols, where the first symbol is the LHS
         # of a reduction rule, and the remaining sybols are the RHS of the rule
@@ -43,11 +44,11 @@ class Parser(object):
         node_stack.append(TreeNode(LHS, child_tokens))
         state_stack.append(Shift[(state_stack[-1], LHS)])
           
-        reduction = Reduce.get((state_stack[-1], token), None)
+        reduction = Reduce.get((state_stack[-1], token_type), None)
 
       # we couldn't reduce, so try a shift:
-      node_stack.append(TreeNode(token))
-      shift = Shift.get((state_stack[-1], token), None)
+      node_stack.append(TreeNode(token_type))
+      shift = Shift.get((state_stack[-1], token_type), None)
       if shift == None:
         self._debug_output(tokens, i, node_stack)
         raise ParsingError('No shift rule found: error parsing tokens!')
