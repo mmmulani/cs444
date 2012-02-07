@@ -2,7 +2,7 @@ import comment
 import identifier
 import keyword
 import literal
-import operator
+import operator_dfa
 import separator
 import whitespace
 
@@ -37,7 +37,7 @@ class Scanner(object):
 
   # These machines are kept in priority order.
   machines = [
-      operator.Operator(),
+      operator_dfa.Operator(),
       separator.Separator(),
       literal.Literal(),
       keyword.Keyword(),
@@ -94,7 +94,7 @@ class TokenConverter:
     '''Convert a list of tokens into their more specific types'''
     ret = []
     for t in toks:
-      if t.type == TokenType.WHITESPACE:
+      if t.type == TokenType.WHITESPACE or t.type == TokenType.COMMENT:
         # Strip whitespace from input.
         continue
       ret.append(TokenConverter._convert_token(t))
@@ -103,35 +103,32 @@ class TokenConverter:
   @staticmethod
   def _convert_token(t):
     if t.type == TokenType.IDENTIFIER:
-      # Don't need to do anything here.
-      pass
-    if t.type == TokenType.SEPARATOR:
-      return Token(TokenConverter._get_separator_type(t.lexeme), t.lexeme)
-    if t.type == TokenType.OPERATOR:
       return t
+    elif t.type == TokenType.SEPARATOR:
+      return Token(t.lexeme, t.lexeme)
+      # return Token(TokenConverter._get_separator_type(t.lexeme), t.lexeme)
+    elif t.type == TokenType.OPERATOR:
+      return Token(t.lexeme, t.lexeme)
       # return Token(TokenConverter._get_operator_type(t.lexeme), t.lexeme)
-
-  @staticmethod
-  def _get_separator_type(lex):
-    return Token(TokenType.separator_map[lex], lex)
-
-  @staticmethod
-  def _get_operator_type(lex):
-    return Token(TokenType.operator_map[lex], lex)
+    elif t.type == TokenType.KEYWORD:
+      return Token(t.lexeme, t.lexeme)
+      # return Token(TokenConverter._get_keyword_type(t.lexeme), t.lexeme)
+    elif t.type == TokenType.LITERAL:
+      return Token('StringLiteral', t.lexeme)
 
 class TokenType:
   '''Enumeration of token types.'''
   # High-level token types.
-  WHITESPACE = 'WHITESPACE'
-  COMMENT = 'COMMENT'
-  IDENTIFIER = 'IDENTIFIER'
-  KEYWORD = 'KEYWORD'
-  LITERAL = 'LITERAL'
-  SEPARATOR = 'SEPARATOR'
-  OPERATOR = 'OPERATOR'
+  WHITESPACE = 'Whitespace'
+  COMMENT = 'Comment'
+  IDENTIFIER = 'Identifier'
+  KEYWORD = 'Keyword'
+  LITERAL = 'Literal'
+  SEPARATOR = 'Separator'
+  OPERATOR = 'Operator'
 
   token_map = {
-      operator.Operator: OPERATOR,
+      operator_dfa.Operator: OPERATOR,
       separator.Separator: SEPARATOR,
       literal.Literal: LITERAL,
       keyword.Keyword: KEYWORD,
