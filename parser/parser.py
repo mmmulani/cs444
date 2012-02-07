@@ -53,8 +53,8 @@ class Parser(object):
         raise ParsingError('No shift rule found: error parsing tokens!')
       state_stack.append(shift)
 
-    # TODO (gnleece) is parse tree always between BOF and EOF?
-    return node_stack[1]
+    root = TreeNode("Root", node_stack)
+    return root
 
   def _debug_output(self, tokens, i, node_stack):
     print "Tokens processed:"
