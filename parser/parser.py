@@ -50,7 +50,7 @@ class Parser(object):
       node_stack.append(TreeNode(token_type))
       shift = Shift.get((state_stack[-1], token_type), None)
       if shift == None:
-        self._debug_output(tokens, i, node_stack)
+        # self._debug_output(tokens, i, node_stack)
         raise ParsingError('No shift rule found: error parsing tokens!')
       state_stack.append(shift)
 

@@ -61,7 +61,7 @@ class Scanner(object):
       tok = self._get_next_token(i)
       if tok is None:
         # Scanning error.
-        raise Exception('Scanning error: <{0}>'.format(self.s[i:]))
+        raise UnknownTokenError('Scanning error: <{0}>'.format(self.s[i:]))
       yield tok
 
       i += len(tok.lexeme)
@@ -117,7 +117,16 @@ class TokenConverter:
     elif t.type == TokenType.LITERAL:
       return t
 
-    raise Exception('Conversion fail')
+    raise ConversionError('Conversion fail')
+
+class ScanningError(Exception):
+  pass
+
+class UnknownTokenError(ScanningError):
+  pass
+
+class ConversionError(ScanningError):
+  pass
 
 class TokenType:
   '''Enumeration of token types.'''
