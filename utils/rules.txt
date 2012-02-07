@@ -79,7 +79,7 @@ InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ClassDeclaration
 InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
-ConstantDeclaration Modifiers_OPT Type VariableDeclarator
+ConstantDeclaration Modifiers_OPT Type VariableDeclarator ;
 AbstractMethodDeclaration Modifiers_OPT Type MethodDeclarator ;
 AbstractMethodDeclaration Modifiers_OPT void MethodDeclarator ;
 Block { BlockStatements_OPT }
