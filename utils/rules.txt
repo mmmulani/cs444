@@ -154,7 +154,8 @@ UnaryExpressionNotPlusMinus ~ UnaryExpression
 UnaryExpressionNotPlusMinus ! UnaryExpression
 UnaryExpressionNotPlusMinus CastExpression
 CastExpression ( PrimitiveType ) UnaryExpression
-CastExpression ( ReferenceType ) UnaryExpression
+CastExpression ( Expression ) UnaryExpressionNotPlusMinus
+CastExpression ( Identifiers Dim ) UnaryExpressionNotPlusMinus
 MultiplicativeExpression UnaryExpression
 MultiplicativeExpression MultiplicativeExpression * UnaryExpression
 MultiplicativeExpression MultiplicativeExpression / UnaryExpression

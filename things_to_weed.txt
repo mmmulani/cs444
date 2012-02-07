@@ -1,9 +1,10 @@
 As per http://java.sun.com/docs/books/jls/first_edition/html/8.doc.html#41652,
 the name of a constructor must match the name of the class that contains it.
 
-Cast expressions with reference types should be followed by a unary 
-expression that does not start with a plus or minus.
-http://java.sun.com/docs/books/jls/first_edition/html/15.doc.html#238146
+Cast expressions followed by a unary expression should be weeded out. We extend
+the cast expression to allow general expressions to make parsing easier.
+(As per http://java.sun.com/docs/books/jls/first_edition/html/19.doc.html)
+e.g. (1 + 1) a
 
 Check modifiers based on context, e.g. no native classes
 
