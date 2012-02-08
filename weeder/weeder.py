@@ -156,10 +156,6 @@ class Weeder(object):
 
     if len(tree.children) == 1:
       return self._verify_neg_literal(tree.children[0])
-    elif (len(tree.children) == 3 and
-      tree.value == 'PrimaryNoNewArray' and
-      tree.children[1].value == 'Expression'):
-      return self._verify_neg_literal(tree.children[1])
     elif len(tree.children) > 0:
       return self._verify_literals(tree)
     elif tree.value != 'Literal':
