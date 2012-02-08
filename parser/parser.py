@@ -48,13 +48,13 @@ class Parser(object):
           state_stack.pop()
 
         child_tokens.reverse()
-        node_stack.append(TreeNode(LHS, child_tokens))
+        node_stack.append(TreeNode(LHS, '', child_tokens))
         state_stack.append(Shift[(state_stack[-1], LHS)])
 
         reduction = Reduce.get((state_stack[-1], token_type), None)
 
       # we couldn't reduce, so try a shift:
-      node_stack.append(TreeNode(token_type))
+      node_stack.append(TreeNode(token_type, lexeme))
       shift = Shift.get((state_stack[-1], token_type), None)
       if shift == None:
         # self._debug_output(tokens, i, node_stack)

@@ -1,6 +1,7 @@
 class TreeNode():
-  def __init__(self, value = None, children = []):
+  def __init__(self, value = None, lexeme = '', children = []):
     self.children = children
+    self.lexeme = lexeme
     self.value = value
 
   def set_children(self, children):

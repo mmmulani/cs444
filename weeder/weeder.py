@@ -1,4 +1,6 @@
 #from ..parser.tree_node import TreeNode
+from scanner.components.floating_point_literal import FloatingPointLiteral
+from scanner.components.integer_literal import DecimalNumeral, HexNumeral, OctalNumeral
 
 class WeedingError(Exception):
   pass
@@ -22,9 +24,13 @@ class Weeder(object):
     'AbstractMethodDeclaration' : set(['public', 'abstract'])
   }
 
+  JAVA_MIN_VALUE = -2147483648
+  JAVA_MAX_VALUE = 2147483647
+
   def weed(self, tree):
     # check Modifiers:
     self._verify_modifiers(tree)
+    self._verify_literals(tree)
 
   def _verify_modifiers(self, tree):
     modifiers_set = set()
@@ -109,3 +115,73 @@ class Weeder(object):
       raise Exception('Need to implement getting type from Identifiers node')
     else:
       return self._get_type_from_node(tree.children[0])
+
+  def _verify_literals(self, tree):
+    # Make sure that the Literal is not a octal, hex, long or floating point.
+    # Also ensure that its value (if it is an int literal) is within the
+    # acceptable Java range.
+
+    # We special case negative literals while we're walking down the tree.
+    if tree.value == 'UnaryExpression' and tree.children[0].value == '-':
+      self._verify_neg_literal(tree.children[1])
+    elif tree.value != 'Literal':
+      for child in tree.children:
+        self._verify_literals(child)
+      return
+
+    str_value = tree.lexeme
+
+    # Easy hack to weed out long literals.
+    if (str_value[:-1].isdigit() and
+        (str_value[-1:] == 'L' or str_value[-1:] == 'l')):
+      raise WeedingError('Found a long literal!')
+    elif HexNumeral().accepts(str_value):
+      raise WeedingError('Found a hex literal!')
+    elif OctalNumeral().accepts(str_value):
+      raise WeedingError('Found an octal literal!')
+    elif FloatingPointLiteral().accepts(str_value):
+      raise WeedingError('Found a floating point literal!')
+    elif DecimalNumeral().accepts(str_value):
+
+      value = int(str_value)
+      if value < self.JAVA_MIN_VALUE or value > self.JAVA_MAX_VALUE:
+        raise WeedingError('Found an int literal that was too large or small!')
+
+  def _verify_neg_literal(self, tree):
+    # The only tree we expect to find a lone literal on is:
+    # - a chain from UnaryExpressionNotPlusMinus to Literal
+    # - UnaryExpressionNotPlusMinus -> ( Expression ) with Expression -> Literal
+    # For other expressions, like 'a * b', we should revert to using
+    # _verify_literals.
+
+    if len(tree.children) == 1:
+      return self._verify_neg_literal(tree.children[0])
+    elif (len(tree.children) == 3 and
+      tree.value == 'PrimaryNoNewArray' and
+      tree.children[1].value == 'Expression'):
+      return self._verify_neg_literal(tree.children[1])
+    elif len(tree.children) > 0:
+      return self._verify_literals(tree)
+    elif tree.value != 'Literal':
+      return
+
+    # In this case, we have a tree that is a Literal, it should be an Integer
+    # Literal or a Char Literal.
+
+    str_value = tree.lexeme;
+
+    # Hack for char literals.
+    if str_value[:1] == '\'':
+      return
+
+    # Hack for long literals.
+    if (str_value[:-1].isdigit() and
+        (str_value[-1:] == 'L' or str_value[-1:] == 'l')):
+      raise WeedingError('Found a long literal!')
+
+    if DecimalNumeral().accepts(tree.lexeme):
+      value = -1 * int(str_value)
+      if value < self.JAVA_MIN_VALUE or value > self.JAVA_MAX_VALUE:
+        raise WeedingError('Found an int literal that was too large or small!')
+    else:
+      raise WeedingError('Some non-Integer Literal was negated')
