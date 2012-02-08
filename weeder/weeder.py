@@ -8,6 +8,20 @@ class Weeder(object):
   Takes a parser tree, and validates it.
   If an error is found, an exception is thrown
   '''
+  
+  valid_modifiers = {
+    'ClassDeclaration' : set(['public', 'protected', 'private', 'abstract',
+                              'static', 'final']),
+    'FieldDeclaration' : set(['public', 'protected', 'private', 'static',
+                              'final']),
+    'MethodHeader' : set(['public', 'protected', 'private', 'abstract',
+                          'static', 'final', 'native']),
+    'ConstructorDeclaration' : set(['public', 'protected', 'private']),
+    'InterfaceDeclaration' : set(['public', 'protected', 'private', 'abstract',
+                              'static']),
+    'ConstantDeclaration' : set(['public', 'static', 'final']),
+    'AbstractMethodDeclaration' : set(['public', 'abstract'])
+  }
 
   def weed(self, tree):
     # check Modifiers:
@@ -24,7 +38,8 @@ class Weeder(object):
           raise WeedingError(err)
 
         # ensure all modifiers are valid for this node type:
-        # TODO (gnleece)    
+        if (not(set(modifiers).issubset(Weeder.valid_modifiers[tree.value]))):
+          raise WeedingError('Invalid modifier type')
 
       else:
         self._verify_modifiers(child)
