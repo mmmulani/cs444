@@ -12,8 +12,7 @@ class Weeder(object):
   valid_modifiers = {
     'ClassDeclaration' : set(['public', 'protected', 'private', 'abstract',
                               'static', 'final']),
-    'FieldDeclaration' : set(['public', 'protected', 'private', 'static',
-                              'final']),
+    'FieldDeclaration' : set(['public', 'protected', 'private', 'static']),
     'MethodHeader' : set(['public', 'protected', 'private', 'abstract',
                           'static', 'final', 'native']),
     'ConstructorDeclaration' : set(['public', 'protected', 'private']),
