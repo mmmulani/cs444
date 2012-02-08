@@ -1,3 +1,4 @@
+import os
 from tree_node import TreeNode
 
 class ParsingError(Exception):
@@ -9,8 +10,14 @@ class Parser(object):
   successfully parsed (otherwise, an exception is thrown)
   '''
 
-  def __init__(self, reduce_filename = "utils/joos_reduce.txt",
-               shift_filename = "utils/joos_shift.txt"):
+  def __init__(self, reduce_filename = '', shift_filename = ''):
+    if reduce_filename == '':
+      reduce_filename = os.path.join(
+          os.path.dirname(__file__), '../utils/joos_reduce.txt')
+      if shift_filename == '':
+        shift_filename = os.path.join(
+            os.path.dirname(__file__), '../utils/joos_shift.txt')
+
     self.reduce_filename = reduce_filename
     self.shift_filename = shift_filename
 
@@ -21,7 +28,7 @@ class Parser(object):
     Shift = eval(shift_file.read())
     reduce_file.close()
     shift_file.close()
-    
+
     node_stack = []
     state_stack = [0]
     for i in xrange(len(tokens)):
@@ -43,7 +50,7 @@ class Parser(object):
         child_tokens.reverse()
         node_stack.append(TreeNode(LHS, child_tokens))
         state_stack.append(Shift[(state_stack[-1], LHS)])
-          
+
         reduction = Reduce.get((state_stack[-1], token_type), None)
 
       # we couldn't reduce, so try a shift:
