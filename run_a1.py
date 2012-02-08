@@ -14,6 +14,10 @@ passing_tests = []
 failing_tests = []
 
 for file in files:
+  if file.startswith('.'):
+    # Don't check hidden files.
+    continue
+
   path = '{0}/{1}'.format(A1_FOLDER, file)
   f = open(path)
   ret = subprocess.call(['./joosc', path])
