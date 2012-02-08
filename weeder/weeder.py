@@ -17,8 +17,6 @@ class Weeder(object):
     for child in tree.children:
       if child.value == 'Modifiers':
         modifiers = self._get_modifiers_list(child)
-        print tree.value
-        print modifiers
         
         # ensure modifiers are unique:
         if (len(modifiers) != len(set(modifiers))):
