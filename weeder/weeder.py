@@ -31,15 +31,30 @@ class Weeder(object):
     for child in tree.children:
       if child.value == 'Modifiers':
         modifiers = self._get_modifiers_list(child)
-        
+        modifiers_set = set(modifiers)
+
         # ensure modifiers are unique:
-        if (len(modifiers) != len(set(modifiers))):
+        if len(modifiers) != len(modifiers_set):
           err = 'The same modifier appeared multiple times in one declatraion'
           raise WeedingError(err)
 
         # ensure all modifiers are valid for this node type:
-        if (not(set(modifiers).issubset(Weeder.valid_modifiers[tree.value]))):
+        if not(modifiers_set.issubset(Weeder.valid_modifiers[tree.value])):
           raise WeedingError('Invalid modifier type')
+
+        # can only have one of {public, protected, private}:
+        privacy_set = set(['public', 'protected', 'private'])
+        if len(modifiers_set.intersection(privacy_set)) > 1:
+          raise WeedingError('Used >1 of public, protected, private')
+
+        if tree.value == 'ClassDeclaration':
+          if 'abstract' in modifiers_set and 'final' in modifiers_set:
+            raise WeedingError('Class cannot be both abstract and final')
+        elif tree.value == 'MethodHeader':
+          no_abstract = set(['private', 'static', 'final', 'native'])
+          if ('abstract' in modifiers_set and 
+              len(modifiers_set.intersection(no_abstract)) > 0) :
+            raise WeedingError('MethodHeader has invalid modifiers')
 
       else:
         self._verify_modifiers(child)
