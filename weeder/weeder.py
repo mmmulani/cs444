@@ -35,6 +35,7 @@ class Weeder(object):
   def _verify_modifiers(self, tree):
     modifiers_set = set()
     is_abstract_method = False
+    is_native_method = False
     for child in tree.children:
       if child.value == 'Modifiers':
         modifiers = self._get_modifiers_list(child)
@@ -73,10 +74,16 @@ class Weeder(object):
         if tree.value == 'MethodDeclaration':
           if child.value == 'MethodHeader' and 'abstract' in child_modifiers:
             is_abstract_method = True
+          elif child.value == 'MethodHeader' and 'native' in child_modifiers:
+            is_native_method = True
           elif child.value == 'MethodBody' and is_abstract_method:
             # check if method body is just a semicolon:
             if len(child.children) > 1 or child.children[0].value != ';': 
               raise WeedingError('Abstract method can\'t have a body')
+          elif (child.value == 'MethodBody' and not(is_abstract_method) and
+                not(is_native_method)) :
+            if len(child.children) < 1 or child.children[0].value != 'Block':
+              raise WeedingError('Non-abstract method must have a body')
     
     if tree.value == 'MethodHeader' and len(modifiers_set) == 0:
       raise WeedingError('Methods must have a modifier')
