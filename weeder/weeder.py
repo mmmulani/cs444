@@ -27,16 +27,16 @@ class Weeder(object):
     self._verify_modifiers(tree)
 
   def _verify_modifiers(self, tree):
-    has_modifiers = False
+    modifiers_set = set()
+    is_abstract_method = False
     for child in tree.children:
       if child.value == 'Modifiers':
-        has_modifiers = True
         modifiers = self._get_modifiers_list(child)
         modifiers_set = set(modifiers)
 
         # ensure modifiers are unique:
         if len(modifiers) != len(modifiers_set):
-          err = 'The same modifier appeared multiple times in one declatraion'
+          err = 'The same modifier appeared multiple times in one declaration'
           raise WeedingError(err)
 
         # ensure all modifiers are valid for this node type:
@@ -63,11 +63,20 @@ class Weeder(object):
           self._check_native_method(tree, modifiers_set)
 
       else:
-        self._verify_modifiers(child)
-
-    if tree.value == 'MethodHeader' and not(has_modifiers):
+        child_modifiers = self._verify_modifiers(child)
+        if tree.value == 'MethodDeclaration':
+          if child.value == 'MethodHeader' and 'abstract' in child_modifiers:
+            is_abstract_method = True
+          elif child.value == 'MethodBody' and is_abstract_method:
+            # check if method body is just a semicolon:
+            if len(child.children) > 1 or child.children[0].value != ';': 
+              raise WeedingError('Abstract method can\'t have a body')
+    
+    if tree.value == 'MethodHeader' and len(modifiers_set) == 0:
       raise WeedingError('Methods must have a modifier')
-
+    
+    return modifiers_set
+ 
   def _check_native_method(self, tree, modifiers_set):
     if 'static' in modifiers_set and tree.children[1].value == 'Type':
       if self._get_type_from_node(tree.children[1]) == 'int':
