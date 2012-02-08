@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import scanner.scanner as scanner
 import parser.parser as parser
+import weeder.weeder as weeder
 
 import os
 import sys
@@ -28,6 +29,13 @@ def main():
     p = parser.Parser()
     root = p.parse(toks)
   except parser.ParsingError:
+    sys.exit(42)
+
+  # WEEDING!
+  try:
+    w = weeder.Weeder()
+    w.weed(root)
+  except weeder.WeedingError:
     sys.exit(42)
 
   # Everything passes!
