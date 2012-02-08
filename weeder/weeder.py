@@ -27,8 +27,10 @@ class Weeder(object):
     self._verify_modifiers(tree)
 
   def _verify_modifiers(self, tree):
+    has_modifiers = False
     for child in tree.children:
       if child.value == 'Modifiers':
+        has_modifiers = True
         modifiers = self._get_modifiers_list(child)
         modifiers_set = set(modifiers)
 
@@ -51,13 +53,17 @@ class Weeder(object):
             raise WeedingError('Class cannot be both abstract and final')
         elif tree.value == 'MethodHeader':
           no_abstract = set(['private', 'static', 'final', 'native'])
-          if ('abstract' in modifiers_set and 
-              len(modifiers_set.intersection(no_abstract)) > 0) :
+          if (('abstract' in modifiers_set and 
+               len(modifiers_set.intersection(no_abstract)) > 0) or
+              ('static' in modifiers_set and 'final' in modifiers_set)) :
             raise WeedingError('MethodHeader has invalid modifiers')
 
       else:
         self._verify_modifiers(child)
-
+    
+    if tree.value == 'MethodHeader' and not(has_modifiers):
+      raise WeedingError('Methods must have a modifier')
+  
   def _get_modifiers_list(self, tree):
     if tree.value == 'Modifier':
       # the node should have one child, which is the actual modifier keyword
