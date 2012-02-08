@@ -60,17 +60,27 @@ class Weeder(object):
 
         # No native methods except for static native int.
         if tree.value == 'MethodHeader' and 'native' in modifiers_set:
-          if 'static' in modifiers_set and tree.children[1].value == 'Type':
-            if self._get_type_from_node(tree.children[1]) == 'int':
-              # This is the only valid case.
-              pass
-          raise WeedingError('No native methods except static native int')
+          self._check_native_method(tree, modifiers_set)
 
       else:
         self._verify_modifiers(child)
 
     if tree.value == 'MethodHeader' and not(has_modifiers):
       raise WeedingError('Methods must have a modifier')
+
+  def _check_native_method(self, tree, modifiers_set):
+    if 'static' in modifiers_set and tree.children[1].value == 'Type':
+      if self._get_type_from_node(tree.children[1]) == 'int':
+        if tree.children[2].children[2].value == 'FormalParameterList':
+          param_node = tree.children[2].children[2]
+          formal_param_children = len(param_node.children)
+          if formal_param_children == 1:
+            param_type = self._get_type_from_node(
+            param_node.children[0].children[0])
+            if param_type == 'int':
+              # This is the only valid case. Also, holy shit.
+              return
+    raise WeedingError('No native methods except static native int')
 
   def _get_modifiers_list(self, tree):
     if tree.value == 'Modifier':
