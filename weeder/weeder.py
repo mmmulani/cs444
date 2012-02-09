@@ -35,6 +35,7 @@ class Weeder(object):
     self._verify_literals(tree)
     self._verify_interfaces(tree)
     self._verify_filename(tree, filename)
+    self._verify_num_types(tree)
 
   def _verify_modifiers(self, tree):
     modifiers_set = set()
@@ -228,3 +229,9 @@ class Weeder(object):
 
     for child in tree.children:
       self._verify_filename(child, filename)
+
+  def _verify_num_types(self, tree):
+    for child in tree.children:
+      if child.value == 'TypeDeclarations':
+        if len(child.children) > 1:
+          raise WeedingError('Multiple types per file not allowed')
