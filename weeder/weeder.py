@@ -59,6 +59,13 @@ class Weeder(object):
         if len(modifiers_set.intersection(privacy_set)) > 1:
           raise WeedingError('Used >1 of public, protected, private')
 
+        # classes, methods, and fields cannot be package-private
+        # (ie. they must be one of public, protected, or private)
+        if tree.value in set(['ClassDeclaration', 'FieldDeclaration',
+                              'MethodHeader']):
+          if len(modifiers_set.intersection(privacy_set)) == 0:
+            raise WeedingError('Class/field/method cannot be package-private')
+
         if tree.value == 'ClassDeclaration':
           if 'abstract' in modifiers_set and 'final' in modifiers_set:
             raise WeedingError('Class cannot be both abstract and final')
@@ -91,6 +98,9 @@ class Weeder(object):
     
     if tree.value == 'MethodHeader' and len(modifiers_set) == 0:
       raise WeedingError('Methods must have a modifier')
+    elif (tree.value in set(['ClassDeclaration', 'FieldDeclaration']) and
+          len(modifiers_set) == 0) :
+      raise WeedingError('Class/field cannot be package-private')
     
     return modifiers_set
  
