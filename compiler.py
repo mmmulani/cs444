@@ -12,7 +12,8 @@ def main():
     sys.stderr.write('Please provide an input file.\n')
     sys.exit(42)
 
-  f = open(sys.argv[1])
+  filename = sys.argv[1]
+  f = open(filename)
   s = f.read()
   f.close()
 
@@ -34,7 +35,7 @@ def main():
   # WEEDING!
   try:
     w = weeder.Weeder()
-    w.weed(root)
+    w.weed(root, filename)
   except weeder.WeedingError:
     sys.exit(42)
 

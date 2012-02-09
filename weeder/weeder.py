@@ -1,3 +1,5 @@
+import os
+
 #from ..parser.tree_node import TreeNode
 from scanner.components.floating_point_literal import FloatingPointLiteral
 from scanner.components.integer_literal import DecimalNumeral, HexNumeral, OctalNumeral
@@ -27,11 +29,12 @@ class Weeder(object):
   JAVA_MIN_VALUE = -2147483648
   JAVA_MAX_VALUE = 2147483647
 
-  def weed(self, tree):
+  def weed(self, tree, filename):
     # check Modifiers:
     self._verify_modifiers(tree)
     self._verify_literals(tree)
     self._verify_interfaces(tree)
+    self._verify_filename(tree, filename)
 
   def _verify_modifiers(self, tree):
     modifiers_set = set()
@@ -198,3 +201,20 @@ class Weeder(object):
         #TODO (gnleece) interfaces cannot contain constructors?
     for child in tree.children:
       self._verify_interfaces(child)
+
+  def _verify_filename(self, tree, filename):
+    if tree.value == 'ClassDeclaration' or tree.value == 'InterfaceDeclaration':
+      modifiers = []
+      class_name = ''
+      for child in tree.children:
+        if child.value == 'Modifiers':
+          modifiers = self._get_modifiers_list(child)
+        elif child.value == 'Identifier':
+          class_name = child.lexeme
+      if 'public' in modifiers:
+        filename_base = os.path.basename(filename)
+        if (class_name + '.java') != filename_base:
+          raise WeedingError('Class or interface name doesn\'t match filename')
+
+    for child in tree.children:
+      self._verify_filename(child, filename)
