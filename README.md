@@ -8,5 +8,5 @@
             / \
            A  PARSER
 
-~~`THIS IS A WEEEEEEDER.`~~
+~~THIS IS A WEEEEEEDER.~~
 `THIS IS A WEEDER.`
