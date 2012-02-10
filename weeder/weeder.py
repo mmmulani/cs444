@@ -36,6 +36,7 @@ class Weeder(object):
     self._verify_interfaces(tree)
     self._verify_filename(tree, filename)
     self._verify_num_types(tree)
+    self._verify_casts(tree)
 
   def _verify_modifiers(self, tree):
     modifiers_set = set()
@@ -235,3 +236,20 @@ class Weeder(object):
       if child.value == 'TypeDeclarations':
         if len(child.children) > 1:
           raise WeedingError('Multiple types per file not allowed')
+
+  def _verify_casts(self, tree):
+    if (tree.value == 'CastExpression' and
+      tree.children[1].value == 'Expression'):
+      return self._ensure_identifiers(tree.children[1])
+
+    for child in tree.children:
+      self._verify_casts(child)
+
+  def _ensure_identifiers(self, tree):
+    if len(tree.children) != 1:
+      raise WeedingError('Cast expression not to identifiers')
+    elif tree.children[0].value == 'Identifiers':
+      return
+
+    for child in tree.children:
+      self._ensure_identifiers(child)
