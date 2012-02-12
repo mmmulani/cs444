@@ -5,7 +5,8 @@ from scanner.components.floating_point_literal import FloatingPointLiteral
 from scanner.components.integer_literal import DecimalNumeral, HexNumeral, OctalNumeral
 
 class WeedingError(Exception):
-  pass
+  def __init__(self, msg):
+    self.msg = msg
 
 class Weeder(object):
   '''Weeder object

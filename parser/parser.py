@@ -4,7 +4,8 @@ from tree_node import TreeNode
 from scanner.scanner import TokenType
 
 class ParsingError(Exception):
-  pass
+  def __init__(self, msg):
+    self.msg = msg
 
 class Parser(object):
   '''Parser object
