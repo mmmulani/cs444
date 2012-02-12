@@ -1,7 +1,7 @@
 import os
 
 from tree_node import TreeNode
-from ..scanner.scanner import TokenType
+from scanner.scanner import TokenType
 
 class ParsingError(Exception):
   pass
