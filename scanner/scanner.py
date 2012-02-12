@@ -107,13 +107,10 @@ class TokenConverter:
       return t
     elif t.type == TokenType.SEPARATOR:
       return Token(t.lexeme, t.lexeme)
-      # return Token(TokenConverter._get_separator_type(t.lexeme), t.lexeme)
     elif t.type == TokenType.OPERATOR:
       return Token(t.lexeme, t.lexeme)
-      # return Token(TokenConverter._get_operator_type(t.lexeme), t.lexeme)
     elif t.type == TokenType.KEYWORD:
       return Token(t.lexeme, t.lexeme)
-      # return Token(TokenConverter._get_keyword_type(t.lexeme), t.lexeme)
     elif t.type == TokenType.LITERAL:
       return t
 
@@ -147,27 +144,4 @@ class TokenType:
       identifier.Identifier: IDENTIFIER,
       comment.Comment: COMMENT,
       whitespace.Whitespace: WHITESPACE
-  }
-
-  # Separator types.
-  LBRACKET = '('
-  RBRACKET = ')'
-  LBRACE = '{'
-  RBRACE = '}'
-  LSQUARE = '['
-  RSQUARE = ']'
-  SEMICOLON = ';'
-  COMMA = ','
-  DOT = '.'
-
-  separator_map = {
-      '(': LBRACKET,
-      ')': RBRACKET,
-      '{': LBRACE,
-      '}': RBRACE,
-      '[': LSQUARE,
-      ']': RSQUARE,
-      ';': SEMICOLON,
-      ',': COMMA,
-      '.': DOT
   }
