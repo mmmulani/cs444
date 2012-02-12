@@ -38,6 +38,7 @@ print
 print '# of passing: {0}'.format(len(passing_tests))
 print '# of failing: {0}'.format(len(failing_tests))
 
-print 'The following tests have failed:'
-for f in failing_tests:
-  print f
+if len(failing_tests) > 0:
+  print 'The following tests have failed:'
+  for f in failing_tests:
+    print f
