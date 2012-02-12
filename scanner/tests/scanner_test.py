@@ -1,41 +1,53 @@
 import unittest
 
-from ..scanner import Scanner, Token
+from ..scanner import Scanner, Token, TokenType
 
 class TestScanner(unittest.TestCase):
   def test_simple_tokens(self):
     '''Test simple strings of tokens'''
     toks = Scanner.get_token_list('test test')
-    self.assertListEqual([
-        (Token.IDENTIFIER, 'test'),
-        (Token.WHITESPACE, ' '),
-        (Token.IDENTIFIER, 'test')],
+    self.assertListEqual(self._add_file_tokens([
+        Token(TokenType.IDENTIFIER, 'test'),
+        Token(TokenType.WHITESPACE, ' '),
+        Token(TokenType.IDENTIFIER, 'test')]),
         toks)
 
   def test_single_char_token(self):
     '''Test combination of single-character tokens'''
     toks = Scanner.get_token_list(' ')
-    self.assertListEqual([(Token.WHITESPACE, ' ')], toks)
+    self.assertListEqual(self._add_file_tokens([
+      Token(TokenType.WHITESPACE, ' ')]),
+      toks)
 
     toks = Scanner.get_token_list('t ')
-    self.assertListEqual([
-        (Token.IDENTIFIER, 't'),
-        (Token.WHITESPACE, ' ')],
+    self.assertListEqual(self._add_file_tokens([
+        Token(TokenType.IDENTIFIER, 't'),
+        Token(TokenType.WHITESPACE, ' ')]),
         toks)
 
     toks = Scanner.get_token_list('  ')
-    self.assertListEqual([
-        (Token.WHITESPACE, ' '),
-        (Token.WHITESPACE, ' ')],
+    self.assertListEqual(self._add_file_tokens([
+        Token(TokenType.WHITESPACE, ' '),
+        Token(TokenType.WHITESPACE, ' ')]),
         toks)
 
   def test_precedence(self):
     '''Test precedence of tokens'''
     toks = Scanner.get_token_list('static')
-    self.assertListEqual([(Token.KEYWORD, 'static')], toks)
+    self.assertListEqual(self._add_file_tokens([
+      Token(TokenType.KEYWORD, 'static')]),
+      toks)
 
     toks = Scanner.get_token_list('public')
-    self.assertListEqual([(Token.KEYWORD, 'public')], toks)
+    self.assertListEqual(self._add_file_tokens([
+      Token(TokenType.KEYWORD, 'public')]),
+      toks)
 
     toks = Scanner.get_token_list('/* a comment */')
-    self.assertListEqual([(Token.COMMENT, '/* a comment */')], toks)
+    self.assertListEqual(self._add_file_tokens([
+      Token(TokenType.COMMENT, '/* a comment */')]),
+      toks)
+
+  def _add_file_tokens(self, toks):
+    return [Token.BOF_token()] + toks + [Token.EOF_token()]
+

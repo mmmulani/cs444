@@ -12,6 +12,17 @@ class Token(object):
     self.type = type
     self.lexeme = lex
 
+  @staticmethod
+  def BOF_token():
+    return Token(TokenType.BOF, 'BOF')
+
+  @staticmethod
+  def EOF_token():
+    return Token(TokenType.EOF, 'EOF')
+
+  def __eq__(self, x):
+    return (self.type == x.type) and (self.lexeme == x.lexeme)
+
   def __repr__(self):
     return str((self.type, self.lexeme))
   def __str__(self):
@@ -21,18 +32,11 @@ class Scanner(object):
   '''Scanner object
   Responsible for scanning/tokenizing valid JOS programs given as a string
 
-  EXAMPLE 1:
+  EXAMPLE:
     import scanner
     s = scanner.Scanner('this is my string')
     for t in s.scan():
       print t
-
-  EXAMPLE 2:
-    import scanner
-    tokens = scanner.Scanner.get_token_list('this string')
-    assertEqual(tokens[0], (Token.IDENTIFIER, 'this'))
-    assertEqual(tokens[1], (Token.WHITESPACE, ' '))
-    assertEqual(tokens[2], (Token.IDENTIFIER, 'string'))
   '''
 
   # These machines are kept in priority order.
@@ -56,7 +60,7 @@ class Scanner(object):
   def scan(self):
     '''Generator which produces one token at a time.'''
     i = 0
-    yield Token('BOF', 'BOF')
+    yield Token.BOF_token()
     while i < len(self.s):
       tok = self._get_next_token(i)
       if tok is None:
@@ -65,7 +69,7 @@ class Scanner(object):
       yield tok
 
       i += len(tok.lexeme)
-    yield Token('EOF', 'EOF')
+    yield Token.EOF_token()
 
   def _get_next_token(self, i):
     '''Get the next token start from position i of the string'''
@@ -103,7 +107,7 @@ class TokenConverter:
 
   @staticmethod
   def _convert_token(t):
-    if t.type == TokenType.IDENTIFIER or t.type == 'EOF' or t.type == 'BOF':
+    if t.type in [TokenType.IDENTIFIER, TokenType.BOF, TokenType.EOF]:
       return t
     elif t.type == TokenType.SEPARATOR:
       return Token(t.lexeme, t.lexeme)
@@ -145,3 +149,7 @@ class TokenType:
       comment.Comment: COMMENT,
       whitespace.Whitespace: WHITESPACE
   }
+
+  # BOF and EOF tokens
+  BOF = 'BOF'
+  EOF = 'EOF'
