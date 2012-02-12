@@ -1,7 +1,7 @@
 import os
 
 from tree_node import TreeNode
-from scanner.scanner import TokenType
+from ..scanner.scanner import TokenType
 
 class ParsingError(Exception):
   pass
@@ -63,9 +63,8 @@ class Parser(object):
         raise ParsingError('No shift rule found: error parsing tokens!')
       state_stack.append(shift)
 
-    # node_stack should be [BOF, CompilationUnit, EOF]
+    # node_stack should be [BOF, StartSymbol, EOF]
     if (len(node_stack) != 3 or node_stack[0].value != TokenType.BOF or
-        node_stack[1].value != 'CompilationUnit' or
         node_stack[2].value != TokenType.EOF):
       raise ParsingError('Node stack incorrect after processing token list')
     return node_stack[1]
