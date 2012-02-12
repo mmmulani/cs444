@@ -91,21 +91,21 @@ class Weeder(object):
             is_native_method = True
           elif child.value == 'MethodBody' and is_abstract_method:
             # check if method body is just a semicolon:
-            if len(child.children) > 1 or child.children[0].value != ';': 
+            if len(child.children) > 1 or child.children[0].value != ';':
               raise WeedingError('Abstract method can\'t have a body')
           elif (child.value == 'MethodBody' and not(is_abstract_method) and
                 not(is_native_method)) :
             if len(child.children) < 1 or child.children[0].value != 'Block':
               raise WeedingError('Non-abstract method must have a body')
-    
+
     if tree.value == 'MethodHeader' and len(modifiers_set) == 0:
       raise WeedingError('Methods must have a modifier')
     elif (tree.value in set(['ClassDeclaration', 'FieldDeclaration']) and
           len(modifiers_set) == 0) :
       raise WeedingError('Class/field cannot be package-private')
-    
+
     return modifiers_set
- 
+
   def _check_native_method(self, tree, modifiers_set):
     if 'static' in modifiers_set and tree.children[1].value == 'Type':
       if self._get_type_from_node(tree.children[1]) == 'int':
