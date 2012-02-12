@@ -121,7 +121,8 @@ class TokenConverter:
     raise ConversionError('Conversion fail')
 
 class ScanningError(Exception):
-  pass
+  def __init__(self, msg):
+    self.msg = msg
 
 class UnknownTokenError(ScanningError):
   pass
