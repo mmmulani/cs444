@@ -4,6 +4,9 @@ class ASTType(ast_node.ASTNode):
   def __init__(self, tree):
     '''Creates an AST Type node from a 'Type' TreeNode'''
     self.is_array = False  # Checked in get_type_from_node.
+    # One child.  Either:
+    #   a) A string of the type, or
+    #   b) A list of Indentifiers for a qualified type (e.g. Foo.Bar.Baz)
     self.children = [self.get_type_from_node(tree)]
 
   def get_type_from_node(self, tree):
