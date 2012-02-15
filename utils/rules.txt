@@ -1,12 +1,10 @@
 Type PrimitiveType
 Type ReferenceType
-PrimitiveType NumericType
 PrimitiveType boolean
-NumericType IntegralType
-IntegralType byte
-IntegralType short
-IntegralType int
-IntegralType char
+PrimitiveType byte
+PrimitiveType short
+PrimitiveType int
+PrimitiveType char
 ReferenceType ClassOrInterfaceType
 ReferenceType ArrayType
 ClassOrInterfaceType Identifiers

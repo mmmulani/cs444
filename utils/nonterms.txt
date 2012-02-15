@@ -1,7 +1,5 @@
 Type
 PrimitiveType
-NumericType
-IntegralType
 ReferenceType
 ClassOrInterfaceType
 ArrayType
