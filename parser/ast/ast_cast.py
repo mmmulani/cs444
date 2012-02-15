@@ -9,7 +9,7 @@ class ASTCast(ast_node.ASTNode):
     #   0. A type node going to the type, and
     #   1. An expression node for the expression
     self.children = [self._create_type_node(tree),
-        self._create_uniary_expr_node(tree)]
+        self._create_unary_expr_node(tree)]
 
   def _create_type_node(self, tree):
     type_node = tree.children[1]
@@ -33,7 +33,7 @@ class ASTCast(ast_node.ASTNode):
 
     return ret
 
-  def _create_uniary_expr_node(self, tree):
+  def _create_unary_expr_node(self, tree):
     # TODO(songandrew): Fill this in.
     return None
 
