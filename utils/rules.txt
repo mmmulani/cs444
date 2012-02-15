@@ -55,8 +55,6 @@ FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 MethodDeclaration MethodHeader MethodBody
 MethodHeader Modifiers_OPT Type MethodDeclarator
 MethodHeader Modifiers_OPT void MethodDeclarator
-ResultType Type
-ResultType void
 MethodDeclarator Identifier ( FormalParameterList_OPT ) Dim_OPT
 FormalParameterList FormalParameter
 FormalParameterList FormalParameterList , FormalParameter

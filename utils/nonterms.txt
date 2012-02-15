@@ -35,7 +35,6 @@ VariableDeclarator
 Expression
 MethodHeader
 MethodBody
-ResultType
 MethodDeclarator
 FormalParameterList
 ClassTypeList
