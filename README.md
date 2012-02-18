@@ -11,3 +11,8 @@
 ~~THIS IS A WEEEEEEDER.~~
 
 `THIS IS A WEEDER.`
+
+Joosc usage
+-----------
+
+`./joosc --verbose --weeder --output a1-test/J1_BigInt.java` to easily print out a parse tree.

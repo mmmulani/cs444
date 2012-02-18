@@ -16,6 +16,7 @@ def main():
   optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
   optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
   optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
+  optparser.add_option('-o', '--output', action='store_true', dest='output')
 
   (my_options, args) = optparser.parse_args()
 
@@ -46,6 +47,8 @@ def compile(filename):
     exit_with_failure('scanning', err.msg)
 
   if options.til_scan:
+    if options.output:
+      sys.stderr.write('Tokens:\n{0}\n', str(toks))
     exit_with_pass()
 
   # PARSING!
@@ -56,6 +59,9 @@ def compile(filename):
     exit_with_failure('parsing', err.msg)
 
   if options.til_parse:
+    if options.output:
+      sys.stderr.write('Parse tree:\n');
+      root.simple_print()
     exit_with_pass()
 
   # WEEDING!
@@ -66,6 +72,9 @@ def compile(filename):
     exit_with_failure('weeding', err.msg)
 
   if options.til_weed:
+    if options.output:
+      sys.stderr.write('Parse tree after weeding:\n')
+      root.simple_print()
     exit_with_pass()
 
   # Everything passes!
