@@ -61,7 +61,7 @@ MethodBody Block
 MethodBody ;
 ConstructorDeclaration Modifiers_OPT ConstructorDeclarator ConstructorBody
 ConstructorDeclarator Identifier ( FormalParameterList_OPT )
-ConstructorBody { BlockStatements_OPT }
+ConstructorBody Block
 InterfaceDeclaration Modifiers_OPT interface Identifier ExtendsInterfaces_OPT InterfaceBody
 ExtendsInterfaces extends InterfaceType
 ExtendsInterfaces ExtendsInterfaces , InterfaceType
