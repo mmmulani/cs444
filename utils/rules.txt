@@ -46,7 +46,6 @@ ClassBodyDeclaration ClassMemberDeclaration
 ClassBodyDeclaration ConstructorDeclaration
 ClassMemberDeclaration FieldDeclaration
 ClassMemberDeclaration MethodDeclaration
-ClassMemberDeclaration InterfaceDeclaration
 ClassMemberDeclaration ;
 FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
 MethodDeclaration MethodHeader MethodBody
@@ -71,8 +70,6 @@ InterfaceMemberDeclarations InterfaceMemberDeclaration
 InterfaceMemberDeclarations InterfaceMemberDeclarations InterfaceMemberDeclaration
 InterfaceMemberDeclaration ConstantDeclaration
 InterfaceMemberDeclaration AbstractMethodDeclaration
-InterfaceMemberDeclaration ClassDeclaration
-InterfaceMemberDeclaration InterfaceDeclaration
 InterfaceMemberDeclaration ;
 ConstantDeclaration Modifiers_OPT Type VariableDeclarator ;
 AbstractMethodDeclaration Modifiers_OPT Type MethodDeclarator ;
