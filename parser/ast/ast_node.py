@@ -17,6 +17,7 @@ class ASTUtils():
 
   @staticmethod
   def get_ids_list(tree):
+    # TODO(songandrew): Write a test for this.
     '''Given an identifiers node, returns a flattened list of identifiers'''
     # Identifiers Identifier
     # Identifiers Identifers . Identifer
@@ -26,4 +27,15 @@ class ASTUtils():
       tree = tree.children[0]
     ret.append(tree.children[0].lexeme)
     ret.reverse()
+    return ret
+
+  @staticmethod
+  def get_modifiers_set(tree):
+    #TODO(songandrew): Write a test for this.
+    '''Given a Modifiers node, returns a set of the modifiers'''
+    ret = set()
+    while len(tree.children) > 1:
+      ret.add(tree.children[1].children[0].value)
+      tree = tree.children[0]
+    ret.add(tree.children[0].children[0].value)
     return ret
