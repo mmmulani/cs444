@@ -13,19 +13,18 @@ ArrayType PrimitiveType [ ]
 ArrayType Identifiers [ ]
 Identifiers Identifier
 Identifiers Identifiers . Identifier
-CompilationUnit PackageDeclaration_OPT ImportDeclarations_OPT TypeDeclarations_OPT
+CompilationUnit PackageDeclaration_OPT ImportDeclarations_OPT TypeDeclaration_OPT
 ImportDeclarations ImportDeclaration
 ImportDeclarations ImportDeclarations ImportDeclaration
-TypeDeclarations TypeDeclaration
-TypeDeclarations TypeDeclarations TypeDeclaration
 PackageDeclaration package Identifiers ;
 ImportDeclaration SingleTypeImportDeclaration
 ImportDeclaration TypeImportOnDemandDeclaration
 SingleTypeImportDeclaration import Identifiers ;
 TypeImportOnDemandDeclaration import Identifiers . * ;
-TypeDeclaration ClassDeclaration
-TypeDeclaration InterfaceDeclaration
+TypeDeclaration ClassDeclaration Semi_OPT
+TypeDeclaration InterfaceDeclaration Semi_OPT
 TypeDeclaration ;
+Semi ;
 Modifiers Modifier
 Modifiers Modifiers Modifier
 Modifier public

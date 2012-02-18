@@ -1,3 +1,4 @@
+Semi
 Type
 PrimitiveType
 ReferenceType
@@ -10,7 +11,6 @@ Identifiers
 CompilationUnit
 PackageDeclaration
 ImportDeclarations
-TypeDeclarations
 ImportDeclaration
 TypeDeclaration
 SingleTypeImportDeclaration
