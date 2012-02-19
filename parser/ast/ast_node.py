@@ -3,14 +3,15 @@ class ASTNode(object):
   def __init__(self):
     self.children = []
 
-  def show(self):
+  def show(self, depth = 0):
     '''Print out the AST tree'''
-    self._show()
+    self._show(depth)
     for c in self.children:
-      c.show()
+      if c is not None:
+        c.show(depth+1)
 
-  def _show(self):
-    print type(self).__name__
+  def _show(self, depth = 0):
+    print ' '*4*depth + type(self).__name__
 
 class ASTUtils():
   '''Namespace class for AST utilities'''

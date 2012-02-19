@@ -21,16 +21,16 @@ class ASTType(ast_node.ASTNode):
 
   def is_primitive(self):
     return (type(self.children[0]) != type([]))
-  
-  def show(self):
+
+  def show(self, depth = 0):
     if self.is_primitive():
-      print self.children[0],
+      print ' '*4*depth + self.children[0],
     else:
       # Type is a list of identifiers
-      print '.'.join(self.children[0]),
+      print ' '*4*depth + '.'.join(self.children[0]),
 
     if self.is_array:
-      print '[]'
+      print ' '*4*depth + '[]'
     else:
       print
 
