@@ -48,3 +48,24 @@ class ASTUtils():
       print out
     else:
       print out,
+
+  @staticmethod
+  def get_nonpath_child(tree):
+    '''
+    Given a tree, returns the first child that has more than one child.
+    If none exists, it returns the leaf.
+    '''
+    while len(tree.children) == 1:
+      tree = tree.children[0]
+    return tree
+
+  @staticmethod
+  def get_arg_list(self, tree):
+    arg_list = []
+    while len(tree.children) == 2:
+      arg_list.append(ASTExpression.get_expr_node(tree.children[2]))
+      tree = tree.children[0]
+
+    arg_list.append(ASTExpression.get_expr_node(tree.children[0]))
+    arg_list.reverse()
+    return arg_list

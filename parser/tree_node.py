@@ -22,3 +22,21 @@ class TreeNode():
       self.children[i].pretty_print(prefix + "|       ")
     if len(self.children) > 0:
       self.children[-1].pretty_print(prefix + "        ")
+
+  def get_child_of_type(self, value):
+    if self.value == value:
+      return self
+
+    candidates = self.children
+    while True:
+      new_candidates = []
+      for x in candidates:
+        if x.value == value:
+          return x
+        else:
+          new_candidates.extend(x.children)
+
+      if len(new_candidates) == 0:
+        return None
+
+      candidates = new_candidates
