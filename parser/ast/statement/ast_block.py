@@ -1,5 +1,6 @@
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_node as ast_node
+import ast_statement
 
 class ASTBlock(ast_node.ASTNode):
   def __init__(self, tree):
@@ -33,4 +34,3 @@ class ASTBlock(ast_node.ASTNode):
 class ASTBlockError(Exception):
   pass
 
-import  parser.ast.statement.ast_statement as ast_statement
