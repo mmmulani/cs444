@@ -47,7 +47,6 @@ InterfaceBody
 InterfaceBody
 InterfaceMemberDeclarations
 InterfaceMemberDeclaration
-ConstantDeclaration
 AbstractMethodDeclaration
 BlockStatement
 LocalVariableDeclarationStatement

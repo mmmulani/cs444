@@ -68,10 +68,8 @@ ExtendsInterfaces ExtendsInterfaces , InterfaceType
 InterfaceBody { InterfaceMemberDeclarations_OPT }
 InterfaceMemberDeclarations InterfaceMemberDeclaration
 InterfaceMemberDeclarations InterfaceMemberDeclarations InterfaceMemberDeclaration
-InterfaceMemberDeclaration ConstantDeclaration
 InterfaceMemberDeclaration AbstractMethodDeclaration
 InterfaceMemberDeclaration ;
-ConstantDeclaration Modifiers_OPT Type VariableDeclarator ;
 AbstractMethodDeclaration Modifiers_OPT Type MethodDeclarator ;
 AbstractMethodDeclaration Modifiers_OPT void MethodDeclarator ;
 Block { BlockStatements_OPT }
