@@ -19,14 +19,15 @@ class ASTStatement(ast_node.ASTNode):
     if tree.value == 'Statement':
       if child.value == 'StatementWithoutTrailingSubstatement':
         return ASTStatement.get_statement(child)
-      elif child.value == 'IfThenStatement' or child == 'IfThenElseStatement':
+      elif (child.value == 'IfThenStatement' or 
+            child.value == 'IfThenElseStatement'):
         return ast_if.ASTIf(child)
       elif child.value == 'WhileStatement':
         return ast_while.ASTWhile(child)
       elif child.value == 'ForStatement':
         return ast_for.ASTFor(child)
       else:
-        raise ASTStatementError('Statement has unknown child')
+        raise ASTStatementError('Statement has unknown child: ' + child.value)
 
     elif tree.value == 'StatementNoShortIf':
       if child.value == 'StatementWithoutTrailingSubstatement':

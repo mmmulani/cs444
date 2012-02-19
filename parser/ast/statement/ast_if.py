@@ -15,7 +15,7 @@ class ASTIf(ast_node.ASTNode):
 
     # TODO (gnleece) uncomment when expressions are done
     #expression = ASTExpression(tree.children[2])
-    statement = ASTStatement.get_statement(tree.children[4])
+    statement = ast_statement.ASTStatement.get_statement(tree.children[4])
     #else_expression = None
     #if len(tree.children == 7):
     #  else_expression = ASTExpression(tree.children[6])
