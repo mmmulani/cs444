@@ -40,3 +40,11 @@ class ASTUtils():
       tree = tree.children[0]
     ret.add(tree.children[0].children[0].value)
     return ret
+
+  @staticmethod
+  def println(str, depth = 0, newline = True):
+    out = ' ' * (4 * depth) + str
+    if newline:
+      print out
+    else:
+      print out,

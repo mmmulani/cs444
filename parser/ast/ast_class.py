@@ -1,11 +1,12 @@
 import ast_node
+import ast_body
 
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree):
     '''Create an AST Class Declaration node'''
     # Five children.
-    #   0. A set of modifiers for the class
-    #   1. The name of the class
+    #   0. A set of modifiers for the class.
+    #   1. The name of the class.
     #   2. The class this class inherits from, if any.
     #   3. The list of interfaces this class implements, if any.
     #   4. The class body.
@@ -18,18 +19,27 @@ class ASTClass(ast_node.ASTNode):
 
   def show(self, depth = 0):
     children = self.children
-    print ' '*4*depth + str(list(children[0]))  # List of modifiers
-    print ' '*4*depth + children[1]  # Class name
-    if children[2]:  # Super class
-      print ' '*4*depth + '.'.join(children[2])
-    if children[3]:  # Interfaces
-      print ' '*4*depth + '.'.join(children[3][0]),
+    # List of modifiers
+    ast_node.ASTUtils.println(str(list(children[0])), depth)
+
+    # Class name
+    ast_node.ASTUtils.println(children[1], depth)
+
+    # Super class
+    if children[2]:
+      ast_node.ASTUtils.println('.'.join(children[2]), depth)
+
+    # Interfaces
+    if children[3]:
+      ast_node.ASTUtils.println(
+          '.'.join(children[3][0]), depth, newline = False)
       for c in children[3][1:]:
-        print ' '*4*depth + ', ' + '.'.join(c),
+        ast_node.ASTUtils.println(
+            ', ' + '.'.join(c), depth, newline = False)
       print
 
-    # TODO(songandrew): Uncomment this when it's done.
-    # children[4].show()  # Class body
+    # Class body
+    children[4].show()
 
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for a class declaration'''
@@ -94,8 +104,12 @@ class ASTClass(ast_node.ASTNode):
 
   def _get_body(self, tree):
     '''Get the body of a class from its declaration'''
-    #TODO(songandrew): Implement this.
-    pass
+    node = tree.children[-1]
+    # Check tha the last node is the ClassBody
+    if node.value != 'ClassBody':
+      raise ASTClassError('Class body is not the last child of class decl.')
+
+    return ast_body.ASTBody(tree)
 
 class ASTClassError(Exception):
   pass

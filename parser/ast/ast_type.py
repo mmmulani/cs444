@@ -24,13 +24,14 @@ class ASTType(ast_node.ASTNode):
 
   def show(self, depth = 0):
     if self.is_primitive():
-      print ' '*4*depth + self.children[0],
+      ast_node.ASTUtils.println(self.children[0], depth, newline = False)
     else:
       # Type is a list of identifiers
-      print ' '*4*depth + '.'.join(self.children[0]),
+      ast_node.ASTUtils.println(
+          '.'.join(self.children[0]), depth, newline = False)
 
     if self.is_array:
-      print ' '*4*depth + '[]'
+      ast_node.ASTUtils.println('[]', depth)
     else:
       print
 
