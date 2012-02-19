@@ -16,16 +16,16 @@ class ASTClass(ast_node.ASTNode):
         self._get_interfaces(tree),
         self._get_body(tree)]
 
-  def show(self):
+  def show(self, depth = 0):
     children = self.children
-    print list(children[0])  # List of modifiers
-    print children[1]  # Class name
+    print ' '*4*depth + str(list(children[0]))  # List of modifiers
+    print ' '*4*depth + children[1]  # Class name
     if children[2]:  # Super class
-      print '.'.join(children[2])
+      print ' '*4*depth + '.'.join(children[2])
     if children[3]:  # Interfaces
-      print '.'.join(children[3][0]),
+      print ' '*4*depth + '.'.join(children[3][0]),
       for c in children[3][1:]:
-        print ', ' + '.'.join(c),
+        print ' '*4*depth + ', ' + '.'.join(c),
       print
 
     # TODO(songandrew): Uncomment this when it's done.
