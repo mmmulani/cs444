@@ -1,5 +1,3 @@
-import ast_expression
-
 class ASTNode(object):
   '''The base AST Node object'''
   def __init__(self):
@@ -63,6 +61,7 @@ class ASTUtils():
 
   @staticmethod
   def get_arg_list(tree):
+    import ast_expression
     arg_list = []
     while len(tree.children) == 3:
       arg_list.append(

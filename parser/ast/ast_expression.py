@@ -3,7 +3,7 @@ from ast_cast import ASTCast
 from ast_type import ASTType
 
 class ASTExpression(ASTNode):
-  '''General ASTExpression class with helper function to create proper ASTNode'''
+  '''General ASTExpression class with a function to create the proper ASTNode'''
 
   @staticmethod
   def get_expr_node(tree):
