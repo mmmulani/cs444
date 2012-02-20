@@ -24,9 +24,10 @@ class ASTClass(ast_node.ASTNode):
       ast_node.ASTUtils.println('Modifiers: {0}'.format(
           ', '.join(self.modifiers)), depth)
 
-    ast_node.ASTUtils.println(
-        'Extends: {0}'.format('.'.join(self.super)),
-        depth)
+    if len(self.super) > 0:
+      ast_node.ASTUtils.println(
+          'Extends: {0}'.format('.'.join(self.super)),
+          depth)
 
     if len(self.interfaces) > 0:
       ifaces = []
