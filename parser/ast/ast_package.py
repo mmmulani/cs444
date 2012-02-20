@@ -17,5 +17,8 @@ class ASTPackage(ast_node.ASTNode):
   def name(self):
     return '.'.join(self._name)
 
+  def __str__(self):
+    return self.name
+
 class ASTPackageError(Exception):
   pass
