@@ -3,9 +3,10 @@ import os
 import sys
 from optparse import OptionParser
 
-import scanner.scanner as scanner
-import parser.parser as parser
 import parser.ast.ast_class as ast_class
+import parser.ast.ast_root as ast_root
+import parser.parser as parser
+import scanner.scanner as scanner
 import weeder.weeder as weeder
 
 options = {}
@@ -30,6 +31,7 @@ def compile(filename):
   toks = scan_file(s)
   parse_tree = parse_toks(toks)
   weed(parse_tree, filename)
+  ast = make_ast(parse_tree)
 
   # Everything passes!
   exit_with_pass()
@@ -72,6 +74,11 @@ def weed(parse_tree, filename):
       sys.stderr.write('Weeding failed')
     exit_with_failure('weeding', err.msg)
 
+def make_ast(parse_tree):
+  ast = ast_root.ASTRoot(parse_tree)
+  if options.til_ast or options.verbose:
+    ast.show()
+
 def exit_with_pass():
   if options.verbose:
     sys.stderr.write('Compiled successfully.\n')
@@ -87,6 +94,7 @@ def exit_with_failure(stage, message):
 if __name__ == '__main__':
   optparser = OptionParser()
   optparser.add_option('-s', '--scanner', action='store_true', dest='til_scan')
+  optparser.add_option('-a', '--ast', action='store_true', dest='til_ast')
   optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
   optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
   optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
