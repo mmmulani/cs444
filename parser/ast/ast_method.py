@@ -19,6 +19,7 @@ class ASTMethod(ast_node.ASTNode):
     #   1. Normal methods.
     #   2. Constructors.
     #   3. Abstract Methods.
+    # N.B: This is totally garbage.
     if tree.value == 'MethodDeclaration':
       self.modifiers = self._get_modifiers(tree.children[0])
       self.return_type = self._get_return_type(tree.children[0])
@@ -119,7 +120,7 @@ class ASTMethod(ast_node.ASTNode):
   def _handle_body(self, tree):
     '''Get the method's body from a MethodBody node'''
     body = tree.children[0]
-    if body == ';':
+    if body.value == ';':
       # Empty body.
       return
     self.children = [ast_block.ASTBlock(body)]
