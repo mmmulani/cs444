@@ -19,9 +19,14 @@ class ASTFor(ast_node.ASTNode):
     statement = None
 
     for child in tree.children:
+      if child.value in ['for', '(', ')', ';']:
+        # Useless children.
+        continue
+
       if child.value == 'ForInit':
         if child.children[0].value == 'StatementExpression':
-          for_init = ASTExpression(child.children[0])
+          for_init = ast_expression.ASTExpression.get_expr_node(
+              child.children[0])
         elif child.children[0].value == 'LocalVariableDeclaration':
           for_init = ast_variable_declaration.ASTVariableDeclaration(
               child.children[0])
@@ -30,7 +35,8 @@ class ASTFor(ast_node.ASTNode):
       elif child.value == 'ForUpdate':
         for_update = ast_expression.ASTExpression.get_expr_node(
             child.children[0])
-      if child.value == 'Statement':
+
+      if child.value in ['Statement', 'StatementNoShortIf']:
         statement = ast_statement.ASTStatement.get_statement(child)
 
     if statement is None:
