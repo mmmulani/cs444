@@ -16,12 +16,12 @@ class ASTIf(ast_node.ASTNode):
 
     expression = ast_expression.ASTExpression.get_expr_node(tree.children[2])
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
-    else_expression = None
+    else_statement = None
     if len(tree.children) == 7:
-      else_expression = ast_expression.ASTExpression.get_expr_node(
+      else_statement = ast_statement.ASTStatement.get_statement(
           tree.children[6])
 
-    self.children = [expression, statement, else_expression]
+    self.children = [expression, statement, else_statement]
 
 class ASTIfError(Exception):
   pass
