@@ -15,4 +15,4 @@
 Joosc usage
 -----------
 
-`./joosc --verbose --weeder --output a1-test/J1_BigInt.java` to easily print out a parse tree.
+`./joosc --verbose --parser a1-test/J1_BigInt.java` to easily print out a parse tree.

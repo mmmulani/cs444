@@ -68,10 +68,10 @@ def weed(parse_tree, filename):
     w.weed(parse_tree, filename)
 
     if options.til_weed or options.verbose:
-      sys.stderr.write('Weeding successful')
+      sys.stderr.write('Weeding successful\n')
   except weeder.WeedingError as err:
     if options.til_weed:
-      sys.stderr.write('Weeding failed')
+      sys.stderr.write('Weeding failed\n')
     exit_with_failure('weeding', err.msg)
 
 def make_ast(parse_tree):
