@@ -27,47 +27,50 @@ def compile(filename):
   if options.verbose:
     sys.stderr.write('Compiling {0}\n'.format(filename))
 
-  # SCANNING!
+  toks = scan_file(s)
+  parse_tree = parse_toks(toks)
+  weed(parse_tree, filename)
+
+  # Everything passes!
+  exit_with_pass()
+
+def scan_file(file_str):
   try:
     toks = scanner.TokenConverter.convert(
-        scanner.Scanner.get_token_list(s))
+        scanner.Scanner.get_token_list(file_str))
+
+    if options.til_scan or options.verbose:
+      sys.stderr.write('Tokens:\n{0}\n'.format(str(toks)))
   except (scanner.UnknownTokenError, scanner.ConversionError) as err:
     # Scanning failure.
     exit_with_failure('scanning', err.msg)
 
-  if options.til_scan:
-    if options.output:
-      sys.stderr.write('Tokens:\n{0}\n', str(toks))
-    exit_with_pass()
+  return toks
 
-  # PARSING!
+def parse_toks(toks):
   try:
     p = parser.Parser()
     root = p.parse(toks)
+
+    if options.til_parse or options.verbose:
+      sys.stderr.write('Parse tree:\n');
+      root.simple_print()
   except parser.ParsingError as err:
     exit_with_failure('parsing', err.msg)
 
-  if options.til_parse:
-    if options.output:
-      sys.stderr.write('Parse tree:\n');
-      root.simple_print()
-    exit_with_pass()
+  return root
 
-  # WEEDING!
+def weed(parse_tree, filename):
   try:
     w = weeder.Weeder()
-    w.weed(root, filename)
+    w.weed(parse_tree, filename)
+
+    if options.til_weed or options.verbose:
+      sys.stderr.write('Weeding successful')
   except weeder.WeedingError as err:
+    if options.til_weed:
+      sys.stderr.write('Weeding failed')
     exit_with_failure('weeding', err.msg)
-
-  if options.til_weed:
-    if options.output:
-      sys.stderr.write('Parse tree after weeding:\n')
-      root.simple_print()
-    exit_with_pass()
-
-  # Everything passes!
-  exit_with_pass()
 
 def exit_with_pass():
   if options.verbose:
@@ -87,7 +90,6 @@ if __name__ == '__main__':
   optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
   optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
   optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
-  optparser.add_option('-o', '--output', action='store_true', dest='output')
 
   (my_options, args) = optparser.parse_args()
   options = my_options
