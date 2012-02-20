@@ -1,5 +1,6 @@
 import ast_node
 import ast_method
+import ast_variable_declaration
 
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree):
