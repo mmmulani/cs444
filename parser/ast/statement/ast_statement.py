@@ -1,3 +1,4 @@
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import ast_block
 import ast_for
@@ -47,8 +48,7 @@ class ASTStatement(ast_node.ASTNode):
       elif child.value == 'EmptyStatement':
         return None
       elif child.value == 'ExpressionStatement':
-        pass
-        #TODO (gnleece) add expression here when expressions are done
+        return ast_expression.ASTExpression.get_expr_node(child.children[0])
       elif child.value == 'ReturnStatement':
         return ast_return.ASTReturn(child)
       else:
