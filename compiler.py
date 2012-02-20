@@ -3,6 +3,7 @@ from optparse import OptionParser
 
 import scanner.scanner as scanner
 import parser.parser as parser
+import parser.ast.ast_class as ast_class
 import weeder.weeder as weeder
 
 import os
@@ -11,18 +12,7 @@ import sys
 options = {}
 
 def main():
-  optparser = OptionParser()
-  optparser.add_option('-s', '--scanner', action='store_true', dest='til_scan')
-  optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
-  optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
-  optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
-  optparser.add_option('-o', '--output', action='store_true', dest='output')
-
-  (my_options, args) = optparser.parse_args()
-
   global options
-  options = my_options
-
   if len(args) == 0:
     # No command line arguments provided
     sys.stderr.write('Please provide an input file.\n')
@@ -93,4 +83,14 @@ def exit_with_failure(stage, message):
   sys.exit(42)
 
 if __name__ == '__main__':
+  optparser = OptionParser()
+  optparser.add_option('-s', '--scanner', action='store_true', dest='til_scan')
+  optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
+  optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
+  optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
+  optparser.add_option('-o', '--output', action='store_true', dest='output')
+
+  (my_options, args) = optparser.parse_args()
+  options = my_options
+
   main()
