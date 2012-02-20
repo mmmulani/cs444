@@ -1,3 +1,4 @@
+import ast_expression
 import ast_node
 import ast_type
 
@@ -22,11 +23,11 @@ class ASTVariableDeclaration(ast_node.ASTNode):
 
     type_ast = ast_type.ASTType(type_node)
 
-    identifier = declarator_node.children[0]
+    identifier = declarator_node.children[0].lexeme
 
     expression_ast = None
-    # TODO (gnleece) uncomment when expressions are done
-    #if len(declarator_node.children) > 1):
-    #  expression_ast = ASTExpression(declarator_node.children[2])
+    if len(declarator_node.children) > 1:
+      expression_ast = ast_expression.ASTExpression.get_expr_node(
+          declarator_node.children[2])
 
     self.children = [modifiers, type_ast, identifier, expression_ast]
