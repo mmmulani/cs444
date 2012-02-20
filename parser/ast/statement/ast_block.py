@@ -28,6 +28,9 @@ class ASTBlock(ast_node.ASTNode):
       else:
         raise ASTBlockError('Block treenode has invalid children')
 
+    # Reverse the statements so they're in the correct order.
+    self.children.reverse()
+
   def show(self, depth = 0):
     for c in self.children:
       c.show(depth)
