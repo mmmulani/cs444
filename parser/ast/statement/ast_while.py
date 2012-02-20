@@ -12,10 +12,10 @@ class ASTWhile(ast_node.ASTNode):
 
     if len(tree.children) != 5:
       raise ASTWhileError('While treenode has incorrect children')
-    
+
     expression = ast_expression.ASTExpression.get_expr_node(tree.children[2])
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
-    
+
     self.children = [expression, statement]
 
 
