@@ -66,9 +66,8 @@ class ASTClass(ast_node.ASTNode):
 
     # Field/member declarations are one level deeper
     if decl.children[0].value == 'FieldDeclaration':
-      self.fields.append(None)
-      # TODO(songandrew/gnleece): Switch the above append to the line below.
-      # (ast_variable_declaration.ASTVariableDeclaration(decl.children[0]))
+      self.fields.append(ast_variable_declaration.ASTVariableDeclaration(
+          decl.children[0]))
     elif decl.children[0].value == 'MethodDeclaration':
       self.methods.append(ast_method.ASTMethod(decl.children[0]))
     elif decl.children[0].value == ';':

@@ -1,11 +1,12 @@
 import parser.ast.ast_node as ast_node
+import parser.ast.ast_variable_declaration as ast_variable_declaration
 import ast_statement
 
 class ASTBlock(ast_node.ASTNode):
   def __init__(self, tree):
     '''Creates an AST block node from a 'Block' TreeNode'''
 
-    # Each child is a LocalVariableDeclaration, Statement, or ClassDeclration
+    # Each child is a VariableDeclaration, Statement, or ClassDeclaration
     self.children = []
 
     if len(tree.children) == 2:
@@ -22,9 +23,8 @@ class ASTBlock(ast_node.ASTNode):
       if stmt.value == 'Statement':
         self.children.append(ast_statement.ASTStatement.get_statement(stmt))
       elif stmt.value == 'LocalVariableDeclarationStatement':
-      # TODO (gnleece) uncomment when Local Var Decls are done
-      #  self.children.append(ASTLocalVariableDeclaration(stmt))
-        pass
+        self.children.append(ast_variable_declaration(ASTVariableDeclaration(
+            stmt.children[0])))
       else:
         raise ASTBlockError('Block treenode has invalid children')
 
