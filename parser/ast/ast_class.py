@@ -19,7 +19,7 @@ class ASTClass(ast_node.ASTNode):
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
     ast_node.ASTUtils.println('Modifiers: {0}'.format(
-        str(list(self.modifiers))), depth)
+        str(self.modifiers)), depth)
     ast_node.ASTUtils.println(
         'Extends: {0}'.format('.'.join(self.super)),
         depth)
@@ -133,6 +133,7 @@ class ASTClass(ast_node.ASTNode):
       node = node.children[0]
     ret.append(
         ast_node.ASTUtils.get_ids_list(node.children[0].children[0]))
+    ret.reverse()
     return ret
 
 class ASTClassError(Exception):

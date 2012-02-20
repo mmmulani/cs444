@@ -43,15 +43,20 @@ class ASTMethod(ast_node.ASTNode):
 
   def show(self, depth=0):
     ast_node.ASTUtils.println('Name: {0}'.format(self.name), depth)
-    ast_node.ASTUtils.println('Return type:', depth)
+
     if self.return_type:
-      self.return_type.show(depth + 1)
+      ast_node.ASTUtils.println(
+          'Return type: {0}'.format(self.return_type), depth)
     else:
-      ast_node.ASTUtils.println('None', depth + 1)
-    ast_node.ASTUtils.println(str(list(self.modifiers)), depth)
+      ast_node.ASTUtils.println('Return type: None', depth)
+
+    ast_node.ASTUtils.println(
+        'Mods: {0}'.format(str(', '.join(self.modifiers))), depth)
+
+    ast_node.ASTUtils.println('Params:', depth)
     for p in self.params:
-      ast_node.ASTUtils.println('Param:', depth)
       p.show(depth + 1)
+
     ast_node.ASTUtils.println(
         '(Constructor, Abstract): ({0}, {1})'.format(
             int(self.is_constructor),
@@ -84,9 +89,7 @@ class ASTMethod(ast_node.ASTNode):
     else:
       raise ASTMethodError('Malformed return type')
 
-    if node.value == 'void':
-      return node.value
-    return ast_type.ASTType(node.children[0])
+    return ast_type.ASTType(node)
 
   def _handle_declarator(self, tree):
     '''Set the name and parameters of the method based on the Declarator'''

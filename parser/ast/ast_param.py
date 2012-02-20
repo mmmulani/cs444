@@ -8,11 +8,10 @@ class ASTParam(ast_node.ASTNode):
 
     # FormalParameter Type Identifier
     self.type = ast_type.ASTType(tree.children[0])
-    self.name = tree.children[1].value
+    self.name = tree.children[1].lexeme
 
   def show(self, depth = 0):
-    self.type.show()
-    ast_node.ASTUtils.println('{0} - {1}'.format(self.type, self.name), depth)
+    ast_node.ASTUtils.println('{0} {1}'.format(self.type, self.name), depth)
 
 class ASTParamError(Exception):
   pass
