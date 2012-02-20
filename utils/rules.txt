@@ -76,7 +76,6 @@ Block { BlockStatements_OPT }
 BlockStatements BlockStatement
 BlockStatements BlockStatements BlockStatement
 BlockStatement LocalVariableDeclarationStatement
-BlockStatement ClassDeclaration
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
 LocalVariableDeclaration Type VariableDeclarator

@@ -1,4 +1,3 @@
-import parser.ast.ast_class as ast_class
 import parser.ast.ast_node as ast_node
 import ast_statement
 
@@ -26,8 +25,6 @@ class ASTBlock(ast_node.ASTNode):
       # TODO (gnleece) uncomment when Local Var Decls are done
       #  self.children.append(ASTLocalVariableDeclaration(stmt))
         pass
-      elif stmt.value == 'ClassDeclaration':
-        self.chlildren.append(ast_class.ASTClass(stmt))
       else:
         raise ASTBlockError('Block treenode has invalid children')
 
