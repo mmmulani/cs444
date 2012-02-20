@@ -34,7 +34,6 @@ class Weeder(object):
     # check Modifiers:
     self._verify_modifiers(tree)
     self._verify_literals(tree)
-    self._verify_interfaces(tree)
     self._verify_filename(tree, filename)
     self._verify_num_types(tree)
     self._verify_casts(tree)
@@ -205,14 +204,6 @@ class Weeder(object):
         raise WeedingError('Found an int literal that was too large or small!')
     else:
       raise WeedingError('Some non-Integer Literal was negated')
-
-  def _verify_interfaces(self, tree):
-    if tree.value == 'InterfaceMemberDeclaration':
-      for child in tree.children:
-        if child.value == 'ConstantDeclaration':
-          raise WeedingError('Interfaces cannot contain fields')
-    for child in tree.children:
-      self._verify_interfaces(child)
 
   def _verify_filename(self, tree, filename):
     if tree.value == 'ClassDeclaration' or tree.value == 'InterfaceDeclaration':
