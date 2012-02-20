@@ -18,6 +18,11 @@ class ASTWhile(ast_node.ASTNode):
 
     self.children = [expression, statement]
 
+  def show(self, depth = 0):
+    ast_node.ASTUtils.println('While:', depth)
+    self.children[0].show(depth+1)
+    ast_node.ASTUtils.println('Do:', depth)
+    self.children[1].show(depth+1)
 
 class ASTWhileError(Exception):
   pass

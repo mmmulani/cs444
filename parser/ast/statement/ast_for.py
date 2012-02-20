@@ -22,7 +22,7 @@ class ASTFor(ast_node.ASTNode):
       if child.value == 'ForInit':
         if child.children[0].value == 'StatementExpression':
           for_init = ASTExpression(child.children[0])
-        elif child.children[0].value == 'LocalVariableExpression':
+        elif child.children[0].value == 'LocalVariableDeclaration':
           for_init = ast_variable_declaration.ASTVariableDeclaration(
               child.children[0])
       elif child.value == 'Expression':
@@ -38,6 +38,19 @@ class ASTFor(ast_node.ASTNode):
 
     self.children = [for_init, expression, for_update, statement]
 
+  def show(self, depth = 0):
+    ast_node.ASTUtils.println('For:', depth)
+    if self.children[0]:
+      ast_node.ASTUtils.println('ForInit:', depth+1)
+      self.children[0].show(depth+2)
+    if self.children[1]:
+      ast_node.ASTUtils.println('ForExpression:', depth+1)
+      self.children[1].show(depth+2)
+    if self.children[2]:
+      ast_node.ASTUtils.println('ForUpdate:', depth+1)
+      self.children[2].show(depth+2)
+    ast_node.ASTUtils.println('Statement:', depth+1)
+    self.children[3].show(depth+2)
 
 class ASTForError(Exception):
   pass
