@@ -1,3 +1,4 @@
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import ast_statement
 
@@ -13,15 +14,14 @@ class ASTIf(ast_node.ASTNode):
     if len(tree.children) != 5 and len(tree.children) != 7:
       raise ASTIfError('If treenode has invalid children')
 
-    # TODO (gnleece) uncomment when expressions are done
-    #expression = ASTExpression(tree.children[2])
+    expression = ast_expression.ASTExpression.get_expr_node(tree.children[2])
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
-    #else_expression = None
-    #if len(tree.children == 7):
-    #  else_expression = ASTExpression(tree.children[6])
+    else_expression = None
+    if len(tree.children) == 7:
+      else_expression = ast_expression.ASTExpression.get_expr_node(
+          tree.children[6])
 
-    #self.children = [expression, statement, else_expression]
-    self.children = [None, statement, None]
+    self.children = [expression, statement, else_expression]
 
 class ASTIfError(Exception):
   pass
