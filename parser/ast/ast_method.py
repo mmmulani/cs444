@@ -25,7 +25,7 @@ class ASTMethod(ast_node.ASTNode):
       self._handle_declarator(tree.children[0].children[-1])
       self._handle_body(tree.children[-1])
     elif tree.value == 'ConstructorDeclaration':
-      self.is_constructor = True 
+      self.is_constructor = True
       self.modifiers = self._get_modifiers(tree)
       self.return_type = None
       self._handle_body(tree.children[-1])
@@ -62,12 +62,12 @@ class ASTMethod(ast_node.ASTNode):
             int(self.is_constructor),
             int(self.is_abstract)),
         depth)
-    
+
     # Method body, if it exists.
     if self.children[0]:
       ast_node.ASTUtils.println('Body:', depth)
       self.children[0].show(depth + 1)
-  
+
   def _get_modifiers(self, tree):
     if tree.children[0].value != 'Modifiers':
       return set()
@@ -113,7 +113,7 @@ class ASTMethod(ast_node.ASTNode):
       self.params.append(ast_param.ASTParam(node.children[2]))
       node = node.children[0]
     self.params.append(ast_param.ASTParam(node.children[0]))
-    
+
   def _handle_body(self, tree):
     '''Get the method's body from a MethodBody node'''
     body = tree.children[0]
