@@ -1,13 +1,14 @@
 import ast_node
 
 class ASTImportList(ast_node.ASTNode):
-  def __init__(self, tree):
-    '''Creates an ImportList AST from an 'ImportDeclarations' TreeNode'''
-    # 0-N children, each of which are an ASTImport node
-    imports = self._get_import_list(tree)
-    self.children = [ASTImport(imp) for imp in imports]
+  @staticmethod
+  def get_import_list(tree):
+    '''Creates an list of ASTImport from an 'ImportDeclarations' TreeNode'''
+    imports = ASTImportList._get_import_list(tree)
+    return [ASTImport(imp) for imp in imports]
 
-  def _get_import_list(self, tree):
+  @staticmethod
+  def _get_import_list(tree):
     imports = []
     while len(tree.children) > 1:
       imports.append(tree.children[1])
@@ -15,11 +16,6 @@ class ASTImportList(ast_node.ASTNode):
     imports.append(tree.children[0])
     imports.reverse()
     return imports
-
-  def show(self, depth = 0):
-    ast_node.ASTUtils.println('Imports:', depth)
-    for c in self.children:
-      c.show(depth + 1)
 
 class ASTImport(ast_node.ASTNode):
   def __init__(self, tree):
@@ -37,5 +33,6 @@ class ASTImport(ast_node.ASTNode):
     self.children = [ids, is_on_demand]
 
   def show(self, depth = 0):
-    text = str(self.children[0]) + ', ' + str(self.children[1])
+    text = 'Name: {0} - On-demand: {1}'.format(
+        '.'.join(self.children[0]), str(self.children[1]))
     ast_node.ASTUtils.println(text, depth)
