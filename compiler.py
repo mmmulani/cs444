@@ -1,13 +1,12 @@
 #!/usr/bin/python
+import os
+import sys
 from optparse import OptionParser
 
 import scanner.scanner as scanner
 import parser.parser as parser
 import parser.ast.ast_class as ast_class
 import weeder.weeder as weeder
-
-import os
-import sys
 
 options = {}
 
