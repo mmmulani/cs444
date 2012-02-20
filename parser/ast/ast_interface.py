@@ -16,14 +16,22 @@ class ASTInterface(ast_node.ASTNode):
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Interface: {0}'.format(self.name), depth)
-    ast_node.ASTUtils.println('Modifiers: {0}'.format(
-        str(self.modifiers)), depth)
-    ast_node.ASTUtils.println('Extends:', depth)
-    for m in self.super:
-      ast_node.ASTUtils.println('.'.join(m), depth + 1)
-    for m in self.methods:
-      ast_node.ASTUtils.println('Method:', depth)
-      m.show(depth + 1)
+
+    if len(self.modifiers) > 0:
+      ast_node.ASTUtils.println('Modifiers: {0}'.format(
+          ', '.join(self.modifiers)), depth)
+
+    if len(self.super) > 0:
+      exts = []
+      for m in self.super:
+        exts.append('.'.join(m))
+      ast_node.ASTUtils.println(
+          'Extends: {0}'.format(', '.join(exts)), depth)
+
+    if len(self.methods) > 0:
+      for m in self.methods:
+        ast_node.ASTUtils.println('Method:', depth)
+        m.show(depth + 1)
 
   @property
   def modifiers(self):

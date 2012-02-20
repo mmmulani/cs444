@@ -19,22 +19,31 @@ class ASTClass(ast_node.ASTNode):
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
-    ast_node.ASTUtils.println('Modifiers: {0}'.format(
-        str(self.modifiers)), depth)
+
+    if len(self.modifiers) > 0:
+      ast_node.ASTUtils.println('Modifiers: {0}'.format(
+          ', '.join(self.modifiers)), depth)
+
     ast_node.ASTUtils.println(
         'Extends: {0}'.format('.'.join(self.super)),
         depth)
-    ast_node.ASTUtils.println('Implements:', depth)
-    for i in self.interfaces:
-      ast_node.ASTUtils.println('.'.join(i), depth + 1)
-    for f in self.fields:
-      pass
-      # TODO(songandrew): uncomment
-      ast_node.ASTUtils.println('Field', depth)
-      # f.show(depth + 1)
-    for m in self.methods:
-      ast_node.ASTUtils.println('Method', depth)
-      m.show(depth + 1)
+
+    if len(self.interfaces) > 0:
+      ifaces = []
+      for i in self.interfaces:
+        ifaces.append('.'.join(i))
+      ast_node.ASTUtils.println(
+          'Implements: {0}'.format(', '.join(ifaces)), depth)
+
+    if len(self.fields) > 0:
+      ast_node.ASTUtils.println('Fields:', depth)
+      for f in self.fields:
+        f.show(depth + 1)
+
+    if len(self.methods) > 0:
+      for m in self.methods:
+        ast_node.ASTUtils.println('Method:', depth)
+        m.show(depth + 1)
 
   @property
   def modifiers(self):

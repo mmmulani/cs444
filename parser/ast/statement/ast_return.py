@@ -14,6 +14,10 @@ class ASTReturn(ast_node.ASTNode):
 
     self.children = [expression]
 
+  def show(self, depth = 0):
+    if self.children[0]:
+      ast_node.ASTUtils.println('Return:', depth)
+      self.children[0].show(depth + 1)
 
 class ASTReturnError(Exception):
   pass

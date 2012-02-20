@@ -41,7 +41,7 @@ class ASTMethod(ast_node.ASTNode):
     else:
       raise ASTMethodError('Invalid node passed to ASTMethod')
 
-  def show(self, depth=0):
+  def show(self, depth = 0):
     ast_node.ASTUtils.println('Name: {0}'.format(self.name), depth)
 
     if self.return_type:
@@ -50,12 +50,14 @@ class ASTMethod(ast_node.ASTNode):
     else:
       ast_node.ASTUtils.println('Return type: None', depth)
 
-    ast_node.ASTUtils.println(
-        'Mods: {0}'.format(str(', '.join(self.modifiers))), depth)
+    if len(self.modifiers) > 0:
+      ast_node.ASTUtils.println(
+          'Mods: {0}'.format(str(', '.join(self.modifiers))), depth)
 
-    ast_node.ASTUtils.println('Params:', depth)
-    for p in self.params:
-      p.show(depth + 1)
+    if len(self.params):
+      ast_node.ASTUtils.println('Params:', depth)
+      for p in self.params:
+        p.show(depth + 1)
 
     ast_node.ASTUtils.println(
         '(Constructor, Abstract): ({0}, {1})'.format(

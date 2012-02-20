@@ -28,6 +28,10 @@ class ASTBlock(ast_node.ASTNode):
       else:
         raise ASTBlockError('Block treenode has invalid children')
 
+  def show(self, depth = 0):
+    for c in self.children:
+      c.show(depth)
+
 class ASTBlockError(Exception):
   pass
 

@@ -31,3 +31,17 @@ class ASTVariableDeclaration(ast_node.ASTNode):
           declarator_node.children[2])
 
     self.children = [modifiers, type_ast, identifier, expression_ast]
+
+  def show(self, depth = 0):
+    ast_node.ASTUtils.println(
+        'Var Decl: {0} {1}'.format(self.children[1], self.children[2]), depth)
+
+    # Only print modifiers if there are any.
+    if len(self.children[0]) > 0:
+      ast_node.ASTUtils.println(
+          'Mods: {0}'.format(str(', '.join(self.children[0]))), depth + 1)
+
+    if self.children[3]:
+      self.children[3].show(depth + 1)
+    else:
+      ast_node.ASTUtils.println('Value: None', depth + 1)
