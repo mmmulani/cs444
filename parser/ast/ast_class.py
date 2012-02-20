@@ -1,45 +1,78 @@
 import ast_node
-import ast_body
+import ast_method
 
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree):
     '''Create an AST Class Declaration node'''
-    # Five children.
-    #   0. A set of modifiers for the class.
-    #   1. The name of the class.
-    #   2. The class this class inherits from, if any.
-    #   3. The list of interfaces this class implements, if any.
-    #   4. The class body.
-    self.children = [
-        self._get_modifiers(tree),
-        self._get_name(tree),
-        self._get_super_class(tree),
-        self._get_interfaces(tree),
-        self._get_body(tree)]
+    # Two children.
+    #   0. List of fields.
+    #   1. List of methods.
+    self.fields = []
+    self.methods = []
+    self.children = self._get_children(tree)
+
+    self._modifiers = self._get_modifiers(tree)
+    self.name = self._get_name(tree)
+    self.super = self._get_super_class(tree)
+    self.interfaces = self._get_interfaces(tree)
 
   def show(self, depth = 0):
-    children = self.children
-    # List of modifiers
-    ast_node.ASTUtils.println(str(list(children[0])), depth)
+    ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
+    ast_node.ASTUtils.println('Modifiers: {0}'.format(
+        str(list(self.modifiers))), depth)
+    ast_node.ASTUtils.println(
+        'Extends: {0}'.format('.'.join(self.super)),
+        depth)
+    ast_node.ASTUtils.println('Implements:', depth)
+    for i in self.interfaces:
+      ast_node.ASTUtils.println('.'.join(i), depth + 1)
+    for f in self.fields:
+      pass
+      # TODO(songandrew): uncomment
+      ast_node.ASTUtils.println('Field', depth)
+      # f.show(depth + 1)
+    for m in self.methods:
+      ast_node.ASTUtils.println('Method', depth)
+      m.show(depth + 1)
 
-    # Class name
-    ast_node.ASTUtils.println(children[1], depth)
+  @property
+  def modifiers(self):
+    return list(self._modifiers)
 
-    # Super class
-    if children[2]:
-      ast_node.ASTUtils.println('.'.join(children[2]), depth)
+  def _get_children(self, tree):
+    '''Get a list of fields from a class declaration'''
+    node = tree.children[-1]
+    if node.value != 'ClassBody':
+      raise ASTClassError('Class body is not the last child of class decl.')
+    if len(node.children) <= 2:
+      # No declarations.
+      return [[], []]
 
-    # Interfaces
-    if children[3]:
-      ast_node.ASTUtils.println(
-          '.'.join(children[3][0]), depth, newline = False)
-      for c in children[3][1:]:
-        ast_node.ASTUtils.println(
-            ', ' + '.'.join(c), depth, newline = False)
-      print
+    # Process each declaration.
+    node = node.children[1]
+    while len(node.children) > 1:
+      decl = node.children[1]  # ClassBodyDeclaration
+      self._handle_decl(decl.children[0])
+      node = node.children[0]
+    self._handle_decl(node.children[0].children[0])
+    return [self.fields, self.methods]
 
-    # Class body
-    children[4].show()
+  def _handle_decl(self, tree):
+    '''Handle a single class declaration'''
+    decl = tree
+    if decl.children[0].value == 'ConstructorDeclaration':
+      self.methods.append(ast_method.ASTMethod(decl.children[0]))
+      return
+
+    # Field/member declarations are one level deeper
+    if decl.children[0].value == 'FieldDeclaration':
+      self.fields.append(None)
+      # TODO(songandrew/gnleece): Switch the above append to the line below.
+      # (ast_variable_declaration.ASTVariableDeclaration(decl.children[0]))
+    elif decl.children[0].value == 'MethodDeclaration':
+      self.methods.append(ast_method.ASTMethod(decl.children[0]))
+    elif decl.children[0].value == ';':
+      pass
 
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for a class declaration'''
@@ -72,7 +105,7 @@ class ASTClass(ast_node.ASTNode):
       node = tree.children[3]
     else:
       # Super is optional.
-      return None
+      return []
 
     return ast_node.ASTUtils.get_ids_list(node.children[1].children[0])
 
@@ -86,7 +119,7 @@ class ASTClass(ast_node.ASTNode):
     elif len(tree.children) > 5 and tree.children[5].value == 'Interfaces':
       node = tree.children[5]
     else:
-      return None
+      return []
 
     # Interfaces implements InterfaceTypeList
     # InterfaceTypeList InterfaceType
@@ -101,15 +134,6 @@ class ASTClass(ast_node.ASTNode):
     ret.append(
         ast_node.ASTUtils.get_ids_list(node.children[0].children[0]))
     return ret
-
-  def _get_body(self, tree):
-    '''Get the body of a class from its declaration'''
-    node = tree.children[-1]
-    # Check tha the last node is the ClassBody
-    if node.value != 'ClassBody':
-      raise ASTClassError('Class body is not the last child of class decl.')
-
-    return ast_body.ASTBody(tree)
 
 class ASTClassError(Exception):
   pass
