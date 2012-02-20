@@ -28,8 +28,5 @@ class TestIdentifier(unittest.TestCase):
     self.assertFalse(Identifier().accepts("abc.def"))
 
 
-  #TODO (gnleece): test no keywords
-  #TODO (gnleece): test no booleanliteral, nullliteral
-
 if __name__ == '__main__':
   unittest.main()

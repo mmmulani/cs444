@@ -12,8 +12,6 @@ class Identifier(ComposedDFA):
       the NullLiteral
   """
 
-  # TODO (gnleece): exclude keywords, booleanliteral, nullliteral
-
   def __init__(self):
     self.machine = Concat(
         JavaLetter(), ZeroOrMore(OneOf(JavaLetter(), JavaDigit())))
