@@ -23,5 +23,14 @@ class ASTIf(ast_node.ASTNode):
 
     self.children = [expression, statement, else_statement]
 
+  def show(self, depth = 0):
+    ast_node.ASTUtils.println('If:', depth)
+    self.children[0].show(depth+1)
+    ast_node.ASTUtils.println('Then:', depth)
+    self.children[1].show(depth+1)
+    if self.children[2]:
+      ast_node.ASTUtils.println('Else:', depth)
+      self.children[2].show(depth+1)
+
 class ASTIfError(Exception):
   pass
