@@ -1,4 +1,5 @@
 import ast_node
+import ast_type
 
 class ASTVariableDeclaration(ast_node.ASTNode):
   def __init__(self, tree):
@@ -19,7 +20,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
       type_node = tree.children[0]
       declarator_node = tree.children[1]
 
-    type_ast = ASTType(type_node)
+    type_ast = ast_type.ASTType(type_node)
 
     identifier = declarator_node.children[0]
 

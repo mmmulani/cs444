@@ -6,7 +6,7 @@ class ASTBlock(ast_node.ASTNode):
   def __init__(self, tree):
     '''Creates an AST block node from a 'Block' TreeNode'''
 
-    # Each child is a VariableDeclaration, Statement, or ClassDeclaration
+    # Each child is a VariableDeclaration or Statement
     self.children = []
 
     if len(tree.children) == 2:
@@ -23,8 +23,8 @@ class ASTBlock(ast_node.ASTNode):
       if stmt.value == 'Statement':
         self.children.append(ast_statement.ASTStatement.get_statement(stmt))
       elif stmt.value == 'LocalVariableDeclarationStatement':
-        self.children.append(ast_variable_declaration(ASTVariableDeclaration(
-            stmt.children[0])))
+        self.children.append(ast_variable_declaration.ASTVariableDeclaration(
+            stmt.children[0]))
       else:
         raise ASTBlockError('Block treenode has invalid children')
 
