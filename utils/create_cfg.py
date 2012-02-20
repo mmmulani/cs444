@@ -62,12 +62,6 @@ def main():
           for deriv in derivs:
             deriv.append(symbol)
 
-      # Don't allow empty rules.
-      try:
-        derivs.remove([])
-      except (ValueError):
-        pass
-
       for deriv in derivs:
         rules.append((nonterminal, deriv))
 
