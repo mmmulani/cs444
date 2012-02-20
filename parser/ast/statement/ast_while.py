@@ -1,3 +1,4 @@
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import ast_statement
 
@@ -12,12 +13,10 @@ class ASTWhile(ast_node.ASTNode):
     if len(tree.children) != 5:
       raise ASTWhileError('While treenode has incorrect children')
     
-    # TODO (gnleece) uncomment when expressions are done
-    #expression = ASTExpression(tree.children[2])
+    expression = ast_expression.ASTExpression.get_expr_node(tree.children[2])
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
     
-    #self.children = [expression, statement]
-    self.children = [None, statement]
+    self.children = [expression, statement]
 
 
 class ASTWhileError(Exception):
