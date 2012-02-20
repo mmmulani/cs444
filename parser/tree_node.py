@@ -40,3 +40,7 @@ class TreeNode():
         return None
 
       candidates = new_candidates
+
+  @property
+  def length(self):
+    return len(self.children)
