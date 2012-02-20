@@ -12,6 +12,8 @@ class ASTExpression(ASTNode):
     Can also take a Primary[NoNewArray] node and return the appropriate ASTNode.
     '''
 
+    # TODO(mehdi): Is this Primary case even needed? See if they can fall into
+    # the general case.
     # Handle the case where tree is a Primary[NoNewArray] node.
     if tree.value == 'Primary' or tree.value == 'PrimaryNoNewArray':
       # Before going down one node, handle the only case where there are
@@ -92,7 +94,8 @@ class ASTLiteral(ASTNode):
     self.children = [tree.lexeme]
 
   def show(self, depth = 0):
-    print (' '*depth*4) + 'Literal: ' + self.children[0]
+    ASTUtils.println(
+      'Literal: {0}'.format(self.children[0]), depth)
 
 class ASTUnary(ASTNode):
   def __init__(self, tree):
@@ -100,11 +103,13 @@ class ASTUnary(ASTNode):
     self.operator = tree.children[0].lexeme
     self.children = [ASTExpression.get_expr_node(tree.children[1])]
 
-  def _show(self, depth = 0):
-    print ' '*4*depth + 'ASTUnary, operator: ' + self.operator
+  def show(self, depth = 0):
+    ASTUtils.println(
+      'ASTUnary, operator: {0}'.format(self.operator), depth)
+    ASTUtils.println('Operand:', depth)
+    self.children[0].show(depth + 1)
 
 class ASTAssignment(ASTNode):
-  # This can be used for StatementExpression as well.
   def __init__(self, tree):
     # tree should be an Assignment node.
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
@@ -132,7 +137,7 @@ class ASTMethodInvocation(ASTNode):
     #     (i.j).k => [Expression for "(i.j)", Expression for "k"]
     # - second is an array of argument expressions (possibly empty)
     if tree.children[0].value == 'Identifiers':
-      self.children.append(ASTExpression.get_expr_node(tree.children[0]))
+      self.children.append([ASTExpression.get_expr_node(tree.children[0])])
       if tree.children[2].value == 'ArgumentList':
         self.children.append(ASTUtils.get_arg_list(tree.children[2]))
       else:
@@ -149,10 +154,17 @@ class ASTMethodInvocation(ASTNode):
 
   def show(self, depth = 0):
     self._show(depth)
-    self.children[0].show(depth + 1)
-    print ' '*(depth + 1)*4 + 'Argument List:'
-    for x in self.children[1]:
-      x.show(depth + 2)
+    if len(self.children[0]) == 1:
+      ASTUtils.println('Method identifiers:')
+      self.children[0][0].show(depth + 1)
+    else:
+      ASTUtils.println('Expression:', depth)
+      self.children[0][0].show(depth + 1)
+      ASTUtils.println('Field access from expression:', depth)
+      self.children[0][1].show(depth + 1)
+    for i, x in enumerate(self.children[1]):
+      ASTUtils.println('Argument {0}:'.format(str(i)), depth)
+      x.show(depth + 1)
 
 class ASTBinary(ASTNode):
   # children is [left operand, right operand]
@@ -162,8 +174,12 @@ class ASTBinary(ASTNode):
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
                      ASTExpression.get_expr_node(tree.children[2])]
 
-  def _show(self, depth = 0):
-    print ' '*4*depth + 'ASTBinary, operator: ' + self.operator
+  def show(self, depth = 0):
+    ASTUtils.println('ASTBinary, operator: {0}'.format(self.operator), depth)
+    ASTUtils.println('Left operand:', depth)
+    self.children[0].show(depth + 1)
+    ASTUtils.println('Right operand:', depth)
+    self.children[1].show(depth + 1)
 
 class ASTClassInstanceCreation(ASTNode):
   # Children is of length 2:
@@ -178,10 +194,11 @@ class ASTClassInstanceCreation(ASTNode):
 
   def show(self, depth = 0):
     self._show(depth)
+    ASTUtils.println('Class type:', depth)
     self.children[0].show(depth + 1)
-    print ' '*(depth + 1)*4 + 'Argument List:'
-    for x in self.children[1]:
-      x.show(depth + 2)
+    for i, x in enumerate(self.children[1]):
+      ASTUtils.println('Argument {0}:'.format(str(i)), depth)
+      x.show(depth + 1)
 
 class ASTIdentifiers(ASTNode):
   def __init__(self, tree):
@@ -191,7 +208,7 @@ class ASTIdentifiers(ASTNode):
       self.children = ASTUtils.get_ids_list(tree)
 
   def show(self, depth = 0):
-    print ' '*4*depth + 'ASTIdentifiers: ' + '.'.join(self.children)
+    ASTUtils.println('ASTIdentifiers: {0}'.format('.'.join(self.children)), depth)
 
 class ASTArrayCreation(ASTNode):
   # Children is of length 2:
