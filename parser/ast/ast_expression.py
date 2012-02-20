@@ -1,5 +1,6 @@
 from ast_node import ASTNode, ASTUtils
 from ast_cast import ASTCast
+from ast_type import ASTType
 
 class ASTExpression(ASTNode):
   '''General ASTExpression class with helper function to create proper ASTNode'''
@@ -56,8 +57,20 @@ class ASTExpression(ASTNode):
       return ASTArrayAccess(child)
     elif child.value == 'this':
       return ASTThis(child)
+    elif child.value == 'super':
+      return ASTSuper(child)
+    elif child.value == 'FieldAccess':
+      return ASTFieldAccess(child)
     elif child.value == 'MethodInvocation':
       return ASTMethodInvocation(child)
+    elif child.value == 'ArrayCreationExpression':
+      return ASTArrayCreation(child)
+    elif child.value == 'ClassInstanceCreationExpression':
+      return ASTClassInstanceCreation(child)
+    elif child.value == 'PrimaryNoNewArray':
+      return ASTExpression.get_expr_node(child.children[1])
+    elif child.value == 'Identifiers' or child.value == 'Identifier':
+      return ASTIdentifiers(child)
     else:
       # This should be a Binary expression.
       # TODO(mehdi) add checks
@@ -68,12 +81,17 @@ class ASTExpression(ASTNode):
 class ASTExpressionError(Exception):
   pass
 
+class ASTFieldAccess(ASTNode):
+  def __init__(self, tree):
+    self.children = [ASTExpression.get_expr_node(tree.children[0]),
+                     ASTExpression.get_expr_node(tree.children[2])]
+
 class ASTLiteral(ASTNode):
   def __init__(self, tree):
     # TODO: Add typing info and possibly check that the literal is valid Joos.
     self.children = [tree.lexeme]
 
-  def show(self, depth):
+  def show(self, depth = 0):
     print (' '*depth*4) + 'Literal: ' + self.children[0]
 
 class ASTUnary(ASTNode):
@@ -101,6 +119,10 @@ class ASTThis(ASTNode):
   def __init__(self, tree):
     self.children = []
 
+class ASTSuper(ASTNode):
+  def __init__(self, tree):
+    self.children = []
+
 class ASTMethodInvocation(ASTNode):
   def __init__(self, tree):
     self.children = []
@@ -125,6 +147,13 @@ class ASTMethodInvocation(ASTNode):
 
       self.children = [prefix_exprs, arg_list]
 
+  def show(self, depth = 0):
+    self._show(depth)
+    self.children[0].show(depth + 1)
+    print ' '*(depth + 1)*4 + 'Argument List:'
+    for x in self.children[1]:
+      x.show(depth + 2)
+
 class ASTBinary(ASTNode):
   # children is [left operand, right operand]
   def __init__(self, tree):
@@ -141,15 +170,33 @@ class ASTClassInstanceCreation(ASTNode):
   # 0. ASTIdentifiers corresponding to class type.
   # 1. List of arguments (possibly empty).
   def __init__(self, tree):
-    self.children = [ASTExpression.get_expr_node(tree.children[0])]
+    self.children = [ASTExpression.get_expr_node(tree.children[1])]
     if tree.children[3].value == 'ArgumentList':
       self.children.append(ASTUtils.get_arg_list(tree.children[3]))
     else:
       self.children.append([])
+
+  def show(self, depth = 0):
+    self._show(depth)
+    self.children[0].show(depth + 1)
+    print ' '*(depth + 1)*4 + 'Argument List:'
+    for x in self.children[1]:
+      x.show(depth + 2)
 
 class ASTIdentifiers(ASTNode):
   def __init__(self, tree):
     if tree.value == 'Identifier':
       self.children = [tree.lexeme]
     else:
-      self.children = ASTUtils.get_id_list(tree)
+      self.children = ASTUtils.get_ids_list(tree)
+
+  def show(self, depth = 0):
+    print ' '*4*depth + 'ASTIdentifiers: ' + '.'.join(self.children)
+
+class ASTArrayCreation(ASTNode):
+  # Children is of length 2:
+  # 0. ASTType
+  # 1. Expression corresponding to array length
+  def __init__(self, tree):
+    self.children = [ASTType(tree.children[1]),
+                     ASTExpression.get_expr_node(tree.children[3])]

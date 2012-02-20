@@ -1,3 +1,4 @@
+import ast_expression
 import ast_node
 import ast_type
 
@@ -8,8 +9,9 @@ class ASTCast(ast_node.ASTNode):
     # Two children.
     #   0. A type node going to the type, and
     #   1. An expression node for the expression
+
     self.children = [self._create_type_node(tree),
-        self._create_unary_expr_node(tree)]
+        ast_expression.ASTExpression.get_expr_node(tree.children[-1])]
 
   def _create_type_node(self, tree):
     type_node = tree.children[1]
@@ -32,10 +34,6 @@ class ASTCast(ast_node.ASTNode):
       ret.is_array = True
 
     return ret
-
-  def _create_unary_expr_node(self, tree):
-    # TODO(songandrew): Fill this in.
-    return None
 
   def _get_identifiers_node(self, expr_node):
     while expr_node.value != 'Expression':
