@@ -21,8 +21,6 @@ class ASTCast(ast_node.ASTNode):
       ret = ast_type.ASTType(type_node)
     elif type_node.value == 'Expression':
       # Expression will have to go to Identifiers eventually, as per the weeder.
-      # TODO(songandrew): We could also do the weeding here and check to make
-      # sure it does go to Identifiers.
       identifiers_node = self._get_identifiers_node(type_node)
       ret = ast_type.ASTType(identifiers_node)
     else:

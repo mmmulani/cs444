@@ -211,7 +211,6 @@ class Weeder(object):
       for child in tree.children:
         if child.value == 'ConstantDeclaration':
           raise WeedingError('Interfaces cannot contain fields')
-        #TODO (gnleece) interfaces cannot contain constructors?
     for child in tree.children:
       self._verify_interfaces(child)
 
