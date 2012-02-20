@@ -6,7 +6,7 @@ import ast_return
 import ast_while
 
 class ASTStatement(ast_node.ASTNode):
-  
+
   @staticmethod
   def get_statement(tree):
     '''Return an AST node that is one of:
@@ -19,7 +19,7 @@ class ASTStatement(ast_node.ASTNode):
     if tree.value == 'Statement':
       if child.value == 'StatementWithoutTrailingSubstatement':
         return ASTStatement.get_statement(child)
-      elif (child.value == 'IfThenStatement' or 
+      elif (child.value == 'IfThenStatement' or
             child.value == 'IfThenElseStatement'):
         return ast_if.ASTIf(child)
       elif child.value == 'WhileStatement':
