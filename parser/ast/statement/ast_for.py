@@ -1,4 +1,6 @@
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
+import parser.ast.ast_variable_declaration as ast_variable_declaration
 import ast_statement
 
 class ASTFor(ast_node.ASTNode):
@@ -6,9 +8,9 @@ class ASTFor(ast_node.ASTNode):
     '''Creates an AST For node from a 'ForStatement' or
     'ForStatementNoShortIf' TreeNode'''
     # Four children:
-    #   0. ???, or None
+    #   0. An expression, variable declaration, or None (ForInit)
     #   1. An expression, or None
-    #   2. ???, or None
+    #   2. An expression, or None (ForUpdate)
     #   3. A statement
 
     for_init = None
@@ -17,12 +19,17 @@ class ASTFor(ast_node.ASTNode):
     statement = None
 
     for child in tree.children:
-      #if child.value == 'ForInit':
-      #  for_init = child
-      #elif child.value == 'Expression':
-      #  expression = ASTExpression(child)
-      #elif child.value == 'ForUpdate':
-      #  for_update = child
+      if child.value == 'ForInit':
+        if child.children[0].value == 'StatementExpression':
+          for_init = ASTExpression(child.children[0])
+        elif child.children[0].value == 'LocalVariableExpression':
+          for_init = ast_variable_declaration.ASTVariableDeclaration(
+              child.children[0])
+      elif child.value == 'Expression':
+        expression = ast_expression.ASTExpression.get_expr_node(child)
+      elif child.value == 'ForUpdate':
+        for_update = ast_expression.ASTExpression.get_expr_node(
+            child.children[0])
       if child.value == 'Statement':
         statement = ast_statement.ASTStatement.get_statement(child)
 
@@ -30,6 +37,7 @@ class ASTFor(ast_node.ASTNode):
       raise ASTForError('For treenode must have a statement')
 
     self.children = [for_init, expression, for_update, statement]
+
 
 class ASTForError(Exception):
   pass

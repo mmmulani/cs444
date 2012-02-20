@@ -1,3 +1,4 @@
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 
 class ASTReturn(ast_node.ASTNode):
@@ -5,14 +6,11 @@ class ASTReturn(ast_node.ASTNode):
     '''Creates an AST Return node from a 'ReturnStatement' TreeNode'''
 
     # One child:
-    #   0. None, or an AST expression node from 'Expression'
+    #   0. None, or an AST expression node
 
-    # From the grammar:
-    # ReturnStatement => ['return', 'Expression_OPT', ';']
-    
     expression = None
     if len(tree.children) > 2:
-      expression = ASTExpression(tree.children[1])
+      expression = ast_expression.ASTExpression.get_expr_node(tree.children[1])
 
     self.children = [expression]
 
