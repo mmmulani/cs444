@@ -71,8 +71,8 @@ class ASTClass(ast_node.ASTNode):
   def _handle_decl(self, tree):
     '''Handle a single class declaration'''
     decl = tree
-    if decl.children[0].value == 'ConstructorDeclaration':
-      self.methods.append(ast_method.ASTMethod(decl.children[0]))
+    if decl.value == 'ConstructorDeclaration':
+      self.methods.append(ast_method.ASTMethod(decl))
       return
 
     # Field/member declarations are one level deeper
