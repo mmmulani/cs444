@@ -29,6 +29,7 @@ class ASTRoot(ast_node.ASTNode):
         c.show(depth + 1)
 
     if self.children[2]:
+      ast_node.ASTUtils.println('Declaration:', depth)
       self.children[2].show(depth + 1)
 
   def _get_package_decl(self, tree):
