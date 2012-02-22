@@ -127,7 +127,6 @@ ArrayCreationExpression new PrimitiveType [ Expression ]
 ArrayCreationExpression new Identifiers [ Expression ]
 Dim [ ]
 FieldAccess Primary . Identifier
-FieldAccess super . Identifier
 MethodInvocation Identifiers ( ArgumentList_OPT )
 MethodInvocation Primary . Identifier ( ArgumentList_OPT )
 ArrayAccess Identifiers [ Expression ]

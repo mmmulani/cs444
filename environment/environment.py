@@ -43,6 +43,16 @@ class Environment(object):
   def lookup_local(self, name):
     pass
 
+  # lookup is the most general lookup method. It takes an identifier (string)
+  # and returns the first declaration that matches the identifier sorted by:
+  # - local variable
+  # - formal parameter
+  # - field
+  # - class/interface
+  # It cannot be used to lookup methods.
+  def lookup(self, iden):
+    pass
+
   # lookup_method takes a 3-tuple for a method signature and returns a pointer
   # to the declaration of the method in an AST.
   # The method signature tuple is:
