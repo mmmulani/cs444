@@ -1,12 +1,14 @@
 import ast_node
 import ast_method
 
+from ast_expression import ASTIdentifiers
+
 class ASTInterface(ast_node.ASTNode):
   def __init__(self, tree):
     '''Create an AST Interface Declaration node
     Takes in an InterfaceDeclaration parse tree node'''
     self._modifiers = self._get_modifiers(tree)
-    self.name = self._get_name(tree)
+    self._name = self._get_name(tree)
     self.super = self._get_super_interfaces(tree)
     self.methods = []
 
@@ -24,7 +26,7 @@ class ASTInterface(ast_node.ASTNode):
     if len(self.super) > 0:
       exts = []
       for m in self.super:
-        exts.append('.'.join(m))
+        exts.append('.'.join(m.children))
       ast_node.ASTUtils.println(
           'Extends: {0}'.format(', '.join(exts)), depth)
 
@@ -36,6 +38,10 @@ class ASTInterface(ast_node.ASTNode):
   @property
   def modifiers(self):
     return list(self._modifiers)
+
+  @property
+  def name(self):
+    return '.'.join(self._name.children)
 
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for an interface declaration'''
@@ -55,7 +61,7 @@ class ASTInterface(ast_node.ASTNode):
     else:
       raise ASTInterfaceError('Interface has no name.')
 
-    return node.lexeme
+    return ASTIdentifiers(node)
 
   def _get_super_interfaces(self, tree):
     '''Get a list of interfaces this interface extends from'''
@@ -72,9 +78,9 @@ class ASTInterface(ast_node.ASTNode):
 
     ret = []
     while len(node.children) == 3:
-      ret.append(ast_node.ASTUtils.get_ids_list(node.children[2].children[0]))
+      ret.append(ASTIdentifiers(node.children[2].children[0]))
       node = node.children[0]
-    ret.append(ast_node.ASTUtils.get_ids_list(node.children[1].children[0]))
+    ret.append(ASTIdentifiers(node.children[1].children[0]))
 
     ret.reverse()
     return ret
@@ -95,6 +101,9 @@ class ASTInterface(ast_node.ASTNode):
     node = node.children[0]
     if node.children[0].value == 'AbstractMethodDeclaration':
       self.methods.append(ast_method.ASTMethod(node.children[0]))
+
+    # Put the method list in declaration order.
+    self.methods.reverse()
 
 class ASTInterfaceError(Exception):
   pass
