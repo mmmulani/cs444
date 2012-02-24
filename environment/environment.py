@@ -154,11 +154,11 @@ class Environment(object):
 
   def _add_environments_helper(self, tree):
     if type(tree) == ASTClass:
-      self.add_class(tree.name, tree)
+      self.add_class(str(tree.name), tree)
       class_env = Environment(self)
 
       for f in tree.fields:
-        class_env.add_field(f.identifier, f)
+        class_env.add_field(str(f.identifier), f)
 
       for m in tree.methods:
         class_env._add_environments_helper(m)
@@ -166,7 +166,7 @@ class Environment(object):
       tree.environment = class_env
 
     elif type(tree) == ASTInterface:
-      self.add_interface(tree.name, tree)
+      self.add_interface(str(tree.name), tree)
       interface_env = Environment(self)
 
       for m in tree.methods:
@@ -179,7 +179,7 @@ class Environment(object):
       method_env = Environment(self)
 
       for p in tree.params:
-        method_env.add_formal(p.name, p)
+        method_env.add_formal(str(p.name), p)
 
       if tree.body:
         method_env._add_environments_helper(tree.body)
@@ -193,7 +193,7 @@ class Environment(object):
         # Each statement in a block is a Block, If, While, For, Return,
         # VariableDeclaration or some Expression.
         if type(s) == ASTVariableDeclaration:
-          block_env.add_local(s.identifier, s)
+          block_env.add_local(str(s.identifier), s)
         else:
           block_env._add_environments_helper(s)
 
@@ -224,7 +224,7 @@ class Environment(object):
     elif type(tree) == ASTFor:
       for_env = Environment(self)
       if tree.init and type(tree.init) == ASTVariableDeclaration:
-        for_env.add_local(tree.init.identifier, tree.init)
+        for_env.add_local(str(tree.init.identifier), tree.init)
 
       if tree.statement:
         for_env._add_environments_helper(for_env)
