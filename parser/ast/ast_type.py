@@ -16,6 +16,7 @@ class ASTType(ast_node.ASTNode):
     if len(tree.children) == 0:
       return tree.value
     elif tree.value == 'Identifiers':
+      from ast_expression import ASTIdentifiers
       return ASTIdentifiers(tree)
     elif tree.value == 'ArrayType':
       self.is_array = True
