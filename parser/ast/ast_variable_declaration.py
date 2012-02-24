@@ -23,7 +23,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
 
     type_ast = ast_type.ASTType(type_node)
 
-    identifier = declarator_node.children[0].lexeme
+    identifier = ast_expression.ASTIdentifiers(declarator_node.children[0])
 
     expression_ast = None
     if len(declarator_node.children) > 1:
