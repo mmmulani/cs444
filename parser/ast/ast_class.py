@@ -2,6 +2,8 @@ import ast_node
 import ast_method
 import ast_variable_declaration
 
+from ast_expression import ASTIdentifiers
+
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree):
     '''Create an AST Class Declaration node'''
@@ -13,7 +15,7 @@ class ASTClass(ast_node.ASTNode):
     self.children = self._get_children(tree)
 
     self._modifiers = self._get_modifiers(tree)
-    self.name = self._get_name(tree)
+    self._name = self._get_name(tree)
     self.super = self._get_super_class(tree)
     self.interfaces = self._get_interfaces(tree)
 
@@ -24,15 +26,15 @@ class ASTClass(ast_node.ASTNode):
       ast_node.ASTUtils.println('Modifiers: {0}'.format(
           ', '.join(self.modifiers)), depth)
 
-    if len(self.super) > 0:
+    if self.super:
       ast_node.ASTUtils.println(
-          'Extends: {0}'.format('.'.join(self.super)),
+          'Extends: {0}'.format('.'.join(self.super.children)),
           depth)
 
     if len(self.interfaces) > 0:
       ifaces = []
-      for i in self.interfaces:
-        ifaces.append('.'.join(i))
+      for ast_ids in self.interfaces:
+        ifaces.append('.'.join(ast_ids.children))
       ast_node.ASTUtils.println(
           'Implements: {0}'.format(', '.join(ifaces)), depth)
 
@@ -50,6 +52,10 @@ class ASTClass(ast_node.ASTNode):
   def modifiers(self):
     return list(self._modifiers)
 
+  @property
+  def name(self):
+    return '.'.join(self._name.children)
+
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''
     node = tree.children[-1]
@@ -66,6 +72,10 @@ class ASTClass(ast_node.ASTNode):
       self._handle_decl(decl.children[0])
       node = node.children[0]
     self._handle_decl(node.children[0].children[0])
+
+    # Reverse the lists to put them in declaration order.
+    self.fields.reverse()
+    self.methods.reverse()
     return [self.fields, self.methods]
 
   def _handle_decl(self, tree):
@@ -102,7 +112,7 @@ class ASTClass(ast_node.ASTNode):
     else:
       raise ASTClassError('Class has no name.')
 
-    return node.lexeme
+    return ASTIdentifiers(node)
 
   def _get_super_class(self, tree):
     '''Get the superclass of a class from its declaration'''
@@ -115,9 +125,9 @@ class ASTClass(ast_node.ASTNode):
       node = tree.children[3]
     else:
       # Super is optional.
-      return []
+      return None
 
-    return ast_node.ASTUtils.get_ids_list(node.children[1].children[0])
+    return ASTIdentifiers(node.children[1].children[0])
 
   def _get_interfaces(self, tree):
     '''Get the interfaces the class implements from its declarations'''
@@ -138,11 +148,9 @@ class ASTClass(ast_node.ASTNode):
     node = node.children[1]
     ret = []
     while len(node.children) == 3:
-      ret.append(
-          ast_node.ASTUtils.get_ids_list(node.children[2].children[0]))
+      ret.append(ASTIdentifiers(node.children[2].children[0]))
       node = node.children[0]
-    ret.append(
-        ast_node.ASTUtils.get_ids_list(node.children[0].children[0]))
+    ret.append(ASTIdentifiers(node.children[0].children[0]))
     ret.reverse()
     return ret
 
