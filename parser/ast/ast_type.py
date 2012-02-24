@@ -30,4 +30,11 @@ class ASTType(ast_node.ASTNode):
     ast_node.ASTUtils.println(str(self), depth)
 
   def __str__(self):
+    ret = self.name
+    if self.is_array:
+      ret += '[]'
+    return ret
+
+  @property
+  def name(self):
     return str(self.children[0])
