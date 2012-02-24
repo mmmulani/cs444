@@ -8,19 +8,15 @@ class ASTPackage(ast_node.ASTNode):
     if tree.value != 'PackageDeclaration':
       raise ASTPackageError('Invalid tree node given to AST Package')
 
-    self._name = ASTIdentifiers(tree.children[1])
+    self.name = ASTIdentifiers(tree.children[1])
 
     # No children.
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println(self.name, depth)
 
-  @property
-  def name(self):
-    return '.'.join(self._name.children)
-
   def __str__(self):
-    return self.name
+    return str(self.name)
 
 class ASTPackageError(Exception):
   pass

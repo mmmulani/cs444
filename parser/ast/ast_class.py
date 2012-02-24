@@ -15,7 +15,7 @@ class ASTClass(ast_node.ASTNode):
     self.children = self._get_children(tree)
 
     self._modifiers = self._get_modifiers(tree)
-    self._name = self._get_name(tree)
+    self.name = self._get_name(tree)
     self.super = self._get_super_class(tree)
     self.interfaces = self._get_interfaces(tree)
 
@@ -51,10 +51,6 @@ class ASTClass(ast_node.ASTNode):
   @property
   def modifiers(self):
     return list(self._modifiers)
-
-  @property
-  def name(self):
-    return '.'.join(self._name.children)
 
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''

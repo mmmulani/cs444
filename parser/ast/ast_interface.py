@@ -8,7 +8,7 @@ class ASTInterface(ast_node.ASTNode):
     '''Create an AST Interface Declaration node
     Takes in an InterfaceDeclaration parse tree node'''
     self._modifiers = self._get_modifiers(tree)
-    self._name = self._get_name(tree)
+    self.name = self._get_name(tree)
     self.super = self._get_super_interfaces(tree)
     self.methods = []
 
@@ -38,10 +38,6 @@ class ASTInterface(ast_node.ASTNode):
   @property
   def modifiers(self):
     return list(self._modifiers)
-
-  @property
-  def name(self):
-    return '.'.join(self._name.children)
 
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for an interface declaration'''
