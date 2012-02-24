@@ -3,11 +3,13 @@ import ast_param
 import ast_type
 import statement.ast_block as ast_block
 
+from ast_expression import ASTIdentifiers
+
 class ASTMethod(ast_node.ASTNode):
   def __init__(self, tree):
     self.modifiers = None
     self.return_type = None
-    self.name = None
+    self._name = None
     self.params = []
     self.is_constructor = False
     self.is_abstract = False
@@ -71,6 +73,10 @@ class ASTMethod(ast_node.ASTNode):
       ast_node.ASTUtils.println('Body:', depth)
       self.children[0].show(depth + 1)
 
+  @property
+  def name(self):
+    return '.'.join(self._name.children)
+
   def _get_modifiers(self, tree):
     if tree.children[0].value != 'Modifiers':
       return set()
@@ -98,7 +104,7 @@ class ASTMethod(ast_node.ASTNode):
     '''Set the name and parameters of the method based on the Declarator'''
     # MethodDeclarator Identifier ( FormalParamterList_OPT ) Dim_OPT
     # ConstructorDeclarator Identifier ( FormalParamterList_OPT )
-    self.name = tree.children[0].lexeme
+    self._name = ASTIdentifiers(tree.children[0])
     self._handle_params(tree)
     if len(tree.children) == 5:
       # Return type of the method should be an array.
