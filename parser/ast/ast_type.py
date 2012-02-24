@@ -6,7 +6,7 @@ class ASTType(ast_node.ASTNode):
     self.is_array = False  # Checked in get_type_from_node.
     # One child.  Either:
     #   a) A string of the type, or
-    #   b) A list of Indentifiers for a qualified type (e.g. Foo.Bar.Baz)
+    #   b) An ASTIdentifiers node with the type.
     if tree.value == 'void':
       self.children = ['void']
     else:
@@ -16,28 +16,17 @@ class ASTType(ast_node.ASTNode):
     if len(tree.children) == 0:
       return tree.value
     elif tree.value == 'Identifiers':
-      return ast_node.ASTUtils.get_ids_list(tree)
+      return ASTIdentifiers(tree)
     elif tree.value == 'ArrayType':
       self.is_array = True
 
     return self.get_type_from_node(tree.children[0])
 
   def is_primitive(self):
-    return (type(self.children[0]) != type([]))
+    return (type(self.children[0]) == type(''))
 
   def show(self, depth = 0):
-    ast_node.ASTUtils.println(self.__str__(), depth)
+    ast_node.ASTUtils.println(str(self), depth)
 
   def __str__(self):
-    ret = ''
-    if self.is_primitive():
-      ret = self.children[0]
-    else:
-      # List of ids.
-      ret = '.'.join(self.children[0])
-
-    # Check for array-ness
-    if self.is_array:
-      ret += '[]'
-
-    return ret
+    return str(self.children[0])
