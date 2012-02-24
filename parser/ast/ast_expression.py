@@ -208,7 +208,7 @@ class ASTIdentifiers(ASTNode):
       self.children = ASTUtils.get_ids_list(tree)
 
   def show(self, depth = 0):
-    ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)))
+    ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)), depth)
 
   def __str__(self):
     return '.'.join(self.children)
