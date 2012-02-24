@@ -1,12 +1,14 @@
 import ast_node
 
+from ast_expression import ASTIdentifiers
+
 class ASTPackage(ast_node.ASTNode):
   '''Creates a package AST node from a PackageDeclaration node'''
   def __init__(self, tree):
     if tree.value != 'PackageDeclaration':
       raise ASTPackageError('Invalid tree node given to AST Package')
 
-    self._name = ast_node.ASTUtils.get_ids_list(tree.children[1])
+    self._name = ASTIdentifiers(tree.children[1])
 
     # No children.
 
@@ -15,7 +17,7 @@ class ASTPackage(ast_node.ASTNode):
 
   @property
   def name(self):
-    return '.'.join(self._name)
+    return '.'.join(self._name.children)
 
   def __str__(self):
     return self.name
