@@ -18,20 +18,26 @@ def main():
     sys.stderr.write('Please provide an input file.\n')
     sys.exit(999)
 
-  compile(args[0])
+  compile(args)
 
-def compile(filename):
-  f = open(filename)
-  s = f.read()
-  f.close()
+def compile(filenames):
+  asts = []
+  for filename in filenames:
+    f = open(filename)
+    s = f.read()
+    f.close()
 
-  if options.verbose:
-    sys.stderr.write('Compiling {0}\n'.format(filename))
+    if options.verbose:
+      sys.stderr.write('\nCompiling {0}\n'.format(filename))
 
-  toks = scan_file(s)
-  parse_tree = parse_toks(toks)
-  weed(parse_tree, filename)
-  ast = make_ast(parse_tree)
+    toks = scan_file(s)
+    parse_tree = parse_toks(toks)
+    weed(parse_tree, filename)
+    ast = make_ast(parse_tree)
+    asts.append(ast)
+
+    if options.verbose:
+      sys.stderr.write('Done processing {0}\n'.format(filename))
 
   # Everything passes!
   exit_with_pass()
@@ -78,6 +84,7 @@ def make_ast(parse_tree):
   ast = ast_root.ASTRoot(parse_tree)
   if options.til_ast or options.verbose:
     ast.show()
+  return ast
 
 def exit_with_pass():
   if options.verbose:
