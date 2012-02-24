@@ -208,7 +208,10 @@ class ASTIdentifiers(ASTNode):
       self.children = ASTUtils.get_ids_list(tree)
 
   def show(self, depth = 0):
-    ASTUtils.println('ASTIdentifiers: {0}'.format('.'.join(self.children)), depth)
+    ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)))
+
+  def __str__(self):
+    return '.'.join(self.children)
 
 class ASTArrayCreation(ASTNode):
   # Children is of length 2:
