@@ -1,3 +1,4 @@
+import ast_expression
 import ast_node
 
 class ASTImportList(ast_node.ASTNode):
@@ -21,10 +22,10 @@ class ASTImport(ast_node.ASTNode):
   def __init__(self, tree):
     '''Creates an Import AST from an 'ImportDeclaration' TreeNode'''
     # Two children:
-    #   0. A list of identifiers
+    #   0. An AST Identifiers node
     #   1. A bool, indicating whether the import is 'On Demand'
 
-    ids = ast_node.ASTUtils.get_ids_list(tree.children[0].children[1])
+    ids = ast_expression.ASTIdentifiers(tree.children[0].children[1])
 
     # On-Demand imports have 5 children because they have ". *"
     # after the identifiers list:
@@ -34,5 +35,5 @@ class ASTImport(ast_node.ASTNode):
 
   def show(self, depth = 0):
     text = 'Name: {0} - On-demand: {1}'.format(
-        '.'.join(self.children[0]), str(self.children[1]))
+        '.'.join(self.children[0].children), str(self.children[1]))
     ast_node.ASTUtils.println(text, depth)
