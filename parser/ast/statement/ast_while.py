@@ -10,6 +10,9 @@ class ASTWhile(ast_node.ASTNode):
     #   0. An expression
     #   1. A statement
 
+    # This is set by the Environment module when the tree is complete.
+    self.environment = None
+
     if len(tree.children) != 5:
       raise ASTWhileError('While treenode has incorrect children')
 
@@ -17,6 +20,10 @@ class ASTWhile(ast_node.ASTNode):
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
 
     self.children = [expression, statement]
+
+  @property
+  def statement(self):
+    return self.children[1]
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('While:', depth)

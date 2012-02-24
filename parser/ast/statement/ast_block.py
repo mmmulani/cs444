@@ -9,6 +9,9 @@ class ASTBlock(ast_node.ASTNode):
     # Each child is a VariableDeclaration or Statement
     self.children = []
 
+    # This is set by the Environment module when the tree is complete.
+    self.environment = None
+
     if len(tree.children) == 2:
       return
 
@@ -30,6 +33,10 @@ class ASTBlock(ast_node.ASTNode):
 
     # Reverse the statements so they're in the correct order.
     self.children.reverse()
+
+  @property
+  def statements(self):
+    return self.children
 
   def show(self, depth = 0):
     for c in self.children:

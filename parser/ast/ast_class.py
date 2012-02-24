@@ -19,6 +19,9 @@ class ASTClass(ast_node.ASTNode):
     self.super = self._get_super_class(tree)
     self.interfaces = self._get_interfaces(tree)
 
+    # This is set by the Environment module when the tree is complete.
+    self.environment = None
+
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
 
