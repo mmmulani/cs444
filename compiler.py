@@ -3,7 +3,7 @@ import os
 import sys
 from optparse import OptionParser
 
-import environment.environment as environment
+import name_resolution.environment as environment
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
