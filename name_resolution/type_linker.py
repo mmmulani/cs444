@@ -13,9 +13,9 @@ def link_names(ast):
   decl = ast.children[2]
   if decl:
     env = decl.environment
-    if decl.super:
-      # Link inherited class.
-      link(decl.super, env)
+    for super_type in decl.super:
+      # Link inherited class / inherited interfaces.
+      link(super_type, env)
     for inter in decl.interfaces:
       # Link implemented interfaces.
       link(inter, env)

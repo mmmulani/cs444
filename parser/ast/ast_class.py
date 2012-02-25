@@ -1,5 +1,6 @@
 import ast_node
 import ast_method
+import ast_type
 import ast_variable_declaration
 
 from ast_expression import ASTIdentifiers
@@ -31,13 +32,13 @@ class ASTClass(ast_node.ASTNode):
 
     if self.super:
       ast_node.ASTUtils.println(
-          'Extends: {0}'.format('.'.join(self.super.children)),
+          'Extends: {0}'.format('.'.join(self.super[0].children[0].children)),
           depth)
 
     if len(self.interfaces) > 0:
       ifaces = []
       for ast_ids in self.interfaces:
-        ifaces.append('.'.join(ast_ids.children))
+        ifaces.append('.'.join(ast_ids.children[0].children))
       ast_node.ASTUtils.println(
           'Implements: {0}'.format(', '.join(ifaces)), depth)
 
@@ -126,7 +127,8 @@ class ASTClass(ast_node.ASTNode):
       # Super is optional.
       return None
 
-    return ASTIdentifiers(node.children[1].children[0])
+    # return a list, to match properties of ASTInterface 
+    return [ast_type.ASTType(node.children[1].children[0])]
 
   def _get_interfaces(self, tree):
     '''Get the interfaces the class implements from its declarations'''
@@ -147,9 +149,9 @@ class ASTClass(ast_node.ASTNode):
     node = node.children[1]
     ret = []
     while len(node.children) == 3:
-      ret.append(ASTIdentifiers(node.children[2].children[0]))
+      ret.append(ast_type.ASTType(node.children[2].children[0]))
       node = node.children[0]
-    ret.append(ASTIdentifiers(node.children[0].children[0]))
+    ret.append(ast_type.ASTType(node.children[0].children[0]))
     ret.reverse()
     return ret
 

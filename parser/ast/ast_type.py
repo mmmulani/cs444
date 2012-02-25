@@ -12,6 +12,8 @@ class ASTType(ast_node.ASTNode):
     else:
       self.children = [self.get_type_from_node(tree)]
 
+    self.definition = None
+
   def get_type_from_node(self, tree):
     if len(tree.children) == 0:
       return tree.value

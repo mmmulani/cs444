@@ -1,5 +1,6 @@
 import ast_node
 import ast_method
+import ast_type
 
 from ast_expression import ASTIdentifiers
 
@@ -29,7 +30,7 @@ class ASTInterface(ast_node.ASTNode):
     if len(self.super) > 0:
       exts = []
       for m in self.super:
-        exts.append('.'.join(m.children))
+        exts.append('.'.join(m.children[0].children))
       ast_node.ASTUtils.println(
           'Extends: {0}'.format(', '.join(exts)), depth)
 
@@ -77,9 +78,9 @@ class ASTInterface(ast_node.ASTNode):
 
     ret = []
     while len(node.children) == 3:
-      ret.append(ASTIdentifiers(node.children[2].children[0]))
+      ret.append(ast_type.ASTType(node.children[2].children[0]))
       node = node.children[0]
-    ret.append(ASTIdentifiers(node.children[1].children[0]))
+    ret.append(ast_type.ASTType(node.children[1].children[0]))
 
     ret.reverse()
     return ret
