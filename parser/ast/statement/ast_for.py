@@ -52,6 +52,14 @@ class ASTFor(ast_node.ASTNode):
     return self.children[0]
 
   @property
+  def expression(self):
+    return self.children[1]
+
+  @property
+  def update(self):
+    return self.children[2]
+
+  @property
   def statement(self):
     return self.children[3]
 

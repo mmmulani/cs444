@@ -28,6 +28,10 @@ class ASTIf(ast_node.ASTNode):
     self.children = [expression, statement, else_statement]
 
   @property
+  def expression(self):
+    return self.children[0]
+  
+  @property
   def if_statement(self):
     return self.children[1]
 

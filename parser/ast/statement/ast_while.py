@@ -22,6 +22,10 @@ class ASTWhile(ast_node.ASTNode):
     self.children = [expression, statement]
 
   @property
+  def expression(self):
+    return self.children[0]
+  
+  @property
   def statement(self):
     return self.children[1]
 
