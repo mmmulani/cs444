@@ -17,6 +17,9 @@ class ASTMethod(ast_node.ASTNode):
     #   1. The body of the method.
     self.children = [None]
 
+    # This is set by the Environment module when the tree is complete.
+    self.environment = None
+
     # Three main types of methods:
     #   1. Normal methods.
     #   2. Constructors.
@@ -43,6 +46,15 @@ class ASTMethod(ast_node.ASTNode):
       self._handle_declarator(tree.children[-2])
     else:
       raise ASTMethodError('Invalid node passed to ASTMethod')
+
+  @property
+  def body(self):
+    return self.children[0]
+
+  @property
+  def signature(self):
+    param_types = [x.type for x in self.params]
+    return (self.return_type, self.name, param_types)
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Name: {0}'.format(self.name), depth)

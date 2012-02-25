@@ -3,6 +3,7 @@ import os
 import sys
 from optparse import OptionParser
 
+import environment.environment as environment
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
@@ -34,6 +35,7 @@ def compile(filenames):
     parse_tree = parse_toks(toks)
     weed(parse_tree, filename)
     ast = make_ast(parse_tree)
+    add_environments(ast)
     asts.append(ast)
 
     if options.verbose:
@@ -85,6 +87,14 @@ def make_ast(parse_tree):
   if options.til_ast or options.verbose:
     ast.show()
   return ast
+
+  return ast
+
+def add_environments(ast):
+  try:
+    environment.Environment.add_environments_to_tree(ast)
+  except environment.EnvironmentError as err:
+    exit_with_failure('environment creation', err.msg)
 
 def exit_with_pass():
   if options.verbose:

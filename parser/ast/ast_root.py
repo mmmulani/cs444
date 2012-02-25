@@ -17,6 +17,10 @@ class ASTRoot(ast_node.ASTNode):
         self._get_imports(tree),
         self._get_class_or_interface(tree)]
 
+  @property
+  def class_or_interface(self):
+    return self.children[2]
+
   def show(self, depth = 0):
     # Package declaration.
     if self.children[0]:

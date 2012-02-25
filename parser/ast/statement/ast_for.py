@@ -13,6 +13,9 @@ class ASTFor(ast_node.ASTNode):
     #   2. An expression, or None (ForUpdate)
     #   3. A statement
 
+    # This is set by the Environment module when the tree is complete.
+    self.environment = None
+
     for_init = None
     expression = None
     for_update = None
@@ -43,6 +46,14 @@ class ASTFor(ast_node.ASTNode):
       raise ASTForError('For treenode must have a statement')
 
     self.children = [for_init, expression, for_update, statement]
+
+  @property
+  def init(self):
+    return self.children[0]
+
+  @property
+  def statement(self):
+    return self.children[3]
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('For:', depth)

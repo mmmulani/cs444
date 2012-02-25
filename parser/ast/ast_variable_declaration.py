@@ -32,6 +32,10 @@ class ASTVariableDeclaration(ast_node.ASTNode):
 
     self.children = [modifiers, type_ast, identifier, expression_ast]
 
+  @property
+  def identifier(self):
+    return self.children[2]
+
   def show(self, depth = 0):
     ast_node.ASTUtils.println(
         'Var Decl: {0} {1}'.format(self.children[1], self.children[2]), depth)
