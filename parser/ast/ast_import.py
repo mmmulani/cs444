@@ -37,3 +37,7 @@ class ASTImport(ast_node.ASTNode):
     text = 'Name: {0} - On-demand: {1}'.format(
         '.'.join(self.children[0].children), str(self.children[1]))
     ast_node.ASTUtils.println(text, depth)
+
+  @property
+  def name(self):
+    return str(self.children[0])

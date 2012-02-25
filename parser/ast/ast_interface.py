@@ -14,6 +14,9 @@ class ASTInterface(ast_node.ASTNode):
 
     self._handle_body(tree.children[-1])
 
+    self.interfaces = None  # Used so the properties match ASTClass.
+    self.fields = None # Used so the properties match ASTClass.
+
     # No children.
 
   def show(self, depth = 0):

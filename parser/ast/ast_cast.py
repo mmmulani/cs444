@@ -13,6 +13,10 @@ class ASTCast(ast_node.ASTNode):
     self.children = [self._create_type_node(tree),
         ast_expression.ASTExpression.get_expr_node(tree.children[-1])]
 
+  @property
+  def type_node(self):
+    return self.children[0]
+
   def _create_type_node(self, tree):
     type_node = tree.children[1]
     ret = None

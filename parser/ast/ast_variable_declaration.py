@@ -49,3 +49,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
       self.children[3].show(depth + 1)
     else:
       ast_node.ASTUtils.println('Value: None', depth + 1)
+
+  @property
+  def type(self):
+    return self.children[1]

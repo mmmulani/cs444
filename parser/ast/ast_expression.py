@@ -192,6 +192,9 @@ class ASTClassInstanceCreation(ASTNode):
     else:
       self.children.append([])
 
+    # Will be set by the type linker.
+    self.definiton = None
+
   def show(self, depth = 0):
     self._show(depth)
     ASTUtils.println('Class type:', depth)

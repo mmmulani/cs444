@@ -7,6 +7,7 @@ class ASTBlock(ast_node.ASTNode):
     '''Creates an AST block node from a 'Block' TreeNode'''
 
     # Each child is a VariableDeclaration or Statement
+    # (astnode, is_statement)
     self.children = []
 
     # This is set by the Environment module when the tree is complete.
