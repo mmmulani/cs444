@@ -79,11 +79,30 @@ def link_return(ast, env):
 
 def link_for(ast, env):
   '''Links for ASTFor node'''
-  pass
+  if ast.init:
+    # This code makes gnleece cry
+    if type(ast.init) == ast_variable_declaration.ASTVariableDeclaration:
+      link_variable_declaration(ast.init, env)
+    else:
+      link_expression(ast.init, env)
+  if ast.expression:
+    link_expression(ast.expression, env)
+  if ast.update:
+    link_expression(ast.update, env)
+  if ast.statement:
+    link_statement(ast.statement, env)
 
 def link_while(ast, env):
   '''Links for ASTWhile node'''
-  pass
+  link_expression(ast.expression, env)
+  link_statement(ast.statement, ev)
+
+def link_if(ast, env):
+  '''Links for ASTIf node'''
+  link_expression(ast.expression, env)
+  link_statement(ast.if_statement, env)
+  if ast.else_statement:
+    link_statement(ast.else_statement, env)
 
 def link_cast(ast, env):
   '''Links for ASTCast'''
@@ -114,5 +133,7 @@ def link_statement(ast, env):
     link_return(ast, env)
   elif t == ast_statement.ast_while.ASTWhile:
     link_while(ast, env)
+  elif t == ast.statement.ast_if.ASTIf:
+    link_if(ast, env)
   elif t == ast_expression.ASTExpression:
     link_expression(ast, env)
