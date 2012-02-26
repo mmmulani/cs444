@@ -125,7 +125,7 @@ class ASTClass(ast_node.ASTNode):
       node = tree.children[3]
     else:
       # Super is optional.
-      return None
+      return []
 
     # return a list, to match properties of ASTInterface 
     return [ast_type.ASTType(node.children[1].children[0])]
