@@ -27,7 +27,8 @@ def link_names(ast):
       for p in m.params:
         link(p.type, env)
 
-      link_block(m.children[0], env)
+      if m.children[0]:
+        link_block(m.children[0], env)
 
 def link(ast, env):
   '''Actually sets the definition for an ASTType node'''
@@ -74,7 +75,7 @@ def link_for(ast, env):
 def link_while(ast, env):
   '''Links for ASTWhile node'''
   link_expression(ast.expression, env)
-  link_statement(ast.statement, ev)
+  link_statement(ast.statement, env)
 
 def link_if(ast, env):
   '''Links for ASTIf node'''
