@@ -22,14 +22,16 @@ for file in files:
   f = open(path)
   ret = subprocess.call(['./joosc', path])
   color = FAIL_COLOR
+  out = 'X'
   if (ret == 42 and file[:2] == 'Je') or \
       (ret == 0 and file[:2] != 'Je'):
     passing_tests.append(path)
     color = PASS_COLOR
+    out = '.'
   else:
     failing_tests.append(path)
 
-  sys.stderr.write(color + '.' + END_COLOR)
+  sys.stderr.write(color + out + END_COLOR)
 
   # print '{0}: {1}'.format(path, ret)
   f.close()
