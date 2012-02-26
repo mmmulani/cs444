@@ -15,35 +15,34 @@ def link_names(ast):
 
     for f in decl.fields:
       # Link field types.
-      link_type(f.type, env)
+      link(f.type, env)
 
     for m in decl.methods:
       # Link method return types and parameters.
       if m.is_constructor:
         pass
       else:
-        link_type(m.return_type, env)
-      for p in m.params:
-        link_type(p.type, env)
+        link(m.return_type, env)
 
-      link_block(m.children[0])
+      for p in m.params:
+        link(p.type, env)
+
+      link_block(m.children[0], env)
 
 def link(ast, env):
-  '''Links an ASTIdentifiers node with its definition.'''
-  ast.definition = env.lookup(str(ast))
-
-def link_type(ast, env):
-  if ast.is_primitive:
+  '''Actually sets the definition for an ASTType node'''
+  if ast is None or ast.is_primitive:
     # Don't need to link primitive types.
     return
-  ast.children[0].definition = env.lookup(ast.name)
+  definition = env.lookup(ast.name)
+  if definition is None:
+    raise TypeLinkerError('Type name not found')
+  ast.children[0].definition = definition
 
 def link_variable_declaration(ast, env):
-  '''Links the type for an ASTVariableDeclaration with its definition'''
-  link_type(ast.type_ast, env)
+  link(ast.type_ast, env)
 
-def link_block(ast):
-  env = ast.environment
+def link_block(ast, env):
   for x in body.children:
     # Each child of the body is a VariableDeclaration or Statement.
     if type(x) == ast_variable_declaration.ASTVariableDeclaration:
@@ -86,16 +85,15 @@ def link_if(ast, env):
 
 def link_cast(ast, env):
   '''Links for ASTCast'''
-  link_type(ast.type_node, env)
+  link(ast.type_node, env)
 
 def link_expression(ast, env):
   '''Links for one of the possible ASTExpression nodes'''
   t = type(ast)
   if t == ast_expression.ASTCast:
     link_cast(ast, env)
-  elif t == ast_expression.ASTBinary:
-    # We need to check the type for instanceof here
-    pass
+  elif t == ast_expression.ASTInstanceOf:
+    link(ast.type_node, env)
   else:
     # We don't need to deal with other types of expressions at this point in
     # time.
@@ -117,3 +115,6 @@ def link_statement(ast, env):
     link_if(ast, env)
   elif t == ast_expression.ASTExpression:
     link_expression(ast, env)
+
+class TypeLinkerError(Expression):
+  pass
