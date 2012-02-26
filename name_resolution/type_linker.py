@@ -94,10 +94,10 @@ def link_expression(ast, env):
     link_cast(ast, env)
   elif t == ast_expression.ASTInstanceOf:
     link(ast.type_node, env)
-  else:
-    # We don't need to deal with other types of expressions at this point in
-    # time.
-    return
+
+  # Recurse for each expression child.
+  for e in ast.expressions:
+    link_expression(e, env)
 
 def link_statement(ast, env):
   '''Links for one of the possible ASTStatement nodes'''
