@@ -47,6 +47,10 @@ class ASTCast(ast_node.ASTNode):
         'ASTCast Type: {0}'.format(self.children[0]), depth)
     self.children[1].show(depth + 1)
 
+  @property
+  def expressions(self):
+    return [self.children[1]]
+
 
 class ASTCastError(Exception):
   pass
