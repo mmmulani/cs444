@@ -76,9 +76,15 @@ class ASTExpression(ASTNode):
     else:
       # This should be a Binary expression.
       # TODO(mehdi) add checks
-      return ASTBinary(child)
+      return make_ast_binary_node(child)
 
     raise ASTExpressionError('Unhandled Expression')
+
+def make_ast_binary_node(tree):
+  op = tree.children[1].lexeme
+  if op == 'instanceof':
+    return ASTInstanceOf(tree)
+  return ASTBinary(tree)
 
 class ASTExpressionError(Exception):
   pass
@@ -165,6 +171,23 @@ class ASTMethodInvocation(ASTNode):
     for i, x in enumerate(self.children[1]):
       ASTUtils.println('Argument {0}:'.format(str(i)), depth)
       x.show(depth + 1)
+
+class ASTInstanceOf(ASTNode):
+  def __init__(self, tree):
+    # x instanceof y
+    # Two children.
+    #   0. ASTExpression, x
+    #   1. ASTType for y
+    self.children = [
+        ASTExpression.get_expr_node(tree.children[0]),
+        ASTType(tree.children[2])]
+
+    self.type_node = self.children[1]
+
+  def show(self, depth = 0):
+    ASTUtils.println(
+        'ASTInstanceOf Type: {0}'.format(str(self.type_node)), depth)
+    self.children[0].show(depth + 1)
 
 class ASTBinary(ASTNode):
   # children is [left operand, right operand]
