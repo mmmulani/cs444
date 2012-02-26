@@ -4,6 +4,7 @@ import sys
 from optparse import OptionParser
 
 import name_resolution.environment as environment
+import name_resolution.type_linker as type_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
@@ -40,6 +41,9 @@ def compile(filenames):
 
     if options.verbose:
       sys.stderr.write('Done processing {0}\n'.format(filename))
+
+  for ast in asts:
+    type_linker.link_names(ast)
 
   # Everything passes!
   exit_with_pass()
