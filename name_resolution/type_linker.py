@@ -3,13 +3,6 @@ import parser.ast.ast_variable_declaration as ast_variable_declaration
 import parser.ast.statement as ast_statement
 
 def link_names(ast):
-  imports = ast.children[1]
-  env = ast.environment
-
-  # Import declarations.
-  for im in imports:
-    link_imports(im, env)
-
   decl = ast.children[2]
   if decl:
     env = decl.environment
@@ -44,19 +37,6 @@ def link_type(ast, env):
     # Don't need to link primitive types.
     return
   ast.children[0].definition = env.lookup(ast.name)
-
-def link_imports(ast, env):
-  '''Links imports from one AST to their definitions via the Environment
-
-  Params:
-    1. An ASTImport object
-    2. A (global) environment for that file
-  '''
-
-  # Only single-type-import declarations can be linked syntactically.
-  if ast.is_on_demand:
-    return
-  link(ast.children[0], env)
 
 def link_variable_declaration(ast, env):
   '''Links the type for an ASTVariableDeclaration with its definition'''
