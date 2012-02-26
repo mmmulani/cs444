@@ -15,7 +15,7 @@ def link_names(ast):
 
     for f in decl.fields:
       # Link field types.
-      link(f.type, env)
+      link(f.type_node, env)
 
     for m in decl.methods:
       # Link method return types and parameters.
@@ -40,10 +40,10 @@ def link(ast, env):
   ast.children[0].definition = definition
 
 def link_variable_declaration(ast, env):
-  link(ast.type_ast, env)
+  link(ast.type_node, env)
 
 def link_block(ast, env):
-  for x in body.children:
+  for x in ast.children:
     # Each child of the body is a VariableDeclaration or Statement.
     if type(x) == ast_variable_declaration.ASTVariableDeclaration:
       link_variable_declaration(x, env)
@@ -104,17 +104,17 @@ def link_statement(ast, env):
   # FML.
   t = type(ast)
   if t == ast_statement.ast_block.ASTBlock:
-    link_block(ast)
+    link_block(ast, env)
   elif t == ast_statement.ast_for.ASTFor:
     link_for(ast, env)
   elif t == ast_statement.ast_return.ASTReturn:
     link_return(ast, env)
   elif t == ast_statement.ast_while.ASTWhile:
     link_while(ast, env)
-  elif t == ast.statement.ast_if.ASTIf:
+  elif t == ast_statement.ast_if.ASTIf:
     link_if(ast, env)
   elif t == ast_expression.ASTExpression:
     link_expression(ast, env)
 
-class TypeLinkerError(Expression):
+class TypeLinkerError(Exception):
   pass
