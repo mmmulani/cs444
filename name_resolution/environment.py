@@ -270,8 +270,7 @@ class Environment(object):
         if len(possible_envs) == 0:
           raise EnvironmentError('Could not find package {0}'.format(import_))
 
-        possible_envs = [x for x in possible_envs
-            if file_to_inner_map[env] != x]
+        possible_envs = [x for x in possible_envs if file_to_inner_map[env] != x]
 
         on_demand_envs.extend(possible_envs)
 
