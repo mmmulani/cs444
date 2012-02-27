@@ -20,7 +20,7 @@ for file in files:
 
   path = '{0}/{1}'.format(A1_FOLDER, file)
   f = open(path)
-  ret = subprocess.call(['./joosc', path])
+  ret = subprocess.call(['./joosc', '--stdlib', path])
   color = FAIL_COLOR
   out = 'X'
   if (ret == 42 and file[:2] == 'Je') or \

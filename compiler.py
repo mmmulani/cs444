@@ -54,7 +54,7 @@ def compile(filenames):
   try:
     for ast in asts:
       type_linker.link_names(ast)
-  except (environment.EnvironmentError) as err:
+  except (environment.EnvironmentError, type_linker.TypeLinkerError) as err:
     exit_with_failure('type linking', err.msg)
 
   # Everything passes!

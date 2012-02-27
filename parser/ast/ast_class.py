@@ -56,6 +56,10 @@ class ASTClass(ast_node.ASTNode):
   def modifiers(self):
     return list(self._modifiers)
 
+  @property
+  def is_final(self):
+    return ('final' in self._modifiers)
+
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''
     node = tree.children[-1]

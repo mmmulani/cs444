@@ -17,31 +17,42 @@ def link_names(ast):
 
       # Inheritance checks.
 
+      # You can't inherit from primitive types.
+      if super_type.is_primitive():
+        raise TypeLinkerError("Super class can't be primitive type")
+
       # Classes can only extend other classes.
       # Interfaces can only extend other interfaces.
-      if super_type.definition is not None and \
-          is_class(super_type.definition) != is_class(decl):
+      if is_class(super_type.definition) != is_class(decl):
         raise TypeLinkerError('Extending type mismatch')
 
       # Classes/Interfaces can not extend themselves.
-      if super_type.definition is not None and \
-          super_type.definition == decl:
+      if super_type.definition == decl:
         raise TypeLinkerError('Type is extending itself')
+
+      # No extending final classes.
+      if super_type.definition.is_final:
+        raise TypeLinkerError('Extending final class')
 
     # Check for duplicates in super types:
     if (len(super_definitions) != len(set(super_definitions))):
       raise TypeLinkerError('Interface extending duplicate interfaces')
 
     inter_definitions = []
+
     for inter in decl.interfaces:
       # Link implemented interfaces.
       link(inter, env)
       inter_definitions.append(inter.definition)
 
-      # Implements checks.
+      # Implements checks. You can't implement primitive types.
+
+      # You can't implement from primitive types.
+      if inter.is_primitive():
+        raise TypeLinkerError("Can't implement a primitive type")
 
       # Classes can not implement classes.
-      if inter.definition is not None and is_class(inter.definition):
+      if is_class(inter.definition):
         raise TypeLinkerError('Class is implementeting a class')
 
     # Check for duplicates in interfaces:
@@ -159,4 +170,5 @@ def is_class(ast):
   return (type(ast) == ast_class.ASTClass)
 
 class TypeLinkerError(Exception):
-  pass
+  def __init__(self, msg = ''):
+    self.msg = msg
