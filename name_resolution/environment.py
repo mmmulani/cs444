@@ -15,7 +15,6 @@ class EnvironmentError(Exception):
 
 class Environment(object):
   '''Environment object
-  Currently is a skeleton to show how the Environment will be used.
   An Environment is constructed with:
     - a pointer to a parent Environment (e.g. the class Environment when
       creating a method Environment), this can be None.

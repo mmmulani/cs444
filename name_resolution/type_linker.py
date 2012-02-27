@@ -66,6 +66,7 @@ def link_names(ast):
     for m in decl.methods:
       # Link method return types and parameters.
       if m.is_constructor:
+        # Constructors have no return types.
         pass
       else:
         link(m.return_type, env)
