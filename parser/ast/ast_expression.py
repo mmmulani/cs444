@@ -169,7 +169,7 @@ class ASTThis(ASTNode):
 
 class ASTMethodInvocation(ASTNode):
   def __init__(self, tree):
-    self.children = [[], []]
+    self.children = []
     # self.children is of length 2:
     # - first is an array of expressions to be evaluated in order, and then
     #   accessed by field. e.g.:
@@ -179,7 +179,6 @@ class ASTMethodInvocation(ASTNode):
     # a specific index.
     if tree.children[0].value == 'Identifiers':
       self.children.append([ASTExpression.get_expr_node(tree.children[0])])
-      self
       if tree.children[2].value == 'ArgumentList':
         self.children.append(ASTUtils.get_arg_list(tree.children[2]))
       else:
@@ -197,7 +196,7 @@ class ASTMethodInvocation(ASTNode):
   def show(self, depth = 0):
     self._show(depth)
     if len(self.children[0]) == 1:
-      ASTUtils.println('Method identifiers:')
+      ASTUtils.println('Method identifiers:', depth)
       self.children[0][0].show(depth + 1)
     else:
       ASTUtils.println('Expression:', depth)
