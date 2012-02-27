@@ -13,7 +13,7 @@ class BlockEnvironment(env.Environment):
     super(BlockEnvironment, self).__init__(parent)
     self.locals = {}
     ast.environment = self
-    
+
     self.handle_ast(ast)
 
   def handle_ast(self, tree):
