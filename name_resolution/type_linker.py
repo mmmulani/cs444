@@ -63,11 +63,12 @@ def link_names(ast):
       # Link field types.
       link(f.type_node, env)
 
+    seen_constructor = False
     for m in decl.methods:
       # Link method return types and parameters.
       if m.is_constructor:
         # Constructors have no return types.
-        pass
+        seen_constructor = True
       else:
         link(m.return_type, env)
 
@@ -76,6 +77,9 @@ def link_names(ast):
 
       if m.children[0]:
         link_block(m.children[0], env)
+
+    if not seen_constructor and is_class(decl):
+      raise TypeLinkerError('Class omitted explicit constructor.')
 
 def link(ast, env):
   '''Actually sets the definition for an ASTType node'''
