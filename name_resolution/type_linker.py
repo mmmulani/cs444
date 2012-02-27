@@ -78,6 +78,7 @@ def link_names(ast):
       if m.children[0]:
         link_block(m.children[0], env)
 
+    # Classes must define an explicit constructor.
     if not seen_constructor and is_class(decl):
       raise TypeLinkerError('Class omitted explicit constructor.')
 
