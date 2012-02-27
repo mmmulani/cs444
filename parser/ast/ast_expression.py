@@ -169,7 +169,7 @@ class ASTThis(ASTNode):
 
 class ASTMethodInvocation(ASTNode):
   def __init__(self, tree):
-    self.children = [None, None]
+    self.children = [[], []]
     # self.children is of length 2:
     # - first is an array of expressions to be evaluated in order, and then
     #   accessed by field. e.g.:
