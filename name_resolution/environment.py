@@ -67,10 +67,6 @@ class Environment(object):
   # method that calls method_name on each of the imported environments.
   def _lookup_on_demand(self, method_name, items, name_to_lookup):
     results = []
-    # TODO(mmmulani/a5song): This is kind of busted in the following situation:
-    # package J1_name;
-    # import J1_name.*
-    # public class J1_name { .. }
     if name_to_lookup in items:
       results.append(items[name_to_lookup])
     elif self.parent:
@@ -79,6 +75,10 @@ class Environment(object):
         results.append(parent_result)
 
     for x in self.on_demand_envs:
+      if x.parent == self:
+        # Don't do lookups on your children if the current class itself is part
+        # of the on-demand import.
+        continue
       result = getattr(x, method_name)(name_to_lookup)
       if result:
         results.append(result)
