@@ -87,7 +87,7 @@ class Environment(object):
 
       return None
 
-    if len(results) > 1:
+    if len(set(results)) > 1:
       raise EnvironmentError(
         'Resolved class {0} to more than one definition'.format(name_to_lookup))
 
