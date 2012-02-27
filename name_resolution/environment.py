@@ -75,10 +75,6 @@ class Environment(object):
         results.append(parent_result)
 
     for x in self.on_demand_envs:
-      if x.parent == self:
-        # Don't do lookups on your children if the current class itself is part
-        # of the on-demand import.  This is to prevent infinite recursion.
-        continue
       result = getattr(x, method_name)(name_to_lookup)
       if result:
         results.append(result)
@@ -216,6 +212,9 @@ class Environment(object):
 
     canonical_env = CanonicalEnvironment()
 
+    # Keep track of file enviornment <--> inner environment so that we can
+    # filter out importing outself from an on-demand import.
+    file_to_inner_map = {}
     for tree in trees:
       file_env = Environment(canonical_env)
 
@@ -226,6 +225,7 @@ class Environment(object):
       if tree.class_or_interface and tree.class_or_interface.environment:
         inner_env = tree.class_or_interface.environment
         inner_envs.append(inner_env)
+        file_to_inner_map[file_env] = inner_env
 
         inner_name = str(tree.class_or_interface.name)
         if inner_env.package_name:
@@ -269,6 +269,9 @@ class Environment(object):
 
         if len(possible_envs) == 0:
           raise EnvironmentError('Could not find package {0}'.format(import_))
+
+        possible_envs = [x for x in possible_envs
+            if file_to_inner_map[env] != x]
 
         on_demand_envs.extend(possible_envs)
 
