@@ -67,6 +67,10 @@ class Environment(object):
   # method that calls method_name on each of the imported environments.
   def _lookup_on_demand(self, method_name, items, name_to_lookup):
     results = []
+    # TODO(mmmulani/a5song): This is kind of busted in the following situation:
+    # package J1_name;
+    # import J1_name.*
+    # public class J1_name { .. }
     if name_to_lookup in items:
       results.append(items[name_to_lookup])
     elif self.parent:
