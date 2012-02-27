@@ -23,6 +23,9 @@ def main():
   compile(args)
 
 def compile(filenames):
+  if options.stdlib:
+    filenames.extend(get_stdlib_files())
+
   asts = []
   for filename in filenames:
     f = open(filename)
@@ -112,6 +115,26 @@ def exit_with_failure(stage, message):
         stage, message))
   sys.exit(42)
 
+def get_stdlib_files():
+  return get_all_files('stdlib/2.0')
+
+def get_all_files(path):
+  ret_files = []
+  files = os.listdir(path)
+  for file in files:
+    if file.startswith('.'):
+      continue
+
+    new_path = '{0}/{1}'.format(path, file)
+
+    if os.path.isdir(new_path):
+      dir_files = get_all_files(new_path)
+      ret_files.extend(dir_files)
+    else:
+      ret_files.append(new_path)
+
+  return ret_files
+
 if __name__ == '__main__':
   optparser = OptionParser()
   optparser.add_option('-s', '--scanner', action='store_true', dest='til_scan')
@@ -119,6 +142,7 @@ if __name__ == '__main__':
   optparser.add_option('-p', '--parser', action='store_true', dest='til_parse')
   optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
   optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
+  optparser.add_option('--stdlib', action='store_true', dest='stdlib')
 
   (my_options, args) = optparser.parse_args()
   options = my_options
