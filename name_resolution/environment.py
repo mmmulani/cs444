@@ -7,7 +7,7 @@ from parser.ast.statement.ast_block import ASTBlock
 from parser.ast.statement.ast_for import ASTFor
 from parser.ast.statement.ast_if import ASTIf
 from parser.ast.statement.ast_while import ASTWhile
-from name_resolution.environment.canonical_environment import CanonicalEnvironment
+from name_resolution.canonical_environment import CanonicalEnvironment
 
 class EnvironmentError(Exception):
   def __init__(self, msg):
@@ -39,6 +39,8 @@ class Environment(object):
 
     if self.parent and self.parent.package_name:
       self.package_name = self.parent.package_name
+    else:
+      self.package_name = False
 
   '''Lookup methods:
   There are specialized lookup methods for each type of lookup (field, method,
@@ -66,10 +68,9 @@ class Environment(object):
   # method that calls method_name on each of the imported environments.
   def _lookup_on_demand(self, method_name, items, name_to_lookup):
     results = []
-    if items.get(name_to_lookup, False):
+    if name_to_lookup in items:
       results.append(items[name_to_lookup])
-
-    if self.parent:
+    elif self.parent:
       parent_result = getattr(self.parent, method_name)(name_to_lookup)
       if parent_result:
         results.append(parent_result)
@@ -80,11 +81,16 @@ class Environment(object):
         results.append(result)
 
     if len(results) == 0:
+      if self.package_name:
+        # Hail Mary attempt, maybe the class/interface is in our package.
+        canonical_name = '{0}.{1}'.format(self.package_name, name_to_lookup)
+        return getattr(self, method_name)(canonical_name)
+
       return None
 
     if len(results) > 1:
       raise EnvironmentError(
-        'Resolved class {0} to more than one definition'.format(class_))
+        'Resolved class {0} to more than one definition'.format(name_to_lookup))
 
     return results[0]
 
@@ -97,8 +103,7 @@ class Environment(object):
                                   interface)
 
   def lookup_class_or_interface(self, name):
-    return (self.classes.get(name, False) or self.interfaces.get(name, False) or
-            (self.parent and self.parent.lookup_class_or_interface(name)))
+    return self.lookup_class(name) or self.lookup_interface(name)
 
   def lookup_formal(self, name):
     return (self.formal_params.get(name, False) or
@@ -151,12 +156,9 @@ class Environment(object):
 
     self.classes[class_name] = declaration
 
-  # add_class_internal adds the simple name and canonical name to the
-  # environment.
+  # add_class_internal is used when adding a class defined in this file to its
+  # file's environment.
   def add_class_internal(self, class_name, declaration):
-    if class_name.find('.') == -1 and self.package_name:
-      self.add_class('{0}.{1}'.format(self.package_name, class_name),
-                     declaration)
     self.add_class(class_name, declaration)
 
   # add_interface takes a string for the interface name and a pointer to the
@@ -167,12 +169,9 @@ class Environment(object):
 
     self.interfaces[interface] = declaration
 
-  # add_interface_internal adds the simple name and canonical name of the
-  # interface to the environment.
+  # add_interface_internal is used when adding an interface defined in this file
+  # to the file's environment.
   def add_interface_internal(self, interface, declaration):
-    if interface.find('.') == -1 and self.package_name:
-      self.add_interface('{0}.{1}'.format(self.package_name, interface),
-                         declaration)
     self.add_interface(interface, declaration)
 
   # add_formal takes a string for the formal parameter name and a pointer to the
@@ -243,19 +242,17 @@ class Environment(object):
 
       file_envs.append(file_env)
 
+    canonical_env.set_canonicals(canonicals)
+
     for env in file_envs:
       for import_ in env.single_type_import_strs:
-        possible_envs = [x for x in inner_envs if x.lookup(import_) is not None]
+        class_or_interface = canonical_env.lookup(import_)
 
-        if len(possible_envs) == 0:
+        if class_or_interface is None:
           raise EnvironmentError('Could not find package {0}'.format(import_))
-        if len(possible_envs) > 1:
-          raise EnvironmentError(
-            'Package {0} has multiple definitions'.format(import_))
 
         short_name = import_[import_.rindex('.') + 1:]
 
-        class_or_interface = possible_envs[0].lookup(import_)
         if type(class_or_interface) == ASTClass:
           env.add_class(short_name, class_or_interface)
         else:
@@ -273,8 +270,6 @@ class Environment(object):
       on_demand_envs = list(set(on_demand_envs))
 
       env.on_demand_envs = on_demand_envs
-
-    canonical_env.set_canonicals(canonicals)
 
   def _add_environments_helper(self, tree):
     if type(tree) == ASTClass:
@@ -360,4 +355,5 @@ class Environment(object):
     self.single_type_import_strs = [x.name for x in imports if not x.on_demand]
 
   def handle_package(self, pkg_ast):
-    self.package_name = str(pkg_ast)
+    if pkg_ast:
+      self.package_name = str(pkg_ast)

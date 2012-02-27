@@ -4,6 +4,7 @@ from parser.ast.ast_interface import ASTInterface
 class CanonicalEnvironment(object):
   def __init__(self):
     self.canonicals = {}
+    self.package_name = None
 
   def set_canonicals(self, canonicals):
     self.canonicals = canonicals
@@ -37,7 +38,7 @@ class CanonicalEnvironment(object):
     return None
 
   def lookup(self, iden):
-    return self.lookup_class_or_interface(self, iden)
+    return self.lookup_class_or_interface(iden)
 
   def lookup_method(self, method):
     return None

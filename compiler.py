@@ -46,9 +46,16 @@ def compile(filenames):
   if options.stdlib:
     asts.extend(get_stdlib_asts())
 
-  add_environments(asts)
-  for ast in asts:
-    type_linker.link_names(ast)
+  try:
+    add_environments(asts)
+  except (environment.EnvironmentError) as err:
+    exit_with_failure('environment creation', err.msg)
+
+  try:
+    for ast in asts:
+      type_linker.link_names(ast)
+  except (environment.EnvironmentError) as err:
+    exit_with_failure('type linking', err.msg)
 
   # Everything passes!
   exit_with_pass()

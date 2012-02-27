@@ -57,6 +57,10 @@ def link(ast, env):
   if ast is None or ast.is_primitive():
     # Don't need to link primitive types.
     return
+
+  if ast.name == 'OutputStream':
+    import pdb; pdb.set_trace()
+
   definition = env.lookup(ast.name)
   if definition is None:
     raise TypeLinkerError('Type name {0} not found'.format(ast.name))
