@@ -43,7 +43,7 @@ def link_names(ast):
       # Classes can not implement classes.
       if inter.definition is not None and is_class(inter.definition):
         raise TypeLinkerError('Class is implementeting a class')
- 
+
     # Check for duplicates in interfaces:
     if (len(inter_definitions) != len(set(inter_definitions))):
       raise TypeLinkerError('Class implementing duplicate interfaces')
