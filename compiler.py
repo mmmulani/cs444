@@ -124,7 +124,6 @@ def get_stdlib_asts():
   files = get_all_files(STDLIB_PICKLE_PATH)
   asts = []
   for file in files:
-    print file
     f = open(file, 'rb')
     toks = scanner.TokenConverter.convert(pickle.load(f))
     f.close()
