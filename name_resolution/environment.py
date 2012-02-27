@@ -34,6 +34,11 @@ class Environment(object):
 
     self.methods = {}
 
+    self.on_demand_envs = []
+
+    if self.parent and self.parent.package_name:
+      self.package_name = self.parent.package_name
+
   '''Lookup methods:
   There are specialized lookup methods for each type of lookup (field, method,
   class, etc.). Each of these lookup methods will search the parent Environment
@@ -48,12 +53,47 @@ class Environment(object):
             (self.parent and self.parent.lookup_field(field)))
 
   def lookup_class(self, class_):
-    return (self.classes.get(class_, False) or
-            (self.parent and self.parent.lookup_class(class_)))
+    # Easily handle canonical names.
+    if class_.find('.') > -1:
+      return (self.classes.get(class_, False) or
+              (self.parent and self.parent.lookup_class(class_)))
+
+    # For simple class names, we check the import-on-demands.
+    return self._lookup_on_demand('lookup_class', self.classes, class_)
+
+  # To do on demand lookups (i.e. handle "import A.*"), we use this janky
+  # method that calls method_name on each of the imported environments.
+  def _lookup_on_demand(self, method_name, items, name_to_lookup):
+    results = []
+    if items.get(name_to_lookup, False):
+      results.append(items[name_to_lookup])
+
+    if self.parent:
+      parent_result = getattr(self.parent, method_name)(name_to_lookup)
+      if parent_result:
+        results.append(parent_result)
+
+    for x in self.on_demand_envs:
+      result = getattr(x, method_name)(name_to_lookup)
+      if result:
+        results.append(result)
+
+    if len(results) == 0:
+      return None
+
+    if len(results) > 1:
+      raise EnvironmentError(
+        'Resolved class {0} to more than one definition'.format(class_))
+
+    return results[0]
 
   def lookup_interface(self, interface):
-    return (self.interfaces.get(interface, False) or
-            (self.parent and self.parent.lookup_interface(interface)))
+    if interface.find('.') > -1:
+      return (self.interfaces.get(interface, False) or
+              (self.parent and self.parent.lookup_interface(interface)))
+
+    return self._lookup_on_demand('lookup_interface', self.interfaces,
+                                  interface)
 
   def lookup_class_or_interface(self, name):
     return (self.classes.get(name, False) or self.interfaces.get(name, False) or
@@ -110,6 +150,14 @@ class Environment(object):
 
     self.classes[class_name] = declaration
 
+  # add_class_internal adds the simple name and canonical name to the
+  # environment.
+  def add_class_internal(self, class_name, declaration):
+    if class_name.find('.') == -1 and self.package_name:
+      self.add_class('{0}.{1}'.format(self.package_name, class_name),
+                     declaration)
+    self.add_class(class_name, declaration)
+
   # add_interface takes a string for the interface name and a pointer to the
   # declaration of that interface in an AST.
   def add_interface(self, interface, declaration):
@@ -117,6 +165,14 @@ class Environment(object):
       raise EnvironmentError('Interface {0} already defined.'.format(interface))
 
     self.interfaces[interface] = declaration
+
+  # add_interface_internal adds the simple name and canonical name of the
+  # interface to the environment.
+  def add_interface_internal(self, interface, declaration):
+    if interface.find('.') == -1 and self.package_name:
+      self.add_interface('{0}.{1}'.format(self.package_name, interface),
+                         declaration)
+    self.add_interface(interface, declaration)
 
   # add_formal takes a string for the formal parameter name and a pointer to the
   # parameter's type or declaration (if such an AST node exists).
@@ -148,13 +204,56 @@ class Environment(object):
     self.methods[key] = declaration
 
   @staticmethod
-  def add_environments_to_tree(tree):
-    global_env = Environment(None)
-    global_env._add_environments_helper(tree.class_or_interface)
+  def add_environments_to_trees(trees):
+    file_envs = []
+    inner_envs = []
+    canonicals = {}
+
+    for tree in trees:
+      file_env = Environment(None)
+
+      file_env.handle_package(tree.package)
+      file_env.handle_imports(tree.imports)
+      file_env._add_environments_helper(tree.class_or_interface)
+
+      if tree.class_or_interface and tree.class_or_interface.environment:
+        inner_env = tree.class_or_interface.environment
+        inner_envs.append(inner_env)
+
+    for env in file_envs:
+      for import_ in env.single_type_import_strs:
+        possible_envs = [x for x in inner_envs if x.lookup(import_) is not None]
+
+        if len(possible_envs) == 0:
+          raise EnvironmentError('Could not find package {0}'.format(import_))
+        if len(possible_envs) > 1:
+          raise EnvironmentError(
+            'Package {0} has multiple definitions'.format(import_))
+
+        short_name = import_[import_.rindex('.') + 1:]
+
+        class_or_interface = possible_envs[0].lookup(import_)
+        if type(class_or_interface) == ASTClass:
+          env.add_class(short_name, class_or_interface)
+        else:
+          env.add_interface(short_name, class_or_interface)
+
+      on_demand_envs = []
+      for import_ in env.on_demand_import_strs:
+        possible_envs = [x for x in inner_envs if x.package_name == import_]
+
+        if len(possible_envs) == 0:
+          raise EnvironmentError('Could not find package {0}'.format(import_))
+
+        on_demand_envs.extend(possible_envs)
+
+      on_demand_envs = list(set(on_demand_envs))
+
+      env.on_demand_envs = on_demand_envs
 
   def _add_environments_helper(self, tree):
     if type(tree) == ASTClass:
-      self.add_class(str(tree.name), tree)
+      self.add_class_internal(str(tree.name), tree)
       class_env = Environment(self)
 
       for f in tree.fields:
@@ -166,7 +265,7 @@ class Environment(object):
       tree.environment = class_env
 
     elif type(tree) == ASTInterface:
-      self.add_interface(str(tree.name), tree)
+      self.add_interface_internal(str(tree.name), tree)
       interface_env = Environment(self)
 
       for m in tree.methods:
@@ -230,3 +329,10 @@ class Environment(object):
         for_env._add_environments_helper(for_env)
 
       tree.environment = for_env
+
+  def handle_imports(self, imports):
+    self.on_demand_import_strs = [str(x) for x in imports if x.on_demand]
+    self.single_type_import_strs = [str(x) for x in imports if not x.on_demand]
+
+  def handle_package(self, pkg_ast):
+    self.package_name = str(pkg_ast)

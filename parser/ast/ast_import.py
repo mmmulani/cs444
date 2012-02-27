@@ -41,3 +41,7 @@ class ASTImport(ast_node.ASTNode):
   @property
   def name(self):
     return str(self.children[0])
+
+  @property
+  def on_demand(self):
+    return self.children[1]
