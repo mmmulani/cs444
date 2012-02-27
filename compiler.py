@@ -22,7 +22,16 @@ def main():
     sys.stderr.write('Please provide an input file.\n')
     sys.exit(999)
 
-  compile(args)
+  files = []
+  if len(args) == 1:
+    if os.path.isdir(args[0]):
+      files = get_all_files(args[0])
+    else:
+      files = args
+  else:
+    files = args
+
+  compile(files)
 
 def compile(filenames):
   asts = []
