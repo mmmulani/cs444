@@ -317,21 +317,6 @@ class Environment(object):
 
       tree.environment = block_env
 
-    elif type(tree) == ASTIf:
-      # In order to prevent the if block declarations from leaking into our
-      # environment, we create a new environment for each block.
-      if tree.if_statement:
-        if_env = Environment(self)
-        if_env._add_environments_helper(tree.if_statement)
-
-        tree.if_environment = if_env
-
-      if tree.else_statement:
-        else_env = Environment(self)
-        else_env._add_environments_helper(tree.else_statement)
-
-        tree.else_environment = else_env
-
     elif type(tree) == ASTWhile:
       if tree.statement:
         while_env = Environment(self)

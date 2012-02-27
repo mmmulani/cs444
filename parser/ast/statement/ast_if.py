@@ -11,10 +11,6 @@ class ASTIf(ast_node.ASTNode):
     #   1. The 'if' statement
     #   2. The 'else' statement, if there is one (otherwise, None)
 
-    # These are set by the Environment module when the tree is complete.
-    self.if_environment = None
-    self.else_environment = None
-
     if len(tree.children) != 5 and len(tree.children) != 7:
       raise ASTIfError('If treenode has invalid children')
 
