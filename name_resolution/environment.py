@@ -51,13 +51,13 @@ class Environment(object):
   '''
 
   def lookup_field(self, field):
-    return (self.fields.get(field, False) or
+    return (self.fields.get(field) or
             (self.parent and self.parent.lookup_field(field)))
 
   def lookup_class(self, class_):
     # Easily handle canonical names.
     if class_.find('.') > -1:
-      return (self.classes.get(class_, False) or
+      return (self.classes.get(class_) or
               (self.parent and self.parent.lookup_class(class_)))
 
     # For simple class names, we check the import-on-demands.
@@ -95,7 +95,7 @@ class Environment(object):
 
   def lookup_interface(self, interface):
     if interface.find('.') > -1:
-      return (self.interfaces.get(interface, False) or
+      return (self.interfaces.get(interface) or
               (self.parent and self.parent.lookup_interface(interface)))
 
     return self._lookup_on_demand('lookup_interface', self.interfaces,
@@ -105,11 +105,11 @@ class Environment(object):
     return self.lookup_class(name) or self.lookup_interface(name)
 
   def lookup_formal(self, name):
-    return (self.formal_params.get(name, False) or
+    return (self.formal_params.get(name) or
             (self.parent and self.parent.lookup_formal(name)))
 
   def lookup_local(self, name):
-    return (self.local_vars.get(name, False) or
+    return (self.local_vars.get(name) or
             (self.parent and self.parent.lookup_local(name)))
 
   # lookup is the most general lookup method. It takes an identifier (string)
@@ -136,7 +136,7 @@ class Environment(object):
   def lookup_method(self, method):
     (ret_type, name, param_types) = method
     key = (str(ret_type), name, ','.join([str(x) for x in param_types]))
-    return (self.methods.get(key, False) or
+    return (self.methods.get(key) or
             (self.parent and self.parent.lookup_method(method)))
 
   # add_field takes a string for the field name and a pointer to the declaration
