@@ -55,6 +55,7 @@ for file in tests:
     out = '.'
   else:
     failing_tests.append(path)
+    print 'FAILING TEST: {0}'.format(path)
 
   sys.stderr.write(color + out + END_COLOR)
 
