@@ -77,7 +77,7 @@ class Environment(object):
     for x in self.on_demand_envs:
       if x.parent == self:
         # Don't do lookups on your children if the current class itself is part
-        # of the on-demand import.
+        # of the on-demand import.  This is to prevent infinite recursion.
         continue
       result = getattr(x, method_name)(name_to_lookup)
       if result:
@@ -86,6 +86,8 @@ class Environment(object):
     if len(results) == 0:
       if self.package_name:
         # Hail Mary attempt, maybe the class/interface is in our package.
+        # This will not recuse infinitely because canonical lookups are handled
+        # differently than on-demand lookups.
         canonical_name = '{0}.{1}'.format(self.package_name, name_to_lookup)
         return getattr(self, method_name)(canonical_name)
 
@@ -308,6 +310,12 @@ class Environment(object):
 
       tree.environment = method_env
 
+    elif type(tree) == ASTIf:
+      # The if and else statements may need their own enviornments.
+      self._add_environments_helper(tree.if_statement)
+      if tree.else_statement:
+        self._add_environments_helper(tree.else_statement)
+
     elif type(tree) == ASTBlock:
       block_env = Environment(self)
 
@@ -339,8 +347,10 @@ class Environment(object):
       tree.environment = for_env
 
   def handle_imports(self, imports):
-    self.on_demand_import_strs = [x.name for x in imports if x.on_demand]
-    self.single_type_import_strs = [x.name for x in imports if not x.on_demand]
+    self.on_demand_import_strs = list(set(
+      [x.name for x in imports if x.on_demand]))
+    self.single_type_import_strs = list(set(
+      [x.name for x in imports if not x.on_demand]))
 
   def handle_package(self, pkg_ast):
     if pkg_ast:
