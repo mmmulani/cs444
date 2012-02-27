@@ -220,6 +220,8 @@ class Environment(object):
         inner_env = tree.class_or_interface.environment
         inner_envs.append(inner_env)
 
+      file_envs.append(file_env)
+
     for env in file_envs:
       for import_ in env.single_type_import_strs:
         possible_envs = [x for x in inner_envs if x.lookup(import_) is not None]
@@ -331,8 +333,8 @@ class Environment(object):
       tree.environment = for_env
 
   def handle_imports(self, imports):
-    self.on_demand_import_strs = [str(x) for x in imports if x.on_demand]
-    self.single_type_import_strs = [str(x) for x in imports if not x.on_demand]
+    self.on_demand_import_strs = [x.name for x in imports if x.on_demand]
+    self.single_type_import_strs = [x.name for x in imports if not x.on_demand]
 
   def handle_package(self, pkg_ast):
     self.package_name = str(pkg_ast)
