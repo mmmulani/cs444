@@ -47,6 +47,10 @@ class ASTInterface(ast_node.ASTNode):
   def is_final(self):
     return ('final' in self._modifiers)
 
+  @property
+  def is_abstract(self):
+    return ('abstract' in self._modifiers)
+
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for an interface declaration'''
     if tree.children[0].value != 'Modifiers':
