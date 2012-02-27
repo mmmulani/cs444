@@ -8,9 +8,12 @@ def link_names(ast):
   decl = ast.children[2]
   if decl:
     env = decl.environment
+
+    super_definitions = []
     for super_type in decl.super:
       # Link inherited class / inherited interfaces.
       link(super_type, env)
+      super_definitions.append(super_type.definition)
 
       # Inheritance checks.
 
@@ -25,15 +28,25 @@ def link_names(ast):
           super_type.definition == decl:
         raise TypeLinkerError('Type is extending itself')
 
+    # Check for duplicates in super types:
+    if (len(super_definitions) != len(set(super_definitions))):
+      raise TypeLinkerError('Interface extending duplicate interfaces')
+
+    inter_definitions = []
     for inter in decl.interfaces:
       # Link implemented interfaces.
       link(inter, env)
+      inter_definitions.append(inter.definition)
 
       # Implements checks.
 
       # Classes can not implement classes.
       if inter.definition is not None and is_class(inter.definition):
         raise TypeLinkerError('Class is implementeting a class')
+ 
+    # Check for duplicates in interfaces:
+    if (len(inter_definitions) != len(set(inter_definitions))):
+      raise TypeLinkerError('Class implementing duplicate interfaces')
 
     for f in decl.fields:
       # Link field types.
