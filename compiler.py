@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import sys
+import pickle
 from optparse import OptionParser
 
 import name_resolution.environment as environment
@@ -12,6 +13,7 @@ import scanner.scanner as scanner
 import weeder.weeder as weeder
 
 options = {}
+STDLIB_PICKLE_PATH = 'stdlib/pickle'
 
 def main():
   global options
@@ -23,9 +25,6 @@ def main():
   compile(args)
 
 def compile(filenames):
-  if options.stdlib:
-    filenames.extend(get_stdlib_files())
-
   asts = []
   for filename in filenames:
     f = open(filename)
@@ -43,6 +42,9 @@ def compile(filenames):
 
     if options.verbose:
       sys.stderr.write('Done processing {0}\n'.format(filename))
+
+  if options.stdlib:
+    asts.extend(get_stdlib_asts())
 
   add_environments(asts)
   for ast in asts:
@@ -115,8 +117,24 @@ def exit_with_failure(stage, message):
         stage, message))
   sys.exit(42)
 
-def get_stdlib_files():
-  return get_all_files('stdlib/2.0')
+def get_stdlib_asts():
+  if options.verbose:
+    sys.stderr.write('Importing standard library\n')
+
+  files = get_all_files(STDLIB_PICKLE_PATH)
+  asts = []
+  for file in files:
+    print file
+    f = open(file, 'rb')
+    toks = scanner.TokenConverter.convert(pickle.load(f))
+    f.close()
+
+    parse_tree = parse_toks(toks)
+    weed(parse_tree, file)
+    ast = make_ast(parse_tree)
+    asts.append(ast)
+
+  return asts
 
 def get_all_files(path):
   ret_files = []
@@ -134,6 +152,7 @@ def get_all_files(path):
       ret_files.append(new_path)
 
   return ret_files
+
 
 if __name__ == '__main__':
   optparser = OptionParser()

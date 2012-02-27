@@ -42,7 +42,7 @@ for file in tests:
   else:
     files.append(path)
 
-  args = ['./joosc']
+  args = ['./joosc', '--stdlib']
   args.extend(files)
 
   ret = subprocess.call(args)
