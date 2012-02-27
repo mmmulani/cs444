@@ -59,7 +59,7 @@ def link(ast, env):
     return
   definition = env.lookup(ast.name)
   if definition is None:
-    raise TypeLinkerError('Type name not found')
+    raise TypeLinkerError('Type name {0} not found'.format(ast.name))
   ast.children[0].definition = definition
 
 def link_variable_declaration(ast, env):
