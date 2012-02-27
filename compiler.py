@@ -36,12 +36,12 @@ def compile(filenames):
     parse_tree = parse_toks(toks)
     weed(parse_tree, filename)
     ast = make_ast(parse_tree)
-    add_environments(ast)
     asts.append(ast)
 
     if options.verbose:
       sys.stderr.write('Done processing {0}\n'.format(filename))
 
+  add_environments(asts)
   for ast in asts:
     type_linker.link_names(ast)
 
@@ -94,9 +94,9 @@ def make_ast(parse_tree):
 
   return ast
 
-def add_environments(ast):
+def add_environments(asts):
   try:
-    environment.Environment.add_environments_to_tree(ast)
+    environment.Environment.add_environments_to_trees(asts)
   except environment.EnvironmentError as err:
     exit_with_failure('environment creation', err.msg)
 
