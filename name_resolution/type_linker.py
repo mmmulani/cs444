@@ -2,7 +2,7 @@ import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 import parser.ast.statement as ast_statement
 import parser.ast.ast_class as ast_class
-import parser.ast.ast_class as ast_interface
+import parser.ast.ast_interface as ast_interface
 
 def link_names(ast):
   decl = ast.children[2]
@@ -17,7 +17,7 @@ def link_names(ast):
       # Classes can only extend other classes.
       # Interfaces can only extend other interfaces.
       if super_type.definition is not None and \
-          is_class(super_type.definition) == is_class(decl):
+          is_class(super_type.definition) != is_class(decl):
         raise TypeLinkerError('Extending type mismatch')
 
       # Classes/Interfaces can not extend themselves.
@@ -60,7 +60,7 @@ def link(ast, env):
   definition = env.lookup(ast.name)
   if definition is None:
     raise TypeLinkerError('Type name {0} not found'.format(ast.name))
-  ast.children[0].definition = definition
+  ast.definition = definition
 
 def link_variable_declaration(ast, env):
   link(ast.type_node, env)
@@ -140,10 +140,10 @@ def link_statement(ast, env):
     link_expression(ast, env)
 
 def is_class(ast):
-  if type(decl) not in [ast_class.ASTClass, ast_interface.ASTInterface]:
+  if type(ast) not in [ast_class.ASTClass, ast_interface.ASTInterface]:
     raise TypeLinkerError(
         'Tried to call is_class() on a non-class/interface object')
-  return (type(decl) == ast_class.ASTClass)
+  return (type(ast) == ast_class.ASTClass)
 
 class TypeLinkerError(Exception):
   pass
