@@ -61,10 +61,12 @@ for file in tests:
   # print '{0}: {1}'.format(path, ret)
 
 print
-print '# of passing: {0}'.format(len(passing_tests))
-print '# of failing: {0}'.format(len(failing_tests))
 
 if len(failing_tests) > 0:
   print 'The following tests have failed:'
   for f in failing_tests:
     print f
+
+print
+print '# of passing: {0}'.format(len(passing_tests))
+print '# of failing: {0}'.format(len(failing_tests))
