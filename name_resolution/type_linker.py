@@ -32,7 +32,7 @@ def link_names(ast):
 
 def link(ast, env):
   '''Actually sets the definition for an ASTType node'''
-  if ast is None or ast.is_primitive:
+  if ast is None or ast.is_primitive():
     # Don't need to link primitive types.
     return
   definition = env.lookup(ast.name)
