@@ -7,6 +7,7 @@ from parser.ast.statement.ast_block import ASTBlock
 from parser.ast.statement.ast_for import ASTFor
 from parser.ast.statement.ast_if import ASTIf
 from parser.ast.statement.ast_while import ASTWhile
+from name_resolution.environment.canonical_environment import CanonicalEnvironment
 
 class EnvironmentError(Exception):
   def __init__(self, msg):
@@ -209,8 +210,10 @@ class Environment(object):
     inner_envs = []
     canonicals = {}
 
+    canonical_env = CanonicalEnvironment()
+
     for tree in trees:
-      file_env = Environment(None)
+      file_env = Environment(canonical_env)
 
       file_env.handle_package(tree.package)
       file_env.handle_imports(tree.imports)
@@ -219,6 +222,24 @@ class Environment(object):
       if tree.class_or_interface and tree.class_or_interface.environment:
         inner_env = tree.class_or_interface.environment
         inner_envs.append(inner_env)
+
+        inner_name = str(tree.class_or_interface.name)
+        if inner_env.package_name:
+          canonical_name = '{0}.{1}'.format(inner_env.package_name, inner_name)
+        else:
+          canonical_name = inner_name
+
+        if canonical_name in canonicals:
+          raise EnvironmentError(
+            'Canonical name repeated: {0}'.format(canonical_name))
+        canonicals[canonical_name] = tree.class_or_interface
+        # XXX: Handle any classes/interfaces in java.lang by adding them to our
+        # set of canonicals manually.
+        if inner_env.package_name == 'java.lang':
+          if inner_name in canonicals:
+            raise EnvironmentError(
+              'Canonical name repeated: {0}'.format(inner_name))
+          canonicals[inner_name] = tree.class_or_interface
 
       file_envs.append(file_env)
 
@@ -252,6 +273,8 @@ class Environment(object):
       on_demand_envs = list(set(on_demand_envs))
 
       env.on_demand_envs = on_demand_envs
+
+    canonical_env.set_canonicals(canonicals)
 
   def _add_environments_helper(self, tree):
     if type(tree) == ASTClass:
