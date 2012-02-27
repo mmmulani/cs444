@@ -81,7 +81,7 @@ def link_names(ast):
       # Checks for the methods.
 
       # If a method is abstract, then the class must also be abstract.
-      if m.is_abstract and not decl.is_abstract:
+      if is_class(decl) and m.is_abstract and not decl.is_abstract:
         raise TypeLinkerError('Classes with abstract methods must be abstract')
 
     # Classes must define an explicit constructor.
