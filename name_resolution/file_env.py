@@ -75,10 +75,6 @@ class FileEnvironment(env.Environment):
     qualified = (name.find('.') > -1)
 
     if not qualified:
-      # TODO: where do we check fully qualified names with no pkg?
-      # Checking if a simple name is the enclosing class is done in the
-      # class environment.
-
       # Check if the name is a single-type import.
       t = self.single_import.get(name)
       if t:
@@ -105,6 +101,15 @@ class FileEnvironment(env.Environment):
               name))
       elif len(results) == 1:
         return results[0]
+
+      # TODO: where do we check fully qualified names with no pkg?
+      # Checking if a simple name is the enclosing class is done in the
+      # class environment.
+      # XXX: If we uncomment the code below, we greatly reduce the # of
+      # failures, but we'll be hiding problems from ourselves.
+      # t = self._lookup_canonical(name)
+      # if t:
+      #   return t
 
     else:
       # Qualified names must exist in the canonical names environment.
