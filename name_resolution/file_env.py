@@ -39,6 +39,9 @@ class FileEnvironment(env.Environment):
         # list of all the names that were imported.
         self._single_import_strs.append(im.name)
 
+    # Since duplicate imports are allowed, uniqify the list.
+    self.on_demand = list(set(self.on_demand))
+
     # Create an environment for the class/interface definiton.
     if ast.class_or_interface:
       type_env.TypeEnvironment(self, ast.class_or_interface)
