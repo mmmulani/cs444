@@ -32,15 +32,16 @@ class FileEnvironment(env.Environment):
     for im in ast.imports:
       if im.on_demand and im.name != self.package_name:
         # Don't add an on-demand import if it's our own package.
-        self.on_demand.append(im.name)
+        self.on_demand.append(im.name.strip())
       elif not im.on_demand:
         # Single type imports have to be handled after all the environments have
         # been built in handle_single_imports(), but for now we'll just store a
         # list of all the names that were imported.
-        self._single_import_strs.append(im.name)
+        self._single_import_strs.append(im.name.strip())
 
     # Since duplicate imports are allowed, uniqify the list.
     self.on_demand = list(set(self.on_demand))
+    self._single_import_strs = list(set(self._single_import_strs))
 
     # Create an environment for the class/interface definiton.
     if ast.class_or_interface:

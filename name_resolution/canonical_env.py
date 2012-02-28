@@ -48,8 +48,11 @@ class CanonicalEnvironment(env.Environment):
     if name == 'java.lang':
       return True
     for ast in self.asts:
-      if ast.package and str(ast.package.name) == name:
-        return True
+      if ast.package:
+        package_name = str(ast.package.name)
+        # Prefixes of packages are still packages.
+        if package_name.startswith(name + '.') or package_name == name:
+          return True
     return False
 
 
