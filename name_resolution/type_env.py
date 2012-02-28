@@ -67,6 +67,9 @@ class TypeEnvironment(env.Environment):
     return self.fields.get(name)
 
   def lookup_type(self, name):
+    # We prioritize the enclosing class when doing simple name lookup.
+    if name == self.short_name:
+      return self.definition
     return self.parent.lookup_type(name)
 
   # Lookup methods not shown here should throw an exception.
