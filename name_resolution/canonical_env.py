@@ -45,6 +45,8 @@ class CanonicalEnvironment(env.Environment):
     return self.names.get(name)
 
   def has_package(self, name):
+    if name == 'java.lang':
+      return True
     for ast in self.asts:
       if ast.package and str(ast.package.name) == name:
         return True

@@ -87,11 +87,21 @@ class FileEnvironment(env.Environment):
           return t
 
       # Check if it's part of an on-demand import.
+      results = []
       for p in self.on_demand:
         full_name = '{0}.{1}'.format(p, name)
         t = self._lookup_canonical(full_name)
         if t:
-          return t
+          results.append(t)
+
+      # Check that the name resolved to only one type.
+      if len(results) > 1:
+        raise FileEnvironmentError(
+            'On-demand import returned more than one type for name {0}'.format(
+              name))
+      elif len(results) == 1:
+        return results[0]
+
     else:
       # Qualified names must exist in the canonical names environment.
       return self._lookup_canonical(name)
