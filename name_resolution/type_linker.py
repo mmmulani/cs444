@@ -93,7 +93,7 @@ def link(ast, env):
   if ast is None or ast.is_primitive():
     # Don't need to link primitive types.
     return
-  definition = env.lookup(ast.name)
+  definition = env.lookup_type(ast.name)
   if definition is None:
     raise TypeLinkerError('Type name {0} not found'.format(ast.name))
   ast.definition = definition

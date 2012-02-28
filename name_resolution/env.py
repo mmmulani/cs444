@@ -27,3 +27,15 @@ class Environment(object):
 class EnvironmentError(Exception):
   def __init__(self, msg):
     self.msg = msg
+
+def make_environments(asts):
+  import canonical_env
+  import file_env
+  global_env = canonical_env.CanonicalEnvironment(asts)
+
+  envs = []
+  for ast in asts:
+    envs.append(file_env.FileEnvironment(global_env, ast))
+
+  for env in envs:
+    env.handle_single_imports()
