@@ -33,7 +33,7 @@ class FileEnvironment(env.Environment):
       if im.on_demand and im.name != self.package_name:
         # Don't add an on-demand import if it's our own package.
         self.on_demand.append(im.name)
-      else:
+      elif not im.on_demand:
         # Single type imports have to be handled after all the environments have
         # been built in handle_single_imports(), but for now we'll just store a
         # list of all the names that were imported.
