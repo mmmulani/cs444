@@ -1,5 +1,7 @@
 import env
 import method_env
+import parser.ast.ast_class as ast_class
+import parser.ast.ast_interface as ast_interface
 
 class TypeEnvironment(env.Environment):
   '''An environment for a type (a class or interface).'''
@@ -21,7 +23,7 @@ class TypeEnvironment(env.Environment):
     self.methods = []
 
     # A list of environments inherited (either extends or implements)
-    self.inherited = []  
+    self.inherited = []
 
     self.handle_ast(ast)
 
@@ -61,7 +63,7 @@ class TypeEnvironment(env.Environment):
           'Found more than one method matching signature {0}'.format(sig))
 
     return (x[0] if len(x) == 1 else None)
-  
+
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
     return self.fields.get(name)
@@ -74,5 +76,5 @@ class TypeEnvironment(env.Environment):
 
   # Lookup methods not shown here should throw an exception.
 
-class ClassEnvironmentError(env.EnvironmentError):
+class TypeEnvironmentError(env.EnvironmentError):
   pass

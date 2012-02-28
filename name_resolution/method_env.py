@@ -1,4 +1,5 @@
 import env
+import block_env
 import parser.ast.ast_method as ast_method
 
 class MethodEnvironment(env.Environment):
@@ -21,7 +22,8 @@ class MethodEnvironment(env.Environment):
     for p in ast.params:
       self.add_formal(str(p.name), p)
 
-    BlockEnvironment(self, ast.body)
+    if ast.body:
+      block_env.BlockEnvironment(self, ast.body)
 
   def add_formal(self, name, ast):
     '''Add a formal parameter to this environment'''

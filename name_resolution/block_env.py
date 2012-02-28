@@ -29,7 +29,7 @@ class BlockEnvironment(env.Environment):
 
     # This should be a block statement, so just handle each of the individual
     # statements.
-    for s in s.statements:
+    for s in tree.statements:
       self._handle_statement(s)
 
   def _handle_statement(self, s):
@@ -48,13 +48,13 @@ class BlockEnvironment(env.Environment):
       if s.else_statement:
         self._handle_statement(s.else_statement)
     elif t == ASTFor:
-      for_env = BlockEnvironment(self, ast)
+      for_env = BlockEnvironment(self, s)
 
   def add_local(self, name, ast):
     '''Add a local variable to the environment.'''
     # You can't hide local variables in Java, so don't add locals that already
     # exist.
-    if name in self.locals:
+    if self.lookup_local(name):
       raise BlockEnvironmentError(
           'Tried to add local {0} that already exists.'.format(name))
 
@@ -67,7 +67,7 @@ class BlockEnvironment(env.Environment):
     variable does not exist in this context.'''
     ret = self.locals.get(name)
     if not ret:
-      ret = self.parent.lookup_locals(name)
+      ret = self.parent.lookup_local(name)
     return ret
 
   # Lookups for other types of names will be delegated to the parent

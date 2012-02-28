@@ -1,5 +1,6 @@
 import env
 import parser.ast.ast_root as ast_root
+import type_env
 
 class FileEnvironment(env.Environment):
   '''Environment for a file
@@ -15,7 +16,7 @@ class FileEnvironment(env.Environment):
     ast.environment = self
 
     # List of on-demand import names
-    self.on_demand = []
+    self.on_demand = ['java.lang']
     # A mapping for single-type import names to AST nodes.
     self.single_import = {}
     self._single_import_strs = []
@@ -40,7 +41,7 @@ class FileEnvironment(env.Environment):
 
     # Create an environment for the class/interface definiton.
     if ast.class_or_interface:
-      TypeEnvironment(self, ast.class_or_interface)
+      type_env.TypeEnvironment(self, ast.class_or_interface)
 
   def handle_single_imports(self):
     '''Deals with single imports for the file environment
@@ -81,7 +82,9 @@ class FileEnvironment(env.Environment):
 
       # Check canonical names to see if it's a type in the same package.
       if self.package_name:
-        self._lookup_canonical('{0}.{1}'.format(self.package_name, name)
+        t = self._lookup_canonical('{0}.{1}'.format(self.package_name, name))
+        if t:
+          return t
 
       # Check if it's part of an on-demand import.
       for p in self.on_demand:
