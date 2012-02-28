@@ -37,6 +37,8 @@ class CanonicalEnvironment(env.Environment):
         # No class name or package name?  Just fogettaboutit.
         continue
 
+      if name in self.names:
+        raise CanonicalEnvironmentError('Duplicate type')
       self.names[name] = ast.class_or_interface
 
   def lookup_type(self, name):
