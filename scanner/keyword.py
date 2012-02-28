@@ -1,10 +1,8 @@
-from components.composed_dfa import ComposedDFA
-from components.one_of import OneOf
-from components.string_dfa import String
+from components.dfa import DFA
 
-class Keyword(ComposedDFA):
+class Keyword(DFA):
 
-  KEYWORDS = [
+  KEYWORDS = set([
       "abstract",
       "boolean",
       "break",
@@ -53,14 +51,19 @@ class Keyword(ComposedDFA):
       "void",
       "volatile",
       "while",
-  ]
+  ])
+
+  PREFIXES = set([x[:i] for x in KEYWORDS for i in range(1, len(x) + 1)])
 
   def __init__(self):
-    machine_list = [String(x) for x in Keyword.KEYWORDS]
-    self.machine = OneOf(*machine_list)
-
-    # NOTE: This must be called last as self.machine must be set.
     super(Keyword, self).__init__()
+
+  def _delta(self, x):
+    new_lex = self.lexeme + x
+    return new_lex in self.PREFIXES
+
+  def is_final(self):
+    return self.lexeme in self.KEYWORDS
 
   def clone(self):
     return Keyword()
