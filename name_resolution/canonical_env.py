@@ -44,7 +44,7 @@ class CanonicalEnvironment(env.Environment):
 
   def has_package(self, name):
     for ast in self.asts:
-      if ast.package and str(ast.package_name) == name:
+      if ast.package and str(ast.package.name) == name:
         return True
     return False
 
