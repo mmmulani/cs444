@@ -62,7 +62,7 @@ class TypeEnvironment(env.Environment):
       raise TypeEnvironmentError(
           'Found more than one method matching signature {0}'.format(sig))
 
-    return (x[0] if len(x) == 1 else None)
+    return (ret[0] if len(ret) == 1 else None)
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''

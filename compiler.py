@@ -145,7 +145,7 @@ def get_stdlib_asts():
     f.close()
 
     parse_tree = parse_toks(toks)
-    weed(parse_tree, file)
+    weed(parse_tree, file.replace('.javac', '.java'))
     ast = make_ast(parse_tree)
     asts.append(ast)
 
