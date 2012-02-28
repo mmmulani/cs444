@@ -153,6 +153,8 @@ def link_expression(ast, env):
     link_cast(ast, env)
   elif t == ast_expression.ASTInstanceOf:
     link(ast.type_node, env)
+  elif t == ast_expression.ASTClassInstanceCreation:
+    link(ast.type_node, env)
 
   # Recurse for each expression child.
   for e in ast.expressions:
