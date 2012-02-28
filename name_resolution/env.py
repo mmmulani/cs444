@@ -33,7 +33,7 @@ class Environment(object):
 
   def post_create(self):
     for env in self.children:
-      self.post_create()
+      env.post_create()
 
 class EnvironmentError(Exception):
   def __init__(self, msg):
