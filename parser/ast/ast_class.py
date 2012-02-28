@@ -135,7 +135,7 @@ class ASTClass(ast_node.ASTNode):
       # Super is optional.
       return []
 
-    # return a list, to match properties of ASTInterface 
+    # return a list, to match properties of ASTInterface
     return [ast_type.ASTType(node.children[1].children[0])]
 
   def _get_interfaces(self, tree):
