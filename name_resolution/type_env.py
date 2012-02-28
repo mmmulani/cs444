@@ -52,8 +52,13 @@ class TypeEnvironment(env.Environment):
     self.fields[name] = ast
 
   def handle_inherited(self):
-    # TODO(songandrew/mmmulani): Write this.
-    pass
+    inherited_types = self.definition.super + self.definition.interfaces
+    for t in inherited_types:
+      if t.definition is None:
+        raise TypeEnvironmentError(
+          'Inherited type {0} has no definition set'.format(t))
+
+      self.inherited.append(t.definition)
 
   def lookup_method(self, sig):
     '''Look up a method based on its signature'''
