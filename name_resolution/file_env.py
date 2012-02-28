@@ -103,6 +103,11 @@ class FileEnvironment(env.Environment):
     '''Perform a type name lookup in the canonical environment.'''
     return self.parent.lookup_type(name)
 
+  def post_create(self):
+    self.handle_single_imports()
+
+    super(FileEnvironment, self).post_create()
+
 
 class FileEnvironmentError(env.EnvironmentError):
   pass

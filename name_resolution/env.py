@@ -2,6 +2,10 @@ class Environment(object):
   '''The base environment object'''
   def __init__(self, parent):
     self.parent = parent
+    self.children = []
+
+    if self.parent:
+      self.parent.add_child(self)
 
   def lookup_method(self, sig):
     # Overload this if you need to look up methods in your context.
@@ -24,6 +28,13 @@ class Environment(object):
     # your context.
     raise EnvironmentError('lookup_type() not overloaded.')
 
+  def add_child(self, env):
+    self.children.append(env)
+
+  def post_create(self):
+    for env in self.children:
+      self.post_create()
+
 class EnvironmentError(Exception):
   def __init__(self, msg):
     self.msg = msg
@@ -38,4 +49,4 @@ def make_environments(asts):
     envs.append(file_env.FileEnvironment(global_env, ast))
 
   for env in envs:
-    env.handle_single_imports()
+    env.post_create()
