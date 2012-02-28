@@ -99,12 +99,19 @@ class FileEnvironment(env.Environment):
     # Nothing found...?
     return None
 
+  def check(self):
+    # Ensure all on-demand imports are valid packages.
+    for p in self.on_demand:
+      if not self.parent.has_package(p):
+        raise FileEnvironmentError('Invalid on-demand package loaded')
+
   def _lookup_canonical(self, name):
     '''Perform a type name lookup in the canonical environment.'''
     return self.parent.lookup_type(name)
 
   def post_create(self):
     self.handle_single_imports()
+    self.check()
 
     super(FileEnvironment, self).post_create()
 

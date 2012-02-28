@@ -7,6 +7,7 @@ class CanonicalEnvironment(env.Environment):
 
     # Mapping from canonical names to AST
     self.names = {}
+    self.asts = asts
 
     self.handle_asts(asts)
 
@@ -40,6 +41,13 @@ class CanonicalEnvironment(env.Environment):
 
   def lookup_type(self, name):
     return self.names.get(name)
+
+  def has_package(self, name):
+    for ast in self.asts:
+      if ast.package and str(ast.package_name) == name:
+        return True
+    return False
+
 
 class CanonicalEnvironmentError(env.EnvironmentError):
   pass
