@@ -21,6 +21,8 @@ class MethodEnvironment(env.Environment):
     for p in ast.params:
       self.add_formal(str(p.name), p)
 
+    BlockEnvironment(self, ast.body)
+
   def add_formal(self, name, ast):
     '''Add a formal parameter to this environment'''
     if name in self.formals:
