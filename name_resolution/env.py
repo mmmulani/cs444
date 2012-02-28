@@ -31,9 +31,9 @@ class Environment(object):
   def add_child(self, env):
     self.children.append(env)
 
-  def post_create(self):
+  def post_create(self, round_number):
     for env in self.children:
-      env.post_create()
+      env.post_create(round_number)
 
 class EnvironmentError(Exception):
   def __init__(self, msg):
@@ -48,5 +48,7 @@ def make_environments(asts):
   for ast in asts:
     envs.append(file_env.FileEnvironment(global_env, ast))
 
-  for env in envs:
-    env.post_create()
+  for round_number in xrange(2):
+    for env in envs:
+      env.post_create(round_number)
+

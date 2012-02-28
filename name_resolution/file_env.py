@@ -128,11 +128,12 @@ class FileEnvironment(env.Environment):
     '''Perform a type name lookup in the canonical environment.'''
     return self.parent.lookup_type(name)
 
-  def post_create(self):
-    self.handle_single_imports()
-    self.check()
+  def post_create(self, round_number):
+    if round_number == 0:
+      self.handle_single_imports()
+      self.check()
 
-    super(FileEnvironment, self).post_create()
+    super(FileEnvironment, self).post_create(round_number)
 
 
 class FileEnvironmentError(env.EnvironmentError):
