@@ -4,6 +4,7 @@
  * block ends.)
  */
 public class J1_x_DeclarationOrder {
+  public J1_x_DeclarationOrder() {}
   public static void main(String[] args) {
     {
       int y = 0;
