@@ -38,8 +38,9 @@ class MethodEnvironment(env.Environment):
     return self.formals.get(name)
 
   def lookup_local(self, name):
-    # We don't want lookup_local to propogate up any further.
-    return None
+    # We don't want lookup_local to propogate up any further, but local
+    # variables can't override formal parameters either.
+    return self.lookup_formal(name)
 
   # The rest of the lookup methods should just call the parent version.
   def lookup_type(self, name):
