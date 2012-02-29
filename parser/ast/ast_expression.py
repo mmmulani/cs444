@@ -89,7 +89,7 @@ def make_ast_binary_node(tree):
 class ASTExpressionError(Exception):
   pass
 
-class ASTFieldAccess(ASTNode):
+class ASTFieldAccess(ASTExpression):
   def __init__(self, tree):
     self.children = [
         ASTExpression.get_expr_node(tree.children[0]),
@@ -100,7 +100,7 @@ class ASTFieldAccess(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0]]
 
-class ASTLiteral(ASTNode):
+class ASTLiteral(ASTExpression):
   def __init__(self, tree):
     # TODO: Add typing info and possibly check that the literal is valid Joos.
     self.children = [tree.lexeme]
@@ -114,7 +114,7 @@ class ASTLiteral(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return []
 
-class ASTUnary(ASTNode):
+class ASTUnary(ASTExpression):
   def __init__(self, tree):
     # TODO: Convert operator to an enum?
     # TODO(mmmulani): FUCKING COMMENTS.
@@ -133,7 +133,7 @@ class ASTUnary(ASTNode):
     # Copy this array so the caller can modify it.
     return [self.children[0]]
 
-class ASTAssignment(ASTNode):
+class ASTAssignment(ASTExpression):
   def __init__(self, tree):
     # TODO(mmmulani): Write fucking comments!
     # tree should be an Assignment node.
@@ -146,7 +146,7 @@ class ASTAssignment(ASTNode):
     # Copy this array so the caller can modify it.
     return [self.children[0], self.children[1]]
 
-class ASTArrayAccess(ASTNode):
+class ASTArrayAccess(ASTExpression):
   def __init__(self, tree):
     # TODO(mmmulani): Write fucking comments!
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
@@ -158,7 +158,7 @@ class ASTArrayAccess(ASTNode):
     # Copy this array so the caller can modify it.
     return [self.children[0], self.children[1]]
 
-class ASTThis(ASTNode):
+class ASTThis(ASTExpression):
   def __init__(self, tree):
     self.children = []
 
@@ -167,7 +167,7 @@ class ASTThis(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return []
 
-class ASTMethodInvocation(ASTNode):
+class ASTMethodInvocation(ASTExpression):
   def __init__(self, tree):
     self.children = []
     # self.children is of length 2:
@@ -212,7 +212,7 @@ class ASTMethodInvocation(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return self.children[0] + self.children[1]
 
-class ASTInstanceOf(ASTNode):
+class ASTInstanceOf(ASTExpression):
   def __init__(self, tree):
     # x instanceof y
     # Two children.
@@ -234,7 +234,7 @@ class ASTInstanceOf(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0]]
 
-class ASTBinary(ASTNode):
+class ASTBinary(ASTExpression):
   def __init__(self, tree):
     # TODO: convert operator to enum?
     # Children is [left operand, right operand].
@@ -254,7 +254,7 @@ class ASTBinary(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0], self.children[1]]
 
-class ASTClassInstanceCreation(ASTNode):
+class ASTClassInstanceCreation(ASTExpression):
   # Children is of length 2:
   # 0. ASTType corresponding to class type.
   # 1. List of arguments (possibly empty).
@@ -283,7 +283,7 @@ class ASTClassInstanceCreation(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return self.children[1]
 
-class ASTIdentifiers(ASTNode):
+class ASTIdentifiers(ASTExpression):
   def __init__(self, tree):
     if tree.value == 'Identifier':
       self.children = [tree.lexeme]
@@ -312,7 +312,7 @@ class ASTIdentifiers(ASTNode):
     '''Returns a list of all ASTExpression children.'''
     return []
 
-class ASTArrayCreation(ASTNode):
+class ASTArrayCreation(ASTExpression):
   # Children is of length 2:
   # 0. ASTType
   # 1. Expression corresponding to array length
