@@ -56,7 +56,7 @@ class ASTInterface(ast_node.ASTNode):
 
   @property
   def is_abstract(self):
-    return ('abstract' in self._modifiers)
+    return True   # interfaces are implicitly abstract
 
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for an interface declaration'''
