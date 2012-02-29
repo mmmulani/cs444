@@ -113,7 +113,7 @@ class Weeder(object):
           formal_param_children = len(param_node.children)
           if formal_param_children == 1:
             param_type = self._get_type_from_node(
-            param_node.children[0].children[0])
+                param_node.children[0].children[0])
             if param_type == 'int':
               # This is the only valid case. Also, holy shit.
               return
@@ -133,8 +133,8 @@ class Weeder(object):
     if len(tree.children) == 0:
       return tree.value
     elif tree.value == 'Identifiers':
-      # TODO: Implement this if you need it
-      raise Exception('Need to implement getting type from Identifiers node')
+      # XXX: Implement this properly if you need it.
+      return ''
     else:
       return self._get_type_from_node(tree.children[0])
 
