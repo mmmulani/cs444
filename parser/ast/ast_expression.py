@@ -181,27 +181,23 @@ class ASTThis(ASTExpression):
 
 class ASTMethodInvocation(ASTExpression):
   def __init__(self, tree):
-    self.children = []
+    self.children = [[], []]
     # self.children is of length 2:
-    # - first is an array of expressions to be evaluated in order, and then
+    # - first is a list of expressions to be evaluated in order, and then
     #   accessed by field. e.g.:
     #     (i.j).k => [Expression for "(i.j)", Expression for "k"]
-    # - second is an array of argument expressions (possibly empty)
-    # TODO(mmmulani): Don't use append on self.children. Instead, assign to
-    # a specific index.
+    # - second is a list of argument expressions (possibly empty)
     if tree.children[0].value == 'Identifiers':
-      self.children.append([ASTExpression.get_expr_node(tree.children[0])])
+      self.children[0] = [ASTExpression.get_expr_node(tree.children[0])]
       if tree.children[2].value == 'ArgumentList':
-        self.children.append(ASTUtils.get_arg_list(tree.children[2]))
-      else:
-        self.children.append([])
+        self.children[1] = ASTUtils.get_arg_list(tree.children[2])
     else:
       prefix_exprs = [ASTExpression.get_expr_node(tree.children[0]),
                       ASTExpression.get_expr_node(tree.children[2])]
+
+      arg_list = []
       if tree.children[4].value == 'ArgumentList':
         arg_list = ASTUtils.get_arg_list(tree.children[4])
-      else:
-        arg_list = []
 
       self.children = [prefix_exprs, arg_list]
 
@@ -267,16 +263,14 @@ class ASTBinary(ASTExpression):
     return [self.children[0], self.children[1]]
 
 class ASTClassInstanceCreation(ASTExpression):
-  # Children is of length 2:
-  # 0. ASTType corresponding to class type.
-  # 1. List of arguments (possibly empty).
-  # TODO(mmmulani): Don't use append.  Set at a speficic index.
   def __init__(self, tree):
-    self.children = [ASTType(tree.children[1].children[0])]
+    # Children is of length 2:
+    # 0. ASTType corresponding to class type.
+    # 1. List of arguments (possibly empty).
+    self.children = [ASTType(tree.children[1].children[0]), []]
+
     if tree.children[3].value == 'ArgumentList':
-      self.children.append(ASTUtils.get_arg_list(tree.children[3]))
-    else:
-      self.children.append([])
+      self.children[1] = ASTUtils.get_arg_list(tree.children[3])
 
   def show(self, depth = 0):
     self._show(depth)
