@@ -54,16 +54,16 @@ class TypeEnvironment(env.Environment):
 
     # We handle constructors separately from methods because a method is
     # allowed to have the same name and parameter types as a constructor.
-    constructor_sigs = [(name, tuple(params)) for (ret, name, params), defn in
-                        self.methods if ret is None]
+    constructor_sigs = [(name, tuple(params)) for (name, params), defn in
+                        self.methods if defn.return_type is None]
     for i, sig in enumerate(constructor_sigs):
       if sig in constructor_sigs[i + 1:]:
         raise TypeEnvironmentError(
           'Found constructors with the same signature in {0}'.format(
             canonical_name))
 
-    method_sigs = [(name, tuple(params)) for (ret, name, params), defn in
-                    self.methods if ret is not None]
+    method_sigs = [(name, tuple(params)) for (name, params), defn in
+                    self.methods if defn.return_type is not None]
     for i, sig in enumerate(method_sigs):
       if sig in method_sigs[i + 1:]:
         raise TypeEnvironmentError(
@@ -96,13 +96,16 @@ class TypeEnvironment(env.Environment):
     if len(ret) > 1:
       raise TypeEnvironmentError(
           'Found more than one method matching signature {0}'.format(sig))
-    elif len(ret) == 0:
-      for inherited in self.inherited:
-        ret = inherited.lookup_method(sig)
-        if ret:
-          return ret
+    elif len(ret) == 1:
+      return ret[0]
 
-    return (ret[0] if len(ret) == 1 else None)
+    # We didn't find the method locally, so check inherited environments:
+    for inherited in self.inherited:
+      ret = inherited.lookup_method(sig)
+      if ret:
+        return ret
+    return None
+
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
@@ -126,6 +129,32 @@ class TypeEnvironment(env.Environment):
     if round_number == 1:
       self.handle_duplicate_methods()
       self.handle_inherited()
+
+    elif round_number == 2:
+      for method_sig, ast in self.methods:
+        inherited_methods = []
+        for inherited in self.inherited:
+          m = inherited.lookup_method(method_sig)
+          if m:
+            inherited_methods.append(m)
+        if len(inherited_methods) > 1:
+          # TODO: (gnleece) figure out how to handle this case
+          pass
+        elif len(inherited_methods) == 1:
+          old_m = inherited_methods[0]
+          new_m = ast
+
+          if ('static' in old_m.modifiers) != ('static' in new_m.modifiers):
+            raise TypeEnvironmentError('Static/non-static override')
+          if not(old_m.return_type == new_m.return_type):
+            raise TypeEnvironmentError(
+              'Overriding method with different return type')
+          if (('public' in old_m.modifiers) and
+              ('public' not in new_m.modifiers)):
+            raise TypeEnvironmentError(
+              'Overriding public method with non-public method')
+          if ('final' in old_m.modifiers):
+            raise TypeEnvironmentError('Overriding final method')
 
     super(TypeEnvironment, self).post_create(round_number)
 

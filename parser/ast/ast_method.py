@@ -54,7 +54,7 @@ class ASTMethod(ast_node.ASTNode):
   @property
   def signature(self):
     param_types = [x.type for x in self.params]
-    return (self.return_type, self.name, param_types)
+    return (self.name, param_types)
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Name: {0}'.format(self.name), depth)
