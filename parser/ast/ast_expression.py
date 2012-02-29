@@ -74,8 +74,17 @@ class ASTExpression(ASTNode):
     elif child.value == 'Identifiers' or child.value == 'Identifier':
       return ASTIdentifiers(child)
     else:
-      # This should be a Binary expression.
-      # TODO(mehdi) add checks
+      possible_binary_rules = [
+          'ConditionalOrExpression', 'ConditionalAndExpression',
+          'InclusiveOrExpression', 'ExclusiveOrExpression', 'AndExpression',
+          'EqualityExpression', 'RelationalExpression', 'AdditiveExpression',
+          'MultiplicativeExpression']
+
+      # If it's not one of the possible binary types, we're in trouble...
+      if child.value not in possible_binary_rules:
+        raise ASTExpressionError(
+            'Invalid binary expression type "{0}"'.format(child.value))
+
       return make_ast_binary_node(child)
 
     raise ASTExpressionError('Unhandled Expression')
@@ -117,7 +126,7 @@ class ASTLiteral(ASTExpression):
 class ASTUnary(ASTExpression):
   def __init__(self, tree):
     # TODO: Convert operator to an enum?
-    # TODO(mmmulani): FUCKING COMMENTS.
+    # One child, the single unary expression after the operator.
     self.operator = tree.children[0].lexeme
     self.children = [ASTExpression.get_expr_node(tree.children[1])]
 
@@ -135,8 +144,9 @@ class ASTUnary(ASTExpression):
 
 class ASTAssignment(ASTExpression):
   def __init__(self, tree):
-    # TODO(mmmulani): Write fucking comments!
-    # tree should be an Assignment node.
+    # Two children:
+    #   0. The expression on the left side of the assignment.
+    #   1. The expression on the right side of the assignment.
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
                      ASTExpression.get_expr_node(tree.children[2])]
 
@@ -148,7 +158,9 @@ class ASTAssignment(ASTExpression):
 
 class ASTArrayAccess(ASTExpression):
   def __init__(self, tree):
-    # TODO(mmmulani): Write fucking comments!
+    # Two children:
+    #   0. The expression that will (should) return an array.
+    #   1. An expression that determines the index into the array.
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
                      ASTExpression.get_expr_node(tree.children[2])]
 
