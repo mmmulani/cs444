@@ -59,7 +59,7 @@ class FileEnvironment(env.Environment):
       if t is None:
         raise FileEnvironmentError('Could not find type {0}'.format(im))
 
-      # TODO: We might not want to add to the single import list when we're
+      # XXX: We might not want to add to the single import list when we're
       # importing the enclosing class.  This shouldn't be a problem now since
       # we're checking in lookup_type() for TypeEnvironment, but it might make
       # everything cleaner.
