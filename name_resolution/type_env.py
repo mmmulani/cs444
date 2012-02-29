@@ -40,6 +40,35 @@ class TypeEnvironment(env.Environment):
     # We deal with inherited methods after all the environments have been
     # set up.
 
+  def handle_duplicate_methods(self):
+    # Check to see if any methods have the same name and parameter types. We
+    # don't compare the return type because methods should not have different
+    # return types. We rely on ASTType equality to compare signatures.
+
+    # We use canonical_name for better error reporting/debugging.
+    if self.parent.package_name:
+      canonical_name = '{0}.{1}'.format(self.parent.package_name,
+        self.short_name)
+    else:
+      canonical_name = self.short_name
+
+    # We handle constructors separately from methods because a method is
+    # allowed to have the same name and parameter types as a constructor.
+    constructor_sigs = [(name, tuple(params)) for (ret, name, params), defn in
+                        self.methods if ret is None]
+    for i, sig in enumerate(constructor_sigs):
+      if sig in constructor_sigs[i + 1:]:
+        raise TypeEnvironmentError(
+          'Found constructors with the same signature in {0}'.format(
+            canonical_name))
+
+    method_sigs = [(name, tuple(params)) for (ret, name, params), defn in
+                    self.methods if ret is not None]
+    for i, sig in enumerate(method_sigs):
+      if sig in method_sigs[i + 1:]:
+        raise TypeEnvironmentError(
+          'Found methods with the same signature in {0}'.format(canonical_name))
+
   def add_method(self, sig, ast):
     self.methods.append((sig, ast))
 
@@ -94,6 +123,7 @@ class TypeEnvironment(env.Environment):
 
   def post_create(self, round_number):
     if round_number == 1:
+      self.handle_duplicate_methods()
       self.handle_inherited()
 
     super(TypeEnvironment, self).post_create(round_number)

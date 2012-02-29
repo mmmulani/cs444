@@ -37,6 +37,21 @@ class ASTType(ast_node.ASTNode):
       ret += '[]'
     return ret
 
+  def __eq__(a, b):
+    if (a is None) != (b is None):
+      return False
+
+    if a.is_array != b.is_array:
+      return False
+
+    if a.is_primitive() != b.is_primitive():
+      return False
+
+    if a.is_primitive():
+      return a.children == b.children
+
+    return a.definition == b.definition
+
   @property
   def name(self):
     return str(self.children[0])

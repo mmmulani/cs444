@@ -296,6 +296,9 @@ class ASTIdentifiers(ASTNode):
   def __str__(self):
     return '.'.join(self.children)
 
+  def __eq__(a, b):
+    return a.children == b.children
+
   @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
