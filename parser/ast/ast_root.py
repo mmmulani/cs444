@@ -8,14 +8,17 @@ class ASTRoot(ast_node.ASTNode):
   '''The root of an AST Tree'''
   def __init__(self, tree):
     '''Creates an AST Root node from the CompilationUnit state'''
+    package = self._get_package_decl(tree)
+
     # Three children:
     #   0. The package declaration, if any.
     #   1. A list of imports, if any.
     #   2. A class or interface definition, if any.
-    self.children = [
-        self._get_package_decl(tree),
-        self._get_imports(tree),
-        self._get_class_or_interface(tree)]
+    # XXX: We must set the package name before calling
+    # _get_class_or_interface since the ASTClass will need this information.
+    self.children = [package, [], None]
+    self.children[1] = self._get_imports(tree)
+    self.children[2] = self._get_class_or_interface(tree)
 
   @property
   def class_or_interface(self):
@@ -75,6 +78,12 @@ class ASTRoot(ast_node.ASTNode):
     if node.value == ';':
       return None
     elif node.value == 'ClassDeclaration':
-      return ast_class.ASTClass(node)
+      # Class declarations need to know about the package name to avoid having
+      # java.lang.Object extend itself.
+      package_name = ''
+      if self.package:
+        package_name = str(self.package)
+
+      return ast_class.ASTClass(node, package_name)
     elif node.value == 'InterfaceDeclaration':
       return ast_interface.ASTInterface(node)

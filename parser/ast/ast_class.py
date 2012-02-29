@@ -1,12 +1,12 @@
-import ast_node
+import ast_expression
 import ast_method
+import ast_node
 import ast_type
 import ast_variable_declaration
 
-from ast_expression import ASTIdentifiers
 
 class ASTClass(ast_node.ASTNode):
-  def __init__(self, tree):
+  def __init__(self, tree, package_name=''):
     '''Create an AST Class Declaration node'''
     # Two children.
     #   0. List of fields.
@@ -19,6 +19,15 @@ class ASTClass(ast_node.ASTNode):
     self.name = self._get_name(tree)
     self.super = self._get_super_class(tree)
     self.interfaces = self._get_interfaces(tree)
+
+    canonical_name = str(self.name)
+    if package_name != '':
+      canonical_name = '{0}.{1}'.format(package_name, self.name)
+
+    # If the class doesn't extend anything, then it should extend
+    # java.lang.Object by default unless it is java.lang.Object itself.
+    if len(self.super) == 0 and canonical_name != 'java.lang.Object':
+      self.super = [ast_type.ASTType.from_str('java.lang.Object')]
 
     # This is set by the Environment module when the tree is complete.
     self.environment = None
@@ -120,7 +129,7 @@ class ASTClass(ast_node.ASTNode):
     else:
       raise ASTClassError('Class has no name.')
 
-    return ASTIdentifiers(node)
+    return ast_expression.ASTIdentifiers(node)
 
   def _get_super_class(self, tree):
     '''Get the superclass of a class from its declaration'''
