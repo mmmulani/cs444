@@ -68,6 +68,14 @@ class ASTMethod(ast_node.ASTNode):
     return self.children[0]
 
   @property
+  def is_public(self):
+    return ('public' in self.modifiers)
+
+  @property
+  def is_protected(self):
+    return ('protected' in self.modifiers)
+
+  @property
   def signature(self):
     param_types = [x.type for x in self.params]
     return (self.name, param_types)
