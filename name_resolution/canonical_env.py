@@ -1,5 +1,6 @@
 import env
 import parser.ast.ast_root as ast_root
+import utils
 
 class CanonicalEnvironment(env.Environment):
   def __init__(self, asts):
@@ -55,6 +56,32 @@ class CanonicalEnvironment(env.Environment):
           return True
     return False
 
+  def check_package_names(self):
+    # Check that no prefix of a fully qualified type resolves to a type.
+    for name in self.names:
+      # We must do lookups in the fully qualified type's file's environment to
+      # avoid collisions with short canonical names.
+      type_ = self.lookup_type(name)
+      type_env = type_.environment
+      prefixes = utils.prefixes(name)
+      for prefix in prefixes:
+        # We avoid a collision with the fully qualified type here and
+        # java.lang.* types. We do not need to worry about this case because
+        # if a short name was in the environment it would error out from a
+        # collision.
+        if prefix.find('.') == -1:
+          continue
+
+        t = type_env.lookup_type(prefix)
+        if t and t != type_:
+          raise CanonicalEnvironmentError(
+            'Prefix {0} of {1} also resolves to a type'.format(prefix, name))
+
+  def post_create(self, round):
+    if round == 2:
+      self.check_package_names()
+
+    super(CanonicalEnvironment, self).post_create(round)
 
 class CanonicalEnvironmentError(env.EnvironmentError):
   pass
