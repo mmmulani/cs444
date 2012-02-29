@@ -64,6 +64,21 @@ class FileEnvironment(env.Environment):
       # we're checking in lookup_type() for TypeEnvironment, but it might make
       # everything cleaner.
       short_name = im[im.rindex('.') + 1:]
+
+      # Make sure the import does not clash with an import with the same
+      # short name.
+      if short_name in self.single_import:
+        raise FileEnvironmentError(
+          'Clashing single type import with type {0}'.format(short_name))
+
+      # Make sure the import does not clash with the type declared in this file.
+      if len(self.children) > 0:
+        type_env = self.children[0]
+        if short_name == type_env.short_name and t != type_env.definition:
+          raise FileEnvironmentError(
+            'Single type import {0} clashes with type defined in file'.format(
+              im))
+
       self.single_import[short_name] = t
 
   def lookup_type(self, name):
