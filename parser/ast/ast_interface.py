@@ -127,8 +127,9 @@ class ASTInterface(ast_node.ASTNode):
     equals.modifiers = ['public']
     equals.is_abstract = True
     equals.params = [
-      ASTParam.create_dummy_param(ast_type.ASTType.from_str('Object'),
-      ASTIdentifiers.from_str('other'))]
+        ASTParam.create_dummy_param(
+            ast_type.ASTType.from_str('Object'),
+            ASTIdentifiers('other'))]
 
     to_string = ASTMethod.create_dummy_method('toString')
     to_string.return_type = ast_type.ASTType.from_str('String')

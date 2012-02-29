@@ -25,14 +25,13 @@ class ASTType(ast_node.ASTNode):
   def from_str(name, is_primitive=False, is_array=False):
     from ast_expression import ASTIdentifiers
     tree = Dummy()
-    tree.value = 'DummyTree'
     dummy = ASTType(tree)
     dummy.is_array = is_array
 
     if is_primitive:
       dummy.children = [name]
     else:
-      dummy.children = [ASTIdentifiers.from_str(name)]
+      dummy.children = [ASTIdentifiers(name)]
 
     return dummy
 
@@ -80,4 +79,5 @@ class ASTType(ast_node.ASTNode):
 
 # We use this in ASTType to create a dummy object.
 class Dummy(object):
-  pass
+  def __init__(self):
+    self.value = 'DummyTree'

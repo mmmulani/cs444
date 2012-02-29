@@ -59,7 +59,7 @@ class ASTMethod(ast_node.ASTNode):
     dummy_tree.value = 'DummyValue'
 
     method = ASTMethod(dummy_tree)
-    method.name = ASTIdentifiers.from_str(name)
+    method.name = ASTIdentifiers(name)
 
     return method
 

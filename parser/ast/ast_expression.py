@@ -291,7 +291,10 @@ class ASTClassInstanceCreation(ASTExpression):
 
 class ASTIdentifiers(ASTExpression):
   def __init__(self, tree):
-    if tree.value == 'Identifier':
+    if isinstance(tree, str):
+      # Allow creating an ASTIdentifiers node directly from a string.
+      self.children = tree.split('.')
+    elif tree.value == 'Identifier':
       self.children = [tree.lexeme]
     else:
       self.children = ASTUtils.get_ids_list(tree)
@@ -304,14 +307,6 @@ class ASTIdentifiers(ASTExpression):
 
   def __eq__(a, b):
     return a.children == b.children
-
-  @staticmethod
-  def from_str(name):
-    dummy_tree = Dummy()
-    dummy_tree.value = 'Identifier'
-    dummy_tree.lexeme = name
-
-    return ASTIdentifiers(dummy_tree)
 
   @property
   def expressions(self):
@@ -330,7 +325,3 @@ class ASTArrayCreation(ASTExpression):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[1]]
-
-# We use this in ASTIdentifiers to create a dummy object.
-class Dummy(object):
-  pass
