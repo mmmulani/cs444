@@ -87,7 +87,8 @@ class TypeEnvironment(env.Environment):
         raise TypeEnvironmentError(
           'Inherited type {0} has no definition set'.format(t))
 
-      self.inherited.append(t.definition)
+      # Add the inherited environment to the list.
+      self.inherited.append(t.definition.environment)
 
   def lookup_method(self, sig):
     '''Look up a method based on its signature'''
