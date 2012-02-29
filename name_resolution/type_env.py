@@ -81,5 +81,12 @@ class TypeEnvironment(env.Environment):
 
   # Lookup methods not shown here should throw an exception.
 
+  def post_create(self, round_number):
+    if round_number == 1:
+      self.handle_inherited()
+
+    super(TypeEnvironment, self).post_create(round_number)
+
+
 class TypeEnvironmentError(env.EnvironmentError):
   pass

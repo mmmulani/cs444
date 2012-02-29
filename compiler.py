@@ -5,6 +5,7 @@ import pickle
 from optparse import OptionParser
 
 import name_resolution.env as env
+import name_resolution.name_resolution as name_resolution
 import name_resolution.type_linker as type_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
@@ -56,15 +57,9 @@ def compile(filenames):
     asts.extend(get_stdlib_asts())
 
   try:
-    env.make_environments(asts)
-  except (env.EnvironmentError) as err:
-    exit_with_failure('environment creation', err.msg)
-
-  try:
-    for ast in asts:
-      type_linker.link_names(ast)
+    name_resolution.resolve_names(asts)
   except (env.EnvironmentError, type_linker.TypeLinkerError) as err:
-    exit_with_failure('type linking', err.msg)
+    exit_with_failure('name resolution', err.msg)
 
   # Everything passes!
   exit_with_pass()

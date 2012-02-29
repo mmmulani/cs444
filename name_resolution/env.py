@@ -48,7 +48,4 @@ def make_environments(asts):
   for ast in asts:
     envs.append(file_env.FileEnvironment(global_env, ast))
 
-  for round_number in xrange(2):
-    for env in envs:
-      env.post_create(round_number)
-
+  return global_env
