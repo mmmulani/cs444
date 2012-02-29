@@ -299,6 +299,14 @@ class ASTIdentifiers(ASTNode):
   def __eq__(a, b):
     return a.children == b.children
 
+  @staticmethod
+  def from_str(name):
+    dummy_tree = Dummy()
+    dummy_tree.value = 'Identifier'
+    dummy_tree.lexeme = name
+
+    return ASTIdentifiers(dummy_tree)
+
   @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
@@ -316,3 +324,7 @@ class ASTArrayCreation(ASTNode):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[1]]
+
+# We use this in ASTIdentifiers to create a dummy object.
+class Dummy(object):
+  pass

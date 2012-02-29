@@ -3,6 +3,8 @@ import ast_method
 import ast_type
 
 from ast_expression import ASTIdentifiers
+from ast_method import ASTMethod
+from ast_param import ASTParam
 
 class ASTInterface(ast_node.ASTNode):
   def __init__(self, tree):
@@ -19,6 +21,11 @@ class ASTInterface(ast_node.ASTNode):
     self.fields = [] # Used so the properties match ASTClass.
 
     # No children.
+
+    # If we do not extend any interfaces, we automatically extend
+    # java.lang.Object, so we synthetically add the methods here.
+    if len(self.super) == 0:
+      self.extend_object_interface()
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('Interface: {0}'.format(self.name), depth)
@@ -113,6 +120,37 @@ class ASTInterface(ast_node.ASTNode):
 
     # Put the method list in declaration order.
     self.methods.reverse()
+
+  def extend_object_interface(self):
+    equals = ASTMethod.create_dummy_method('equals')
+    equals.return_type = ast_type.ASTType.from_str('boolean', True)
+    equals.modifiers = ['public']
+    equals.is_abstract = True
+    equals.params = [
+      ASTParam.create_dummy_param(ast_type.ASTType.from_str('Object'),
+      ASTIdentifiers.from_str('other'))]
+
+    to_string = ASTMethod.create_dummy_method('toString')
+    to_string.return_type = ast_type.ASTType.from_str('String')
+    to_string.modifiers = ['public']
+    to_string.is_abstract = True
+
+    hash_code = ASTMethod.create_dummy_method('hashCode')
+    hash_code.return_type = ast_type.ASTType.from_str('int', True)
+    hash_code.modifiers = ['public']
+    hash_code.is_abstract = True
+
+    clone = ASTMethod.create_dummy_method('clone')
+    clone.return_type = ast_type.ASTType.from_str('Object')
+    clone.modifiers = ['protected']
+    clone.is_abstract = True
+
+    get_class = ASTMethod.create_dummy_method('getClass')
+    get_class.return_type = ast_type.ASTType.from_str('Class')
+    get_class.modifiers = ['final']
+    get_class.is_abstract = True
+
+    self.methods.extend([equals, to_string, hash_code, clone, get_class])
 
 class ASTInterfaceError(Exception):
   pass

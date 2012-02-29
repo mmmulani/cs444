@@ -20,6 +20,12 @@ class ASTMethod(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # In some cases, we want to create ASTMethod's synthetically. For example,
+    # we want to add abstract methods to interfaces if they do not extend
+    # anything.
+    if tree.value == 'DummyValue':
+      return
+
     # Three main types of methods:
     #   1. Normal methods.
     #   2. Constructors.
@@ -46,6 +52,16 @@ class ASTMethod(ast_node.ASTNode):
       self._handle_declarator(tree.children[-2])
     else:
       raise ASTMethodError('Invalid node passed to ASTMethod')
+
+  @staticmethod
+  def create_dummy_method(name):
+    dummy_tree = Dummy()
+    dummy_tree.value = 'DummyValue'
+
+    method = ASTMethod(dummy_tree)
+    method.name = ASTIdentifiers.from_str(name)
+
+    return method
 
   @property
   def body(self):
@@ -140,4 +156,7 @@ class ASTMethod(ast_node.ASTNode):
     self.children = [ast_block.ASTBlock(body)]
 
 class ASTMethodError(Exception):
+  pass
+
+class Dummy(object):
   pass
