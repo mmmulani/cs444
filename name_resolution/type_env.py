@@ -101,6 +101,92 @@ class TypeEnvironment(env.Environment):
         raise TypeEnvironmentError('Circular hierarchy detected')
       self._check_hierarchy_helper(t, set(list(path_set) + [t]))
 
+  def get_all_methods(self):
+    # Return all the methods visible to this class (ie. the "contain" set,
+    # which is a combination of the locally declared methods and the
+    # methods inherited from superclasses and interfaces)
+
+    # TODO (gnleece) we might want to cache this
+
+    # Get inherited methods from superclass / interfaces:
+    inherited_methods = []
+    for inherited in self.inherited:
+      inherited_methods.extend(inherited.get_all_methods())
+
+    # map of signatures to lists of method bodys
+    # (used to group methods by signature)
+    method_sets = {}
+
+    # list of methods that are actually inherited (ie. not overriden)
+    pruned_inherited = []
+
+    # build a list of method signatures declared locally.
+    # we need to convert the parameter list to a tuple so that the
+    # signature is hashable
+    my_sigs = [sig for sig, ast in self.methods]
+    my_sigs = [(name, tuple(params)) for name, params in my_sigs]
+
+    # go through all inherited methods and only keep the ones that don't
+    # get overriden locally:
+    for sig, ast in inherited_methods:
+      sig = (sig[0], tuple(sig[1]))
+      if sig not in my_sigs:
+        method_sets[sig] = method_sets.get(sig, []) + [ast]
+
+    # check whether inherited methods are abstract, because inherited concrete
+    # methods should override inherited abstract methods:
+    for sig in method_sets.keys():
+      abstracts = [ast for ast in method_sets[sig] if ast.is_abstract]
+      non_abstracts = [ast for ast in method_sets[sig] if not ast.is_abstract]
+
+      if len(non_abstracts) == 0:
+        fixed = [(sig, ast) for ast in abstracts]
+        pruned_inherited.extend(fixed)
+      else:
+        # TODO (gnleece) check for protected overriding publics
+        fixed = [(sig, ast) for ast in non_abstracts]
+        pruned_inherited.extend(fixed)
+
+    all_methods = self.methods + pruned_inherited
+    return all_methods
+
+  def check_method_overrides(self):
+
+    # get the "contain" set and check if we have any abstract methods
+    all_methods = self.get_all_methods()
+    abstract_method = False
+    for sig, ast in all_methods:
+      if ast.is_abstract:
+        abstract_method = True
+    if abstract_method and not self.definition.is_abstract:
+      raise TypeEnvironmentError('Non-abstract type has abstract method')
+
+    for method_sig, ast in self.methods:
+      inherited_methods = []
+      for inherited in self.inherited:
+        m = inherited.lookup_method(method_sig)
+        if m:
+          inherited_methods.append(m)
+      if len(inherited_methods) > 1:
+        # TODO: (gnleece) check for return type mismtach
+        # TODO: (gnleece) check for protected override private
+        pass
+      elif len(inherited_methods) == 1:
+        old_m = inherited_methods[0]
+        new_m = ast
+
+        if ('static' in old_m.modifiers) != ('static' in new_m.modifiers):
+          raise TypeEnvironmentError('Static/non-static override')
+        if not(old_m.return_type == new_m.return_type):
+          raise TypeEnvironmentError(
+            'Overriding method with different return type')
+        if (('public' in old_m.modifiers) and
+            ('public' not in new_m.modifiers)):
+          raise TypeEnvironmentError(
+            'Overriding public method with non-public method')
+        if ('final' in old_m.modifiers):
+          raise TypeEnvironmentError('Overriding final method')
+
   def lookup_method(self, sig):
     '''Look up a method based on its signature'''
     ret = [ast for method_sig, ast in self.methods if method_sig == sig]
@@ -142,30 +228,7 @@ class TypeEnvironment(env.Environment):
       self.handle_inherited()
     elif round_number == 2:
       self.check_hierarchy()
-      for method_sig, ast in self.methods:
-        inherited_methods = []
-        for inherited in self.inherited:
-          m = inherited.lookup_method(method_sig)
-          if m:
-            inherited_methods.append(m)
-        if len(inherited_methods) > 1:
-          # TODO: (gnleece) figure out how to handle this case
-          pass
-        elif len(inherited_methods) == 1:
-          old_m = inherited_methods[0]
-          new_m = ast
-
-          if ('static' in old_m.modifiers) != ('static' in new_m.modifiers):
-            raise TypeEnvironmentError('Static/non-static override')
-          if not(old_m.return_type == new_m.return_type):
-            raise TypeEnvironmentError(
-              'Overriding method with different return type')
-          if (('public' in old_m.modifiers) and
-              ('public' not in new_m.modifiers)):
-            raise TypeEnvironmentError(
-              'Overriding public method with non-public method')
-          if ('final' in old_m.modifiers):
-            raise TypeEnvironmentError('Overriding final method')
+      self.check_method_overrides()
 
     super(TypeEnvironment, self).post_create(round_number)
 
