@@ -102,14 +102,12 @@ class FileEnvironment(env.Environment):
       elif len(results) == 1:
         return results[0]
 
-      # TODO: where do we check fully qualified names with no pkg?
-      # Checking if a simple name is the enclosing class is done in the
-      # class environment.
-      # XXX: If we uncomment the code below, we greatly reduce the # of
-      # failures, but we'll be hiding problems from ourselves.
-      # t = self._lookup_canonical(name)
-      # if t:
-      #   return t
+      # This might be a fully qualified name if this file is part of the default
+      # package.  If so, check in the canonical names.
+      if self.package_name == '':
+        t = self._lookup_canonical(name)
+        if t:
+          return t
 
     else:
       # Qualified names must exist in the canonical names environment.
