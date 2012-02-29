@@ -116,30 +116,36 @@ class TypeEnvironment(env.Environment):
 
     # Create a new list with all of methods we've defined.
     my_methods = [(sig, ast) for sig, ast in self.methods]
+    new_methods = []
     for sig, ast in inherited_methods:
-      my_methods = self._maybe_add_inherited(my_methods, sig, ast)
+      new_methods = self._maybe_add_inherited(my_methods, new_methods, sig, ast)
 
-    return my_methods
+    return my_methods + new_methods
 
-  def _maybe_add_inherited(self, cur_methods, new_sig, new_ast):
+  def _maybe_add_inherited(self, my_methods, new_methods, new_sig,
+                           new_ast):
     '''Logic to handle whether or not an inherited method to a set of method
     signatures'''
-    sigs = [sig for sig, ast in cur_methods]
-    if new_sig in sigs:
-      # There's already a method in our current methods with the same signature
-      tmp = [(sig, ast) for sig, ast in cur_methods if sig == new_sig]
+    my_sigs = [sig for sig, ast in my_methods]
+    # If this class already defines the method, it overrides the inheritted one.
+    if new_sig in my_sigs:
+      return new_methods
+
+    new_sigs = [sig for sig, ast in new_methods]
+    if new_sig in new_sigs:
+      tmp = [(sig, ast) for sig, ast in new_methods if sig == new_sig]
       if len(tmp) > 1:
         raise TypeEnvironmentError('Internal Error #1')
 
       cur_method = tmp[0]
       if not new_ast.is_abstract and cur_method[1].is_abstract:
         # The new method is not abstract while the current one is. Replace it.
-        return [(sig, ast) for sig, ast in cur_methods if sig != new_sig] + \
+        return [(sig, ast) for sig, ast in new_methods if sig != new_sig] + \
             [(new_sig, new_ast)]
-      return cur_methods
+      return new_methods
     else:
       # Method does not exist yet.  Add it.
-      return cur_methods + [(new_sig, new_ast)]
+      return new_methods + [(new_sig, new_ast)]
 
   def check_method_overrides(self):
     # Get the "contain" set and check if we have any abstract methods.
