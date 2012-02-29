@@ -66,12 +66,23 @@ class TypeEnvironment(env.Environment):
     if len(ret) > 1:
       raise TypeEnvironmentError(
           'Found more than one method matching signature {0}'.format(sig))
+    elif len(ret) == 0:
+      for inherited in self.inherited:
+        ret = inherited.lookup_method(sig)
+        if ret:
+          return ret
 
     return (ret[0] if len(ret) == 1 else None)
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
-    return self.fields.get(name)
+    ret = self.fields.get(name)
+    if not ret:
+      for inherited in self.inherited:
+        ret = inherited.lookup_field(name)
+        if ret:
+          break
+    return ret
 
   def lookup_type(self, name):
     # We prioritize the enclosing class when doing simple name lookup.
