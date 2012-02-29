@@ -3,6 +3,7 @@ import parser.ast.ast_variable_declaration as ast_variable_declaration
 import parser.ast.statement as ast_statement
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_interface as ast_interface
+import utils
 
 def link_names(ast):
   decl = ast.children[2]
@@ -96,6 +97,13 @@ def link(ast, env):
   definition = env.lookup_type(ast.name)
   if definition is None:
     raise TypeLinkerError('Type name {0} not found'.format(ast.name))
+
+  # We have to make sure no prefix of this name is valid in this context.
+  for p in utils.prefixes(ast.name):
+    if env.lookup_type(p) is not None:
+      raise TypeLinkerError('Prefix {0} of name {1} found'.format(
+        p, ast.name))
+
   ast.definition = definition
 
 def link_variable_declaration(ast, env):
@@ -174,7 +182,7 @@ def link_statement(ast, env):
     link_while(ast, env)
   elif t == ast_statement.ast_if.ASTIf:
     link_if(ast, env)
-  elif t == ast_expression.ASTExpression:
+  elif isinstance(ast, ast_expression.ASTExpression):
     link_expression(ast, env)
 
 def is_class(ast):
