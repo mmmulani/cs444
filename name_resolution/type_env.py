@@ -102,64 +102,54 @@ class TypeEnvironment(env.Environment):
       self._check_hierarchy_helper(t, set(list(path_set) + [t]))
 
   def get_all_methods(self):
-    # Return all the methods visible to this class (ie. the "contain" set,
-    # which is a combination of the locally declared methods and the
-    # methods inherited from superclasses and interfaces)
+    '''Return all the methods visible to this class.
+    This returns a list of (signature, ASTMethod) tuples, similar to
+    self.methods.
 
-    # TODO (gnleece) we might want to cache this
-
+    This is the same as the "contain" set given in class, which is a
+    combination of the locally declared methods and the methods inherited
+    from superclasses and interfaces'''
     # Get inherited methods from superclass / interfaces:
     inherited_methods = []
     for inherited in self.inherited:
       inherited_methods.extend(inherited.get_all_methods())
 
-    # map of signatures to lists of method bodys
-    # (used to group methods by signature)
-    method_sets = {}
-
-    # list of methods that are actually inherited (ie. not overriden)
-    pruned_inherited = []
-
-    # build a list of method signatures declared locally.
-    # we need to convert the parameter list to a tuple so that the
-    # signature is hashable
-    my_sigs = [sig for sig, ast in self.methods]
-    my_sigs = [(name, tuple(params)) for name, params in my_sigs]
-
-    # go through all inherited methods and only keep the ones that don't
-    # get overriden locally:
+    # Create a new list with all of methods we've defined.
+    my_methods = [(sig, ast) for sig, ast in self.methods]
     for sig, ast in inherited_methods:
-      sig = (sig[0], tuple(sig[1]))
-      if sig not in my_sigs:
-        method_sets[sig] = method_sets.get(sig, []) + [ast]
+      my_methods = self._maybe_add_inherited(my_methods, sig, ast)
 
-    # check whether inherited methods are abstract, because inherited concrete
-    # methods should override inherited abstract methods:
-    for sig in method_sets.keys():
-      abstracts = [ast for ast in method_sets[sig] if ast.is_abstract]
-      non_abstracts = [ast for ast in method_sets[sig] if not ast.is_abstract]
+    return my_methods
 
-      if len(non_abstracts) == 0:
-        fixed = [(sig, ast) for ast in abstracts]
-        pruned_inherited.extend(fixed)
-      else:
-        # TODO (gnleece) check for protected overriding publics
-        fixed = [(sig, ast) for ast in non_abstracts]
-        pruned_inherited.extend(fixed)
+  def _maybe_add_inherited(self, cur_methods, new_sig, new_ast):
+    '''Logic to handle whether or not an inherited method to a set of method
+    signatures'''
+    sigs = [sig for sig, ast in cur_methods]
+    if new_sig in sigs:
+      # There's already a method in our current methods with the same signature
+      tmp = [(sig, ast) for sig, ast in cur_methods if sig == new_sig]
+      if len(tmp) > 1:
+        raise TypeEnvironmentError('Internal Error #1')
 
-    all_methods = self.methods + pruned_inherited
-    return all_methods
+      cur_method = tmp[0]
+      if not new_ast.is_abstract and cur_method[1].is_abstract:
+        # The new method is not abstract while the current one is. Replace it.
+        return [(sig, ast) for sig, ast in cur_methods if sig != new_sig] + \
+            [(new_sig, new_ast)]
+      return cur_methods
+    else:
+      # Method does not exist yet.  Add it.
+      return cur_methods + [(new_sig, new_ast)]
 
   def check_method_overrides(self):
-
-    # get the "contain" set and check if we have any abstract methods
+    # Get the "contain" set and check if we have any abstract methods.
     all_methods = self.get_all_methods()
-    abstract_method = False
+
+    # Check to make sure that classes with non-abstract methods are also
+    # abstract.
     for sig, ast in all_methods:
-      if ast.is_abstract:
-        abstract_method = True
-    if abstract_method and not self.definition.is_abstract:
-      raise TypeEnvironmentError('Non-abstract type has abstract method')
+      if ast.is_abstract and not self.definition.is_abstract:
+        raise TypeEnvironmentError('Non-abstract type has abstract method')
 
     for method_sig, ast in self.methods:
       inherited_methods = []
@@ -202,7 +192,6 @@ class TypeEnvironment(env.Environment):
       if ret:
         return ret
     return None
-
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
