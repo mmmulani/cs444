@@ -90,6 +90,17 @@ class TypeEnvironment(env.Environment):
       # Add the inherited environment to the list.
       self.inherited.append(t.definition.environment)
 
+  def check_hierarchy(self):
+    '''Check the inheritance hierarchy to make sure there are no cycles'''
+    self._check_hierarchy_helper(self.definition, set())
+
+  def _check_hierarchy_helper(self, node, path_set):
+    for x in node.environment.definition.super:
+      t = x.definition
+      if t in path_set or t == self.definition:
+        raise TypeEnvironmentError('Circular hierarchy detected')
+      self._check_hierarchy_helper(t, set(list(path_set) + [t]))
+
   def lookup_method(self, sig):
     '''Look up a method based on its signature'''
     ret = [ast for method_sig, ast in self.methods if method_sig == sig]
@@ -129,8 +140,8 @@ class TypeEnvironment(env.Environment):
     if round_number == 1:
       self.handle_duplicate_methods()
       self.handle_inherited()
-
     elif round_number == 2:
+      self.check_hierarchy()
       for method_sig, ast in self.methods:
         inherited_methods = []
         for inherited in self.inherited:
