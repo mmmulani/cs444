@@ -138,8 +138,14 @@ class TypeEnvironment(env.Environment):
         # There should never be two methods with the same signature in our list.
         raise Exception('Invariant in _maybe_add_inherited violated')
 
-      cur_method = tmp[0]
-      if not new_ast.is_abstract and cur_method[1].is_abstract:
+      cur_sig, cur_ast = tmp[0]
+
+      if cur_ast.return_type != new_ast.return_type:
+        raise TypeEnvironmentError(
+          'Overriding method {0} with different return type'.format(
+            str(cur_sig[0])))
+
+      if not new_ast.is_abstract and cur_ast.is_abstract:
         # The new method is not abstract while the current one is. Replace it.
         return [(sig, ast) for sig, ast in new_methods if sig != new_sig] + \
             [(new_sig, new_ast)]

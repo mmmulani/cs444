@@ -73,6 +73,9 @@ class ASTType(ast_node.ASTNode):
 
     return a.definition == b.definition
 
+  def __ne__(a, b):
+    return not (a == b)
+
   @property
   def name(self):
     return str(self.children[0])
