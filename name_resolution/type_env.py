@@ -135,7 +135,8 @@ class TypeEnvironment(env.Environment):
     if new_sig in new_sigs:
       tmp = [(sig, ast) for sig, ast in new_methods if sig == new_sig]
       if len(tmp) > 1:
-        raise TypeEnvironmentError('Internal Error #1')
+        # There should never be two methods with the same signature in our list.
+        raise Exception('Invariant in _maybe_add_inherited violated')
 
       cur_method = tmp[0]
       if not new_ast.is_abstract and cur_method[1].is_abstract:
