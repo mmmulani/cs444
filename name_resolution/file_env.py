@@ -131,7 +131,7 @@ class FileEnvironment(env.Environment):
     # Nothing found...?
     return None
 
-  def check(self):
+  def check_on_demand(self):
     # Ensure all on-demand imports are valid packages.
     for p in self.on_demand:
       if not self.parent.has_package(p):
@@ -144,7 +144,7 @@ class FileEnvironment(env.Environment):
   def post_create(self, round_number):
     if round_number == 0:
       self.handle_single_imports()
-      self.check()
+      self.check_on_demand()
 
     super(FileEnvironment, self).post_create(round_number)
 
