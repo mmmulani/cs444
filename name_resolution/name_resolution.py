@@ -8,7 +8,7 @@ def resolve_names(asts):
   global_env.post_create(0)
 
   for ast in asts:
-    type_linker.link_names(ast)
+    type_linker.link_unambiguous_types(ast)
 
   global_env.post_create(1)
   global_env.post_create(2)

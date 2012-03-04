@@ -5,7 +5,7 @@ import parser.ast.ast_class as ast_class
 import parser.ast.ast_interface as ast_interface
 import utils
 
-def link_names(ast):
+def link_unambiguous_types(ast):
   decl = ast.children[2]
   if decl:
     env = decl.environment
