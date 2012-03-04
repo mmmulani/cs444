@@ -299,6 +299,8 @@ class ASTIdentifiers(ASTExpression):
     else:
       self.children = ASTUtils.get_ids_list(tree)
 
+    self.definition = None
+
   def show(self, depth = 0):
     ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)), depth)
 
