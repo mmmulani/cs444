@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os
 import sys
-import pickle
+import shelve
 from optparse import OptionParser
 
 import name_resolution.env as env
@@ -14,7 +14,8 @@ import scanner.scanner as scanner
 import weeder.weeder as weeder
 
 options = {}
-STDLIB_PICKLE_PATH = 'stdlib/pickle'
+STDLIB_PATH = 'stdlib/3.0'
+ast_store = shelve.open('ast_store')
 
 def main():
   global options
@@ -37,6 +38,13 @@ def main():
 def compile(filenames):
   asts = []
   for filename in filenames:
+    # If the file is from the stdlib, try pulling it from the cache.
+    if filename.startswith('stdlib'):
+      if ast_store.has_key(filename):
+        ast = ast_store[filename]
+        asts.append(ast)
+        continue
+
     f = open(filename)
     s = f.read()
     f.close()
@@ -53,8 +61,15 @@ def compile(filenames):
     if options.verbose:
       sys.stderr.write('Done processing {0}\n'.format(filename))
 
+    # If the file is from the stdlib, add it to the cache (as it isn't in there
+    # already).
+    if filename.startswith('stdlib'):
+      ast_store[filename] = ast
+
   if options.stdlib:
     asts.extend(get_stdlib_asts())
+
+  ast_store.close()
 
   try:
     name_resolution.resolve_names(asts)
@@ -132,17 +147,27 @@ def get_stdlib_asts():
   if options.verbose:
     sys.stderr.write('Importing standard library\n')
 
-  files = get_all_files(STDLIB_PICKLE_PATH)
+  files = get_all_files(STDLIB_PATH)
   asts = []
   for file in files:
+    # Try and load the ast from cache.
+    if ast_store.has_key(file):
+      ast = ast_store[file]
+      asts.append(ast)
+      continue
+
     f = open(file, 'rb')
-    toks = scanner.TokenConverter.convert(pickle.load(f))
+    s = f.read()
     f.close()
 
+    toks = scan_file(s)
     parse_tree = parse_toks(toks)
-    weed(parse_tree, file.replace('.javac', '.java'))
+    weed(parse_tree, file)
     ast = make_ast(parse_tree)
     asts.append(ast)
+
+    # Since we weren't able to load it from cache, store it for later.
+    ast_store[file] = ast
 
   return asts
 
