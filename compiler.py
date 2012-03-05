@@ -39,11 +39,9 @@ def compile(filenames):
   asts = []
   for filename in filenames:
     # If the file is from the stdlib, try pulling it from the cache.
-    if filename.startswith('stdlib'):
-      if ast_store.has_key(filename):
-        ast = ast_store[filename]
-        asts.append(ast)
-        continue
+    if filename.startswith('stdlib') and is_cached(filename):
+      asts.append(get_stdlib_ast_from_cache(filename))
+      continue
 
     f = open(filename)
     s = f.read()
@@ -123,8 +121,6 @@ def make_ast(parse_tree):
     ast.show()
   return ast
 
-  return ast
-
 def add_environments(asts):
   try:
     environment.Environment.add_environments_to_trees(asts)
@@ -151,12 +147,11 @@ def get_stdlib_asts():
   asts = []
   for file in files:
     # Try and load the ast from cache.
-    if ast_store.has_key(file):
-      ast = ast_store[file]
-      asts.append(ast)
+    if is_cached(file):
+      asts.append(get_stdlib_ast_from_cache(file))
       continue
 
-    f = open(file, 'rb')
+    f = open(file, 'r')
     s = f.read()
     f.close()
 
@@ -170,6 +165,15 @@ def get_stdlib_asts():
     ast_store[file] = ast
 
   return asts
+
+def is_cached(filename):
+  return ast_store.has_key(filename)
+
+def get_stdlib_ast_from_cache(filename):
+  '''Load a stdlib AST from cache, if it exists.'''
+  if is_cached(filename):
+    return ast_store[filename]
+  return None
 
 def get_all_files(path):
   ret_files = []
