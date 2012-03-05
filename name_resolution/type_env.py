@@ -233,6 +233,10 @@ class TypeEnvironment(env.Environment):
       return self.definition
     return self.parent.lookup_type(name)
 
+  def lookup_id(self, name):
+    return (self.lookup_field(name) or self.lookup_method(name) or
+        self.lookup_type(name))
+
   # Lookup methods not shown here should throw an exception.
 
   def post_create(self, round_number):

@@ -42,6 +42,9 @@ class MethodEnvironment(env.Environment):
     # variables can't override formal parameters either.
     return self.lookup_formal(name)
 
+  def lookup_id(self, name):
+    return (self.lookup_formal(name) or self.parent.lookup_id(name))
+
   # The rest of the lookup methods should just call the parent version.
   def lookup_type(self, name):
     return self.parent.lookup_type(name)
