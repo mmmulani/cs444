@@ -36,6 +36,10 @@ class ASTVariableDeclaration(ast_node.ASTNode):
   def identifier(self):
     return self.children[2]
 
+  @property
+  def is_static(self):
+    return ('static' in self.children[0])
+
   def show(self, depth = 0):
     ast_node.ASTUtils.println(
         'Var Decl: {0} {1}'.format(self.children[1], self.children[2]), depth)
