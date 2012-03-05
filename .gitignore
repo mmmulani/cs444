@@ -4,3 +4,4 @@ utils/test.cfg
 *.DS_Store
 test.java
 out
+ast_store.db
