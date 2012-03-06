@@ -271,6 +271,14 @@ class ASTBinary(ASTExpression):
     self.children[1].show(depth + 1)
 
   @property
+  def left_expr(self):
+    return self.children[0]
+
+  @property
+  def right_expr(self):
+    return self.children[1]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0], self.children[1]]
