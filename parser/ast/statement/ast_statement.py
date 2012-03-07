@@ -4,6 +4,7 @@ import parser.ast.ast_node as ast_node
 class ASTStatement(ast_node.ASTNode):
 
   def __init__(self):
+    super(ASTStatement, self).__init__()
     self.expr_type = None
 
   @staticmethod

@@ -9,13 +9,14 @@ class ASTReturn(ast_statement.ASTStatement):
     # One child:
     #   0. None, or an AST expression node
 
+    super(ASTReturn, self).__init__()
+
     expression = None
     if len(tree.children) > 2:
       expression = ast_expression.ASTExpression.get_expr_node(tree.children[1])
 
     self.children = [expression]
 
-    super(ASTReturn, self).__init__()
 
   def show(self, depth = 0):
     if self.children[0]:

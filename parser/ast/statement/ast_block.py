@@ -6,6 +6,7 @@ from parser.ast.ast_node import ASTUtils
 class ASTBlock(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST block node from a 'Block' TreeNode'''
+    super(ASTBlock, self).__init__()
 
     # Each child is a VariableDeclaration or Statement
     # (astnode, is_statement)
@@ -44,7 +45,6 @@ class ASTBlock(ast_statement.ASTStatement):
 
     self.children = self.process_statements(statements)
 
-    super(ASTBlock, self).__init__()
 
   @staticmethod
   def from_statements(statements):

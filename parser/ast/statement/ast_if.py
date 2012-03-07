@@ -11,6 +11,8 @@ class ASTIf(ast_statement.ASTStatement):
     #   1. The 'if' statement
     #   2. The 'else' statement, if there is one (otherwise, None)
 
+    super(ASTIf, self).__init__()
+
     if len(tree.children) != 5 and len(tree.children) != 7:
       raise ASTIfError('If treenode has invalid children')
 
@@ -23,7 +25,6 @@ class ASTIf(ast_statement.ASTStatement):
 
     self.children = [expression, statement, else_statement]
 
-    super(ASTIf, self).__init__()
 
   @property
   def expression(self):

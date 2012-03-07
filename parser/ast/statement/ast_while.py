@@ -10,6 +10,8 @@ class ASTWhile(ast_statement.ASTStatement):
     #   0. An expression
     #   1. A statement
 
+    super(ASTWhile, self).__init__()
+
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
@@ -21,7 +23,6 @@ class ASTWhile(ast_statement.ASTStatement):
 
     self.children = [expression, statement]
 
-    super(ASTWhile, self).__init__()
 
   @property
   def expression(self):

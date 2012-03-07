@@ -13,6 +13,8 @@ class ASTFor(ast_statement.ASTStatement):
     #   2. An expression, or None (ForUpdate)
     #   3. A statement
 
+    super(ASTFor, self).__init__()
+
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
@@ -47,7 +49,6 @@ class ASTFor(ast_statement.ASTStatement):
 
     self.children = [for_init, expression, for_update, statement]
 
-    super(ASTFor, self).__init__()
 
   @property
   def init(self):

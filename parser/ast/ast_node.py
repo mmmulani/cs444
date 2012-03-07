@@ -1,6 +1,7 @@
 class ASTNode(object):
   '''The base AST Node object'''
   def __init__(self):
+    super(ASTNode, self).__init__()
     self.children = []
 
   def show(self, depth = 0):
