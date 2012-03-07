@@ -10,6 +10,9 @@ class ASTType(ast_node.ASTNode):
   ASTInt = None
   ASTNull = None
   ASTShort = None
+  # ASTString is defined in the post_create of CanonicalEnv as it requires a
+  # definition of java.lang.String
+  ASTString = None
   ASTVoid = None
 
   def __init__(self, tree):
