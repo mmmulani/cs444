@@ -35,7 +35,7 @@ def if_statement(node):
 
   # If expression must be a boolean
   t_if_expr = get_type(node.expression)
-  if not is_boolean(t_if_expr):
+  if t_if_expr != ast_type.ASTType.ASTBoolean:
     return None
 
   # Check that the if and else statements are typeable.
