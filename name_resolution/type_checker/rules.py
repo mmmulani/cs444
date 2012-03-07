@@ -40,6 +40,20 @@ def numeric_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
+def unary_math(node):
+  '''Unary negation operator for numeric types (-)'''
+  if not isinstance(node, ast_expression.ASTUnary):
+    return None
+
+  if node.operator != '-':
+    return None
+
+  t = get_type(node.expressions[0])
+  if _is_numeric(t):
+    # Promote to int.
+    return ast_type.ASTType.ASTInt
+  return None
+
 def boolean_ops(node):
   '''Eager and lazy boolean operations (&, |, &&, ||)'''
   if not isinstance(node, ast_expression.ASTBinary):
@@ -54,6 +68,19 @@ def boolean_ops(node):
   t_right = get_type(node.right_expr)
   if t_left == ast_type.ASTType.ASTBoolean and \
      t_right == ast_type.ASTType.ASTBoolean:
+    return ast_type.ASTType.ASTBoolean
+  return None
+
+def boolean_not(node):
+  '''Unary boolean operator: !'''
+  if not isinstance(node, ast_expression.ASTUnary):
+    return None
+
+  if node.operator != '!':
+    return None
+
+  t = get_type(node.expressions[0])
+  if t == ast_type.ASTType.ASTBoolean:
     return ast_type.ASTType.ASTBoolean
   return None
 
