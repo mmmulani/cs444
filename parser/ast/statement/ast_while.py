@@ -1,8 +1,8 @@
+import ast_statement
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
-import ast_statement
 
-class ASTWhile(ast_node.ASTNode):
+class ASTWhile(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST While node from a 'WhileStatement' or
     'WhileStatementNoShortIf' TreeNode'''
@@ -20,6 +20,8 @@ class ASTWhile(ast_node.ASTNode):
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
 
     self.children = [expression, statement]
+
+    super(ASTWhile, self).__init__()
 
   @property
   def expression(self):

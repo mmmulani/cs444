@@ -25,6 +25,10 @@ def type_check_node(ast, rule_funcs):
   rules. Exactly one rule should apply to an AST, so an exception is thrown if
   zero or multiple rules apply.'''
 
+  # check if the type has already been set:
+  if ast.expr_type:
+    return ast.expr_type
+
   # try all possible rules:
   possible_types = filter(None, [rule(ast) for rule in rule_funcs])
 

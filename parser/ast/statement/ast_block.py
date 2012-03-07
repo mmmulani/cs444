@@ -1,10 +1,9 @@
+import ast_statement
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_variable_declaration as ast_variable_declaration
-import ast_statement
-
 from parser.ast.ast_node import ASTUtils
 
-class ASTBlock(ast_node.ASTNode):
+class ASTBlock(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST block node from a 'Block' TreeNode'''
 
@@ -44,6 +43,8 @@ class ASTBlock(ast_node.ASTNode):
     statements.reverse()
 
     self.children = self.process_statements(statements)
+
+    super(ASTBlock, self).__init__()
 
   @staticmethod
   def from_statements(statements):

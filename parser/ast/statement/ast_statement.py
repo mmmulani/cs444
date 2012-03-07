@@ -1,12 +1,10 @@
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
-import ast_block
-import ast_for
-import ast_if
-import ast_return
-import ast_while
 
 class ASTStatement(ast_node.ASTNode):
+
+  def __init__(self):
+    self.expr_type = None
 
   @staticmethod
   def get_statement(tree):
@@ -14,6 +12,12 @@ class ASTStatement(ast_node.ASTNode):
     ASTIf, ASTWhile, ASTFor, ASTReturn, None
     from a 'Statement', 'StatementWithoutTrailingSubstatement', or
     'StatementNoShortIf' TreeNode'''
+
+    import ast_block
+    import ast_for
+    import ast_if
+    import ast_return
+    import ast_while
 
     child = tree.children[0]
 

@@ -1,9 +1,9 @@
+import ast_statement
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_variable_declaration as ast_variable_declaration
-import ast_statement
 
-class ASTFor(ast_node.ASTNode):
+class ASTFor(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST For node from a 'ForStatement' or
     'ForStatementNoShortIf' TreeNode'''
@@ -46,6 +46,8 @@ class ASTFor(ast_node.ASTNode):
       raise ASTForError('For treenode must have a statement')
 
     self.children = [for_init, expression, for_update, statement]
+
+    super(ASTFor, self).__init__()
 
   @property
   def init(self):

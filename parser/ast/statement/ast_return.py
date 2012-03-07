@@ -1,7 +1,8 @@
+import ast_statement
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 
-class ASTReturn(ast_node.ASTNode):
+class ASTReturn(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST Return node from a 'ReturnStatement' TreeNode'''
 
@@ -13,6 +14,8 @@ class ASTReturn(ast_node.ASTNode):
       expression = ast_expression.ASTExpression.get_expr_node(tree.children[1])
 
     self.children = [expression]
+
+    super(ASTReturn, self).__init__()
 
   def show(self, depth = 0):
     if self.children[0]:

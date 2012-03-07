@@ -1,8 +1,8 @@
+import ast_statement
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
-import ast_statement
 
-class ASTIf(ast_node.ASTNode):
+class ASTIf(ast_statement.ASTStatement):
   def __init__(self, tree):
     '''Creates an AST If node from an 'IfThenStatement', 'IfThenElseStatement',
     or 'IfThenElseStatementNoShortIf' TreeNode'''
@@ -22,6 +22,8 @@ class ASTIf(ast_node.ASTNode):
           tree.children[6])
 
     self.children = [expression, statement, else_statement]
+
+    super(ASTIf, self).__init__()
 
   @property
   def expression(self):
