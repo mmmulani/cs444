@@ -40,6 +40,23 @@ def numeric_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
+def boolean_ops(node):
+  '''Eager and lazy boolean operations (&, |, &&, ||)'''
+  if not isinstance(node, ast_expression.ASTBinary):
+    return None
+
+  # Check for valid operators.
+  if node.operator not in ['&', '|', '&&', '||']:
+    return None
+
+  # Make sure both operands are booleans.
+  t_left = get_type(node.left_expr)
+  t_right = get_type(node.right_expr)
+  if t_left == ast_type.ASTType.ASTBoolean and \
+     t_right == ast_type.ASTType.ASTBoolean:
+    return ast_type.ASTType.ASTBoolean
+  return None
+
 def string_plus(node):
   '''Binary expression of string + string'''
   if not isinstance(node, ast_expression.ASTBinary):
