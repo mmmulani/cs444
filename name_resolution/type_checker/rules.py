@@ -28,6 +28,22 @@ def numeric_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
+def string_plus(node):
+  '''Binary expression of string + string'''
+  if not isinstance(node, ast_expression.ASTBinary):
+    return None
+
+  if node.operator != '+':
+    return None
+
+  # Check that both operands are of the string type.
+  t_left = get_type(node.left_expr)
+  t_right = get_type(node.right_expr)
+  if is_string(t_left) and is_string(t_right):
+    # Since both types are strings, we can use them as our return value.
+    return t_left
+  return None
+
 def if_statement(node):
   '''Check statement: if (E) S'''
   if not isinstance(node, ast_if.ASTIf):
@@ -69,6 +85,9 @@ def is_string(type_):
     return None
 
   if type_.definition.canonical_name != 'java.lang.String':
+    return False
+
+  if type_.is_array:
     return False
 
   return True
