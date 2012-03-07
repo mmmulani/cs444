@@ -1,6 +1,17 @@
 import ast_node
 
 class ASTType(ast_node.ASTNode):
+  # Some primitive types to allow for easy type comparison in type checking.
+  # They are stubbed here and defined after the class definition as their
+  # definition requires the class to be created.
+  ASTBoolean = None
+  ASTByte = None
+  ASTChar = None
+  ASTInt = None
+  ASTNull = None
+  ASTShort = None
+  ASTVoid = None
+
   def __init__(self, tree):
     '''Creates an AST Type node from a 'Type' or 'void' TreeNode'''
 
@@ -79,6 +90,15 @@ class ASTType(ast_node.ASTNode):
   @property
   def name(self):
     return str(self.children[0])
+
+# Define the primitive types on ASTType.
+ASTType.ASTBoolean = ASTType.from_str('boolean', is_primitive=True)
+ASTType.ASTByte = ASTType.from_star('byte', is_primitive=True)
+ASTType.ASTChar = ASTType.from_str('char', is_primitive=True)
+ASTType.ASTInt = ASTType.from_str('int', is_primitive=True)
+ASTType.ASTNull = ASTType.from_str('null', is_primitive=True)
+ASTType.ASTShort = ASTType.from_str('short', is_primitive=True)
+ASTType.ASTVoid = ASTType.from_str('void', is_primitive=True)
 
 # We use this in ASTType to create a dummy object.
 class Dummy(object):
