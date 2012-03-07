@@ -15,12 +15,12 @@ def check_types(ast):
   # type check all fields and methods:
   if decl:
     for method in decl.methods:
-      type_check_node(method.body, rule_funcs)
+      get_type(method.body, rule_funcs)
     for field in decl.fields:
-      type_check_node(field, rule_funcs)
+      get_type(field, rule_funcs)
 
 
-def type_check_node(ast, rule_funcs):
+def get_type(ast, rule_funcs):
   '''Tries to assign a type to the given AST by applying all the type checking
   rules. Exactly one rule should apply to an AST, so an exception is thrown if
   zero or multiple rules apply.'''
