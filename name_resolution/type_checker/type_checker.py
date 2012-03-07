@@ -3,24 +3,24 @@ import types
 import parser.ast.ast_expression as ast_expression
 import rules
 
+# get a list of all the type-checking rules:
+rule_funcs = [rules.__dict__.get(x) for x in dir(rules) if
+    isinstance(rules.__dict__.get(x), types.FunctionType) and x[0] != '_']
+
 def check_types(ast):
   '''Takes an AST for a file and type-checks its class/interface'''
-
-  # get a list of all the type-checking rules:
-  rule_funcs = [rules.__dict__.get(x) for x in dir(rules) if
-      isinstance(rules.__dict__.get(x), types.FunctionType) and x[0] != '_']
 
   # the class or interface definition:
   decl = ast.children[2]
   # type check all fields and methods:
   if decl:
     for method in decl.methods:
-      get_type(method.body, rule_funcs)
+      get_type(method.body)
     for field in decl.fields:
-      get_type(field, rule_funcs)
+      get_type(field)
 
 
-def get_type(ast, rule_funcs):
+def get_type(ast):
   '''Tries to assign a type to the given AST by applying all the type checking
   rules. Exactly one rule should apply to an AST, so an exception is thrown if
   zero or multiple rules apply.'''
