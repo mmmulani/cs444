@@ -73,3 +73,14 @@ class ASTUtils():
       ast_expression.ASTExpression.get_expr_node(tree.children[0]))
     arg_list.reverse()
     return arg_list
+
+  @staticmethod
+  def is_subtype(type_1, type_2):
+    '''Returns true iff type_1 is a subtype of type_2'''
+    if type_1 == type_2:
+      return True
+    inherited_types = type_1.super + type_1.interfaces
+    for t in inherited_types:
+      if ASTUtils.is_subtype(t.definition, type_2):
+        return True
+    return False
