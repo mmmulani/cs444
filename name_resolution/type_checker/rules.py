@@ -23,7 +23,7 @@ def numeric_math(node):
   # Check that both operands are numeric.
   t_left = get_type(node.left_expr)
   t_right = get_type(node.right_expr)
-  if is_numeric(t_left) and is_numeric(t_right):
+  if _is_numeric(t_left) and _is_numeric(t_right):
     # Always promote math exprs to int.
     return ast_type.ASTType.ASTInt
   return None
@@ -63,7 +63,7 @@ def if_statement(node):
 
 # Helper functions for working with types.
 
-def is_numeric(type_):
+def _is_numeric(type_):
   numeric_types = [
     ast_type.ASTType.ASTByte,
     ast_type.ASTType.ASTChar,
@@ -80,7 +80,7 @@ def is_numeric(type_):
 
   return True
 
-def is_string(type_):
+def _is_string(type_):
   if type_.definition is None:
     return None
 

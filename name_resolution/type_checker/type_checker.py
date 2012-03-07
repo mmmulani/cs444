@@ -8,7 +8,7 @@ def check_types(ast):
 
   # get a list of all the type-checking rules:
   rule_funcs = [rules.__dict__.get(x) for x in dir(rules) if
-      isinstance(rules.__dict__.get(x), types.FunctionType)]
+      isinstance(rules.__dict__.get(x), types.FunctionType) and x[0] != '_']
 
   # the class or interface definition:
   decl = ast.children[2]
