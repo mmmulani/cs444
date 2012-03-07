@@ -95,7 +95,7 @@ def string_plus(node):
   # Check that both operands are of the string type.
   t_left = type_checker.get_type(node.left_expr)
   t_right = type_checker.get_type(node.right_expr)
-  if is_string(t_left) and is_string(t_right):
+  if _is_string(t_left) and _is_string(t_right):
     # Since both types are strings, we can use them as our return value.
     return t_left
   return None
@@ -126,6 +126,18 @@ def block(node):
     type_checker.get_type(c)
 
   return ast_type.ASTType.ASTVoid
+
+def assignment(node):
+  if not isinstance(node, ast_expression.ASTAssignment):
+    return None
+
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
+
+  if _is_assignable(t_left, t_right):
+    return t_left
+
+  return None
 
 # Helper functions for working with types.
 
@@ -161,6 +173,9 @@ def _is_string(type_):
 def _is_assignable(type_1, type_2):
   '''Returns true iff type_2 is assignable to type_1'''
 
+  if type_1 is None or type_2 is None:
+    return False    #TODO (gnleece) I think we actually want to assert here?
+
   if type_1 == type_2:
     return True
 
@@ -169,7 +184,7 @@ def _is_assignable(type_1, type_2):
        ast_type.ASTTYpe.ASTByte]:
     return True
 
-  if type_1 == ast.ASTType.ASTShort and type_2 == ast.ASTType.ASTBye:
+  if type_1 == ast_type.ASTType.ASTShort and type_2 == ast_type.ASTType.ASTByte:
     return True
 
   #TODO (gnleece) how to handle NULL?
