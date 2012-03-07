@@ -1,4 +1,5 @@
 import parser.ast.ast_expression as ast_expression
+import parser.ast.ast_node as ast_node
 import parser.ast.ast_type as ast_type
 import parser.ast.statement.ast_if as ast_if
 
@@ -91,3 +92,25 @@ def _is_string(type_):
     return False
 
   return True
+
+def _is_assignable(type_1, type_2):
+  '''Returns true iff type_2 is assignable to type_1'''
+
+  if type_1 == type_2:
+    return True
+
+  if type_1 == ast_type.ASTType.ASTInt and type_2 in \
+      [ast_type.ASTType.ASTShort, ast_type.ASTType.ASTChar]:
+    return True
+
+  if type_1 == ast.ASTType.ASTShort and type_2 == ast.ASTType.ASTBye:
+    return True
+
+  #TODO (gnleece) how to handle NULL?
+  #TODO (gnleece) how to handle transitivity rule?
+
+  if type_1.definition and type_2.definition:
+    if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
+      return True
+
+  return False
