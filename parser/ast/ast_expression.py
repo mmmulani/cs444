@@ -114,14 +114,38 @@ class ASTFieldAccess(ASTExpression):
     return [self.children[0]]
 
 class ASTLiteral(ASTExpression):
+  # Enum of different literal types.
+  BOOLEAN = 'boolean'
+  CHAR = 'char'
+  INT = 'int'
+  NULL = 'null'
+  STRING = 'string'
+
   def __init__(self, tree):
-    # TODO: Add typing info and possibly check that the literal is valid Joos.
     self.children = [tree.lexeme]
+    self.literal_type = self._get_literal_type(tree.lexeme)
     super(ASTLiteral, self).__init__()
 
   def show(self, depth = 0):
     ASTUtils.println(
-      'Literal: {0}'.format(self.children[0]), depth)
+        'Literal of type {0}: {1}'.format(self.literal_type, self.children[0]),
+        depth)
+
+  def _get_literal_type(self, literal):
+    # At this stage, we have already weeded out literals not of one of the types
+    # in the enum.
+    if literal in ['true', 'false']:
+      return ASTLiteral.BOOLEAN
+    elif literal[0] == '\'':
+      return ASTLiteral.CHAR
+    elif literal.isdigit():
+      return ASTLiteral.INT
+    elif literal == 'null':
+      return ASTLiteral.NULL
+    elif literal[0] == '"':
+      return ASTLiteral.STRING
+
+    raise Exception('Bad literal: {0}'.format(literal))
 
   @property
   def expressions(self):
