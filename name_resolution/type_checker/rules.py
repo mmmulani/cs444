@@ -5,13 +5,22 @@ import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_if as ast_if
 import type_checker
 
-def int_axiom(node):
-  '''Axiom for checking if a node of type int'''
+def literal_axiom(node):
+  '''Axiom for deriving types from a literal'''
   if not isinstance(node, ast_expression.ASTLiteral):
     return None
 
-  if node.literal_type == ast_expression.ASTLiteral.INT:
+  if node.literal_type == ast_expression.ASTLiteral.BOOLEAN:
+    return ast_type.ASTType.ASTBoolean
+  elif node.literal_type == ast_expression.ASTLiteral.CHAR:
+    return ast_type.ASTType.ASTChar
+  elif node.literal_type == ast_expression.ASTLiteral.INT:
     return ast_type.ASTType.ASTInt
+  elif node.literal_type == ast_expression.ASTLiteral.NULL:
+    return ast_type.ASTType.ASTNull
+  elif node.literal_type == ast_expression.ASTLiteral.STRING:
+    return ast_type.ASTType.ASTString
+
   return None
 
 def numeric_math(node):

@@ -1,5 +1,6 @@
 import env
 import parser.ast.ast_root as ast_root
+import parser.ast.ast_type as ast_type
 import utils
 
 class CanonicalEnvironment(env.Environment):
@@ -77,8 +78,16 @@ class CanonicalEnvironment(env.Environment):
           raise CanonicalEnvironmentError(
             'Prefix {0} of {1} also resolves to a type'.format(prefix, name))
 
+  def create_string_type(self):
+    ast_type.ASTType.ASTString = ast_type.ASTType.from_str('java.lang.String')
+
+    string_def = self.lookup_type('java.lang.String')
+    ast_type.ASTType.ASTString.definition = string_def
+
   def post_create(self, round):
-    if round == 2:
+    if round == 0:
+      self.create_string_type()
+    elif round == 2:
       self.check_package_names()
 
     super(CanonicalEnvironment, self).post_create(round)
