@@ -37,6 +37,10 @@ class ASTVariableDeclaration(ast_node.ASTNode):
     return self.children[2]
 
   @property
+  def expression(self):
+    return self.children[3]
+
+  @property
   def is_static(self):
     return ('static' in self.children[0])
 
