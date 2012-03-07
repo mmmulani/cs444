@@ -44,3 +44,31 @@ def if_statement(node):
     get_type(node.else_statement)
 
   return ast_type.ASTType.ASTVoid
+
+# Helper functions for working with types.
+
+def is_numeric(type_):
+  numeric_types = [
+    ast_type.ASTType.ASTByte,
+    ast_type.ASTType.ASTChar,
+    ast_type.ASTType.ASTInt,
+    ast_type.ASTType.ASTShort
+  ]
+  matching_types = [t for t in numeric_types if type_ == t]
+
+  if len(matching_types) == 0:
+    return False
+
+  if len(matching_types) > 1:
+    raise Exception('Type matching multiple numeric types')
+
+  return True
+
+def is_string(type_):
+  if type_.definition is None:
+    return None
+
+  if type_.definition.canonical_name != 'java.lang.String':
+    return False
+
+  return True

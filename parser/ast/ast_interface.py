@@ -22,6 +22,9 @@ class ASTInterface(ast_node.ASTNode):
 
     # No children.
 
+    # To match ASTClass, add a canonical name.
+    self.canonical_name = str(self.name)
+
     # If we do not extend any interfaces, we automatically extend
     # java.lang.Object, so we synthetically add the methods here.
     if len(self.super) == 0:

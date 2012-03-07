@@ -20,13 +20,13 @@ class ASTClass(ast_node.ASTNode):
     self.super = self._get_super_class(tree)
     self.interfaces = self._get_interfaces(tree)
 
-    canonical_name = str(self.name)
+    self.canonical_name = str(self.name)
     if package_name != '':
-      canonical_name = '{0}.{1}'.format(package_name, self.name)
+      self.canonical_name = '{0}.{1}'.format(package_name, self.name)
 
     # If the class doesn't extend anything, then it should extend
     # java.lang.Object by default unless it is java.lang.Object itself.
-    if len(self.super) == 0 and canonical_name != 'java.lang.Object':
+    if len(self.super) == 0 and self.canonical_name != 'java.lang.Object':
       self.super = [ast_type.ASTType.from_str('java.lang.Object')]
 
     # This is set by the Environment module when the tree is complete.
