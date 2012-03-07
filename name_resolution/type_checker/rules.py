@@ -1,7 +1,9 @@
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_type as ast_type
+import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_if as ast_if
+import type_checker
 
 def int_axiom(node):
   '''Axiom for checking if a node of type int'''
@@ -22,8 +24,8 @@ def numeric_math(node):
     return None
 
   # Check that both operands are numeric.
-  t_left = get_type(node.left_expr)
-  t_right = get_type(node.right_expr)
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
   if _is_numeric(t_left) and _is_numeric(t_right):
     # Always promote math exprs to int.
     return ast_type.ASTType.ASTInt
@@ -38,8 +40,8 @@ def string_plus(node):
     return None
 
   # Check that both operands are of the string type.
-  t_left = get_type(node.left_expr)
-  t_right = get_type(node.right_expr)
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
   if is_string(t_left) and is_string(t_right):
     # Since both types are strings, we can use them as our return value.
     return t_left
@@ -51,14 +53,24 @@ def if_statement(node):
     return None
 
   # If expression must be a boolean
-  t_if_expr = get_type(node.expression)
+  t_if_expr = type_checker.get_type(node.expression)
   if t_if_expr != ast_type.ASTType.ASTBoolean:
     return None
 
   # Check that the if and else statements are typeable.
-  get_type(node.if_statement)
+  type_checker.get_type(node.if_statement)
   if node.else_statement:
-    get_type(node.else_statement)
+    type_checker.get_type(node.else_statement)
+
+  return ast_type.ASTType.ASTVoid
+
+def block(node):
+  if not isinstance(node, ast_block.ASTBlock):
+    return None
+
+  # Type of all of the substatements:
+  for c in node.children:
+    type_checker.get_type(c)
 
   return ast_type.ASTType.ASTVoid
 
