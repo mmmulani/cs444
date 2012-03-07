@@ -187,6 +187,14 @@ class ASTAssignment(ASTExpression):
     # Copy this array so the caller can modify it.
     return [self.children[0], self.children[1]]
 
+  @property
+  def left_expr(self):
+    return self.children[0]
+
+  @property
+  def right_expr(self):
+    return self.children[1]
+
 class ASTArrayAccess(ASTExpression):
   def __init__(self, tree):
     # Two children:
