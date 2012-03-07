@@ -100,14 +100,14 @@ def _is_assignable(type_1, type_2):
     return True
 
   if type_1 == ast_type.ASTType.ASTInt and type_2 in \
-      [ast_type.ASTType.ASTShort, ast_type.ASTType.ASTChar]:
+      [ast_type.ASTType.ASTShort, ast_type.ASTType.ASTChar,
+       ast_type.ASTTYpe.ASTByte]:
     return True
 
   if type_1 == ast.ASTType.ASTShort and type_2 == ast.ASTType.ASTBye:
     return True
 
   #TODO (gnleece) how to handle NULL?
-  #TODO (gnleece) how to handle transitivity rule?
 
   if type_1.definition and type_2.definition:
     if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
