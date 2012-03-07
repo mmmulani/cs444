@@ -34,7 +34,6 @@ class ASTType(ast_node.ASTNode):
 
   @staticmethod
   def from_str(name, is_primitive=False, is_array=False):
-    from ast_expression import ASTIdentifiers
     tree = Dummy()
     dummy = ASTType(tree)
     dummy.is_array = is_array
@@ -42,6 +41,7 @@ class ASTType(ast_node.ASTNode):
     if is_primitive:
       dummy.children = [name]
     else:
+      from ast_expression import ASTIdentifiers
       dummy.children = [ASTIdentifiers(name)]
 
     return dummy
@@ -91,16 +91,16 @@ class ASTType(ast_node.ASTNode):
   def name(self):
     return str(self.children[0])
 
+# We use this in ASTType to create a dummy object.
+class Dummy(object):
+  def __init__(self):
+    self.value = 'DummyTree'
+
 # Define the primitive types on ASTType.
 ASTType.ASTBoolean = ASTType.from_str('boolean', is_primitive=True)
-ASTType.ASTByte = ASTType.from_star('byte', is_primitive=True)
+ASTType.ASTByte = ASTType.from_str('byte', is_primitive=True)
 ASTType.ASTChar = ASTType.from_str('char', is_primitive=True)
 ASTType.ASTInt = ASTType.from_str('int', is_primitive=True)
 ASTType.ASTNull = ASTType.from_str('null', is_primitive=True)
 ASTType.ASTShort = ASTType.from_str('short', is_primitive=True)
 ASTType.ASTVoid = ASTType.from_str('void', is_primitive=True)
-
-# We use this in ASTType to create a dummy object.
-class Dummy(object):
-  def __init__(self):
-    self.value = 'DummyTree'
