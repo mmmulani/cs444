@@ -54,6 +54,36 @@ def unary_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
+def numeric_comparisons(node):
+  '''Comparison operators for numeric types (<, <=, >, >=)'''
+  if not isinstance(node, ast_expression.ASTBinary):
+    return None
+
+  # Check for valid operators.
+  if node.operator not in ['<', '<=', '>', '>=']:
+    return None
+
+  t_left = get_type(node.left_expr)
+  t_right = get_type(node.right_expr)
+  if _is_numeric(t_left) and _is_numeric(t_right):
+    return ast_type.ASTType.ASTBoolean
+  return None
+
+def generic_equality(node):
+  '''Equality comparisons for assignable types (==, !=)'''
+  if not isinstance(node, ast_expression.ASTBinary):
+    return None
+
+  # Check for valid operators.
+  if node.operator not in ['==', '!=']:
+    return None
+
+  t_left = get_type(node.left_expr)
+  t_right = get_type(node.right_expr)
+  if _is_assignable(t_left, t_right) or _is_assignable(t_right, t_left):
+    return ast_type.ASTType.ASTBoolean
+  return None
+
 def boolean_ops(node):
   '''Eager and lazy boolean operations (&, |, &&, ||)'''
   if not isinstance(node, ast_expression.ASTBinary):
