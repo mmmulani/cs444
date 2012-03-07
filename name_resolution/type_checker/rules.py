@@ -17,7 +17,7 @@ def numeric_math(node):
     return None
 
   # Check for valid math operators.
-  if node.operator is not in ['+', '-', '*', '/', '%']:
+  if node.operator not in ['+', '-', '*', '/', '%']:
     return None
 
   # Check that both operands are numeric.
