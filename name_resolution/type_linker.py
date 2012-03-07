@@ -19,7 +19,7 @@ def link_unambiguous_types(ast):
       # Inheritance checks.
 
       # You can't inherit from primitive types.
-      if super_type.is_primitive():
+      if super_type.is_primitive:
         raise TypeLinkerError("Super class can't be primitive type")
 
       # Classes can only extend other classes.
@@ -49,7 +49,7 @@ def link_unambiguous_types(ast):
       # Implements checks. You can't implement primitive types.
 
       # You can't implement from primitive types.
-      if inter.is_primitive():
+      if inter.is_primitive:
         raise TypeLinkerError("Can't implement a primitive type")
 
       # Classes can not implement classes.
@@ -91,7 +91,7 @@ def link_unambiguous_types(ast):
 
 def link(ast, env):
   '''Actually sets the definition for an ASTType node'''
-  if ast is None or ast.is_primitive():
+  if ast is None or ast.is_primitive:
     # Don't need to link primitive types.
     return
   definition = env.lookup_type(ast.name)

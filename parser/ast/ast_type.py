@@ -57,6 +57,7 @@ class ASTType(ast_node.ASTNode):
 
     return self.get_type_from_node(tree.children[0])
 
+  @property
   def is_primitive(self):
     return (type(self.children[0]) == type(''))
 
@@ -76,10 +77,10 @@ class ASTType(ast_node.ASTNode):
     if a.is_array != b.is_array:
       return False
 
-    if a.is_primitive() != b.is_primitive():
+    if a.is_primitive != b.is_primitive:
       return False
 
-    if a.is_primitive():
+    if a.is_primitive:
       return a.children == b.children
 
     return a.definition == b.definition
