@@ -88,7 +88,7 @@ class ASTMethod(ast_node.ASTNode):
     param_types = [x.type for x in self.params]
     return (self.name, param_types)
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Name: {0}'.format(self.name), depth)
 
     if self.return_type:
@@ -104,7 +104,7 @@ class ASTMethod(ast_node.ASTNode):
     if len(self.params):
       ast_node.ASTUtils.println('Params:', depth)
       for p in self.params:
-        p.show(depth + 1)
+        p.show(depth + 1, types)
 
     ast_node.ASTUtils.println(
         '(Constructor, Abstract): ({0}, {1})'.format(
@@ -115,7 +115,7 @@ class ASTMethod(ast_node.ASTNode):
     # Method body, if it exists.
     if self.children[0]:
       ast_node.ASTUtils.println('Body:', depth)
-      self.children[0].show(depth + 1)
+      self.children[0].show(depth + 1, types)
 
   def _get_modifiers(self, tree):
     if tree.children[0].value != 'Modifiers':

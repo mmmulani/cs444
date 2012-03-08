@@ -43,10 +43,10 @@ class ASTCast(ast_node.ASTNode):
       expr_node = expr_node.children[0]
     return expr_node
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(
         'ASTCast Type: {0}'.format(self.children[0]), depth)
-    self.children[1].show(depth + 1)
+    self.children[1].show(depth + 1, types)
 
   @property
   def expressions(self):

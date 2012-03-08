@@ -130,7 +130,7 @@ class ASTLiteral(ASTExpression):
     self.literal_type = self._get_literal_type(tree.lexeme)
     super(ASTLiteral, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ASTUtils.println(
         'Literal of type {0}: {1}'.format(self.literal_type, self.children[0]),
         depth)
@@ -164,11 +164,11 @@ class ASTUnary(ASTExpression):
     self.children = [ASTExpression.get_expr_node(tree.children[1])]
     super(ASTUnary, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ASTUtils.println(
       'ASTUnary, operator: {0}'.format(self.operator), depth)
     ASTUtils.println('Operand:', depth)
-    self.children[0].show(depth + 1)
+    self.children[0].show(depth + 1, types)
 
   @property
   def expr(self):
@@ -263,19 +263,19 @@ class ASTMethodInvocation(ASTExpression):
       self.children = [prefix_exprs, arg_list]
     super(ASTMethodInvocation, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     self._show(depth)
     if len(self.children[0]) == 1:
       ASTUtils.println('Method identifiers:', depth)
-      self.children[0][0].show(depth + 1)
+      self.children[0][0].show(depth + 1, types)
     else:
       ASTUtils.println('Expression:', depth)
-      self.children[0][0].show(depth + 1)
+      self.children[0][0].show(depth + 1, types)
       ASTUtils.println('Field access from expression:', depth)
-      self.children[0][1].show(depth + 1)
+      self.children[0][1].show(depth + 1, types)
     for i, x in enumerate(self.children[1]):
       ASTUtils.println('Argument {0}:'.format(str(i)), depth)
-      x.show(depth + 1)
+      x.show(depth + 1, types)
 
   @property
   def arguments(self):
@@ -304,10 +304,10 @@ class ASTInstanceOf(ASTExpression):
 
     super(ASTInstanceOf, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ASTUtils.println(
         'ASTInstanceOf Type: {0}'.format(str(self.type_node)), depth)
-    self.children[0].show(depth + 1)
+    self.children[0].show(depth + 1, types)
 
   @property
   def expressions(self):
@@ -323,12 +323,12 @@ class ASTBinary(ASTExpression):
                      ASTExpression.get_expr_node(tree.children[2])]
     super(ASTBinary, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ASTUtils.println('ASTBinary, operator: {0}'.format(self.operator), depth)
     ASTUtils.println('Left operand:', depth)
-    self.children[0].show(depth + 1)
+    self.children[0].show(depth + 1, types)
     ASTUtils.println('Right operand:', depth)
-    self.children[1].show(depth + 1)
+    self.children[1].show(depth + 1, types)
 
   @property
   def left_expr(self):
@@ -355,13 +355,13 @@ class ASTClassInstanceCreation(ASTExpression):
 
     super(ASTClassInstanceCreation, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     self._show(depth)
     ASTUtils.println('Class type:', depth)
-    self.children[0].show(depth + 1)
+    self.children[0].show(depth + 1, types)
     for i, x in enumerate(self.children[1]):
       ASTUtils.println('Argument {0}:'.format(str(i)), depth)
-      x.show(depth + 1)
+      x.show(depth + 1, types)
 
   @property
   def type_node(self):
@@ -385,7 +385,7 @@ class ASTIdentifiers(ASTExpression):
     self.first_definition = (None, None)
     super(ASTIdentifiers, self).__init__()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)), depth)
 
   def __str__(self):

@@ -4,14 +4,14 @@ class ASTNode(object):
     super(ASTNode, self).__init__()
     self.children = []
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     '''Print out the AST tree'''
-    self._show(depth)
+    self._show(depth, types)
     for c in self.children:
       if c is not None:
-        c.show(depth+1)
+        c.show(depth+1, types)
 
-  def _show(self, depth = 0):
+  def _show(self, depth = 0, types = False):
     print ' '*4*depth + type(self).__name__
 
 class ASTUtils():

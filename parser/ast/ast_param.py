@@ -15,7 +15,7 @@ class ASTParam(ast_node.ASTNode):
     self.type = ast_type.ASTType(tree.children[0])
     self.name = ASTIdentifiers(tree.children[1])
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('{0} {1}'.format(self.type, self.name), depth)
 
   @staticmethod

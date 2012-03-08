@@ -70,19 +70,19 @@ class ASTFor(ast_statement.ASTStatement):
   def expressions(self):
     return [x for x in self.children if x is not None]
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('For:', depth)
     if self.children[0]:
       ast_node.ASTUtils.println('ForInit:', depth+1)
-      self.children[0].show(depth+2)
+      self.children[0].show(depth+2, types)
     if self.children[1]:
       ast_node.ASTUtils.println('ForExpression:', depth+1)
-      self.children[1].show(depth+2)
+      self.children[1].show(depth+2, types)
     if self.children[2]:
       ast_node.ASTUtils.println('ForUpdate:', depth+1)
-      self.children[2].show(depth+2)
+      self.children[2].show(depth+2, types)
     ast_node.ASTUtils.println('Statement:', depth+1)
-    self.children[3].show(depth+2)
+    self.children[3].show(depth+2, types)
 
 class ASTForError(Exception):
   pass

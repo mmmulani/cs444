@@ -31,7 +31,7 @@ class ASTClass(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
 
     if len(self.modifiers) > 0:
@@ -53,12 +53,12 @@ class ASTClass(ast_node.ASTNode):
     if len(self.fields) > 0:
       ast_node.ASTUtils.println('Fields:', depth)
       for f in self.fields:
-        f.show(depth + 1)
+        f.show(depth + 1, types)
 
     if len(self.methods) > 0:
       for m in self.methods:
         ast_node.ASTUtils.println('Method:', depth)
-        m.show(depth + 1)
+        m.show(depth + 1, types)
 
   @property
   def modifiers(self):

@@ -50,7 +50,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
   def is_static(self):
     return ('static' in self.children[0])
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(
         'Var Decl: {0} {1}'.format(self.children[1], self.children[2]), depth)
 
@@ -60,7 +60,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
           'Mods: {0}'.format(str(', '.join(self.children[0]))), depth + 1)
 
     if self.children[3]:
-      self.children[3].show(depth + 1)
+      self.children[3].show(depth + 1, types)
     else:
       ast_node.ASTUtils.println('Value: None', depth + 1)
 

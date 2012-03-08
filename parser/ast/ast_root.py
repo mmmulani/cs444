@@ -32,7 +32,7 @@ class ASTRoot(ast_node.ASTNode):
   def package(self):
     return self.children[0]
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     # Package declaration.
     if self.children[0]:
       ast_node.ASTUtils.println(
@@ -41,11 +41,11 @@ class ASTRoot(ast_node.ASTNode):
     if len(self.children[1]) > 0:
       ast_node.ASTUtils.println('Imports:', depth)
       for c in self.children[1]:
-        c.show(depth + 1)
+        c.show(depth + 1, types)
 
     if self.children[2]:
       ast_node.ASTUtils.println('Declaration:', depth)
-      self.children[2].show(depth + 1)
+      self.children[2].show(depth + 1, types)
 
   def _get_package_decl(self, tree):
     if tree.length == 0 or tree.children[0].value != 'PackageDeclaration':

@@ -12,7 +12,7 @@ class ASTPackage(ast_node.ASTNode):
 
     # No children.
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(self.name, depth)
 
   def __str__(self):

@@ -33,7 +33,7 @@ class ASTImport(ast_node.ASTNode):
 
     self.children = [ids, is_on_demand]
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     text = 'Name: {0} - On-demand: {1}'.format(
         '.'.join(self.children[0].children), str(self.children[1]))
     ast_node.ASTUtils.println(text, depth)

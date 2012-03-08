@@ -88,16 +88,16 @@ class ASTBlock(ast_statement.ASTStatement):
   def expressions(self):
     return self.statements
 
-  def show(self, depth=0, show_name=False):
+  def show(self, depth = 0, types = False, show_name = False):
     if show_name:
       ASTUtils.println('ASTBlock:', depth)
       depth = depth + 1
 
     for c in self.children:
       if type(c) == ASTBlock:
-        c.show(depth, show_name=True)
+        c.show(depth, types, show_name = True)
       else:
-        c.show(depth)
+        c.show(depth, types)
 
 class ASTBlockError(Exception):
   pass

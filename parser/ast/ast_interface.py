@@ -30,7 +30,7 @@ class ASTInterface(ast_node.ASTNode):
     if len(self.super) == 0:
       self.extend_object_interface()
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Interface: {0}'.format(self.name), depth)
 
     if len(self.modifiers) > 0:
@@ -47,7 +47,7 @@ class ASTInterface(ast_node.ASTNode):
     if len(self.methods) > 0:
       for m in self.methods:
         ast_node.ASTUtils.println('Method:', depth)
-        m.show(depth + 1)
+        m.show(depth + 1, types)
 
   @property
   def modifiers(self):

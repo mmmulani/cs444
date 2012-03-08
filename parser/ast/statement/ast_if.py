@@ -42,14 +42,14 @@ class ASTIf(ast_statement.ASTStatement):
   def expressions(self):
     return [x for x in self.children if x is not None]
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('If:', depth)
-    self.children[0].show(depth+1)
+    self.children[0].show(depth+1, types)
     ast_node.ASTUtils.println('Then:', depth)
-    self.children[1].show(depth+1)
+    self.children[1].show(depth+1, types)
     if self.children[2]:
       ast_node.ASTUtils.println('Else:', depth)
-      self.children[2].show(depth+1)
+      self.children[2].show(depth+1, types)
 
 class ASTIfError(Exception):
   pass

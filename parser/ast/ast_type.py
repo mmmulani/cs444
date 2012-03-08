@@ -64,7 +64,7 @@ class ASTType(ast_node.ASTNode):
   def is_primitive(self):
     return (type(self.children[0]) == type(''))
 
-  def show(self, depth = 0):
+  def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(str(self), depth)
 
   def __str__(self):
