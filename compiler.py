@@ -7,6 +7,7 @@ from optparse import OptionParser
 import name_resolution.env as env
 import name_resolution.name_resolution as name_resolution
 import name_resolution.type_linker as type_linker
+import name_resolution.name_linker as name_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
@@ -73,6 +74,12 @@ def compile(filenames):
     name_resolution.resolve_names(asts)
   except (env.EnvironmentError, type_linker.TypeLinkerError) as err:
     exit_with_failure('name resolution', err.msg)
+
+  try:
+    for ast in asts:
+      name_linker.link_names(ast)
+  except name_linker.NameLinkingError as err:
+    exit_with_failure('name linking', err.msg)
 
   # Everything passes!
   exit_with_pass()

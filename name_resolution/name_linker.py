@@ -1,18 +1,135 @@
-import env
+import env as env_package
+import parser.ast.ast_expression as ast_expression
+import parser.ast.ast_variable_declaration as ast_variable_declaration
+import parser.ast.statement.ast_block as ast_block
+import parser.ast.statement.ast_for as ast_for
 
-def find_name(ast_idens, env):
-  '''Looks up the definiton for an ast_identifiers node
+def link_names(ast):
+  '''Link all the names in an AST
+  Expects an ASTRoot as input.
+  '''
+  if not ast.class_or_interface:
+    return
+
+  ast = ast.class_or_interface
+  env = ast.environment
+
+  check_forward_field_init(ast.fields, env)
+  for f in ast.fields:
+    _link_name_in_expr_or_stmt(f.children[3], env, is_field = True)
+
+  for m in ast.methods:
+    if m.body is None:
+      continue
+    block = m.body
+    for ex in block.children:
+      _link_name_in_expr_or_stmt(ex, block.environment)
+
+def check_forward_field_init(fields, env):
+  '''Checks to make sure no fields do a forward declaration
+  JLS 8.3.2.3
+  TODO(songandrew): Do static/non-static checks here
+  '''
+  if len(fields) == 0:
+    return
+
+  for ix, f in enumerate(fields):
+    # Check if any identifiers are fields of this class.  If they are,
+    # check to see if they are declared after the current field.
+    idens = get_all_field_identifiers(f)
+    for id in idens:
+      # Just use the first part of the name since this is only an error for
+      # short names.
+      name = id.parts[0]
+      tmp = env.lookup_field(name)
+      if tmp and tmp in fields and fields.index(tmp) >= ix:
+        # A field existed that was declared in the enclosing class, and
+        # its declaration appears after the current declaration or is itself
+        # the current declaration.
+        raise NameLinkingError(
+            'Forward initialization of field {0} with {1}.'.format(
+                f.identifier, name))
+
+def get_all_field_identifiers(f):
+  '''Gets all identifiers that appear in a list initialization expression'''
+  if f.expression is None:
+    return []
+  return _get_all_identifiers(f.expression)
+
+def _get_all_identifiers(expr):
+  '''Helper to get all identifiers from an expression or statement node
+  '''
+  acc = []
+  if isinstance(expr, ast_expression.ASTMethodInvocation):
+    # Only check the left side and the arguments.
+    acc.extend(_get_all_identifiers(expr.left))
+    for arg in expr.arguments:
+      acc.extend(_get_all_identifiers(arg))
+  elif isinstance(expr, ast_expression.ASTFieldAccess):
+    # We check only the left side.
+    acc.extend(_get_all_identifiers(expr.left))
+  elif isinstance(expr, ast_expression.ASTIdentifiers):
+    # Really the base case -- if we are an ASTIdentifiers node, then add
+    # ourself to the list.
+    acc.append(expr)
+  elif isinstance(expr, ast_expression.ASTAssignment):
+    # We are allowed to forward-declare on the LHS of an assignment.
+    acc.extend(_get_all_identifiers(expr.right))
+  else:
+    for ex in expr.expressions:
+      acc.extend(_get_all_identifiers(ex))
+
+  return acc
+
+def _link_name_in_expr_or_stmt(expr, env, is_field = False):
+  if expr is None:
+    return
+
+  if isinstance(expr, ast_expression.ASTMethodInvocation):
+    # We check everything except the right part of a method invocation,
+    # since that will depend on the type of the left part.  That is, for the
+    # expression (a.b).c(foo, bar), we will link a.b, foo, and bar.
+    '''
+    _link_name_in_expr_or_stmt(expr.left, env)
+    for arg in expr.arguments:
+      _link_name_in_expr_or_stmt(arg, env)
+    '''
+  elif isinstance(expr, ast_expression.ASTFieldAccess):
+    # We check only the left side since the "right" field access will depend
+    # on the type of the left expression.
+    _link_name_in_expr_or_stmt(expr.left, env)
+  elif isinstance(expr, ast_expression.ASTIdentifiers):
+    name, defn = find_first_definition(expr, env, is_field)
+    expr.first_definition = (name, defn)
+  elif isinstance(expr, ast_block.ASTBlock) or isinstance(expr, ast_for.ASTFor):
+    # ASTBlock and ASTFor need to use their containing environment.
+    _link_containing_expressions(expr, expr.environment, is_field)
+  else:
+    # If it's not one of the special cases, just recuse on all the expressions
+    # and statements.
+    _link_containing_expressions(expr, env, is_field)
+
+def _link_containing_expressions(expr, env, is_field = False):
+  for ex in expr.expressions:
+    _link_name_in_expr_or_stmt(ex, env, is_field)
+
+def find_first_definition(ast_idens, env, is_field = False):
+  '''Looks up the first definiton for an ast_identifiers node
+  TODO(songandrew): Comment what "first definition" means here.
   Returns: an AST node of the definition'''
+  if ast_idens.parts[-1] == 'length':
+    return None, None
+
   # Suppose we are resolving 'a.b.c'.
   full_name = str(ast_idens)
 
   if len(ast_idens.children) == 1:
     # The ast contains a simple name. Use lookup_id to look for the type.
-    ret = env.lookup_id(name)
+    ret = env.lookup_id(full_name)
     if ret is None:
       raise NameLinkingError('No definition found for simple name {0}'.format(
         full_name))
-    return ret
+    return ret, full_name
 
   # Name is qualified, i.e. contains a dot character.
   parts = list(ast_idens.children)
@@ -20,13 +137,8 @@ def find_name(ast_idens, env):
   try:
     local_var = env.lookup_local(parts[0])
     if local_var:
-      # The first part is a local variable. Check to make sure the other parts
-      # are all instance fields.
-      class_env = _get_environment_from_type_ast(local_var.type_node)
-      field = _check_and_return_field_def(class_env, parts[1:])
-      if field is not None:
-        return field
-  except env.EnvironmentError:
+      return local_var, parts[0]
+  except env_package.EnvironmentError:
     # Not in a block environment: identifiers can be in a method definition,
     # field definition or class/interface.
     pass
@@ -34,15 +146,9 @@ def find_name(ast_idens, env):
   # Try to resolve 'a' to a field variable of the enclosing class.
   field = env.lookup_field(parts[0])
   if field:
-    # Resolve b and c to instance fields.
-    class_env = _get_environment_from_type_ast(field.type_node)
-    field = _check_and_return_field_def(class_env, parts[1:])
-    if field is not None:
-      return field
+    return field, parts[0]
 
-  # Try all prefixes of 'a.b.c' until the shortest matches to a type and then
-  # resolve the remaining identifiers as fields.
-  type_index = 0
+  # Try all prefixes of 'a.b.c' until the shortest matches to a type.
   ast_class_or_interface = None
   for type_index, p in enumerate(parts[:-1]):
     possible_type_name = '.'.join(parts[:type_index + 1])
@@ -53,53 +159,7 @@ def find_name(ast_idens, env):
   if ast_class_or_interface is None:
     raise NameLinkingError(
         'Could not resolve a prefix of {0} as a type'.format(full_name))
-
-  # Now that we have resolved 'a.b' to a type, make sure that 'c' is a static
-  # field.
-  class_env = ast_class_or_interface.environment
-  field_name = parts[type_index + 1]
-  field = class_env.lookup_field(field_name)
-  if field is None:
-    raise NameLinkingError(
-        '{0} not a field on {1}'.format(field_name,
-            '.'.join(parts[:type_index + 1])))
-
-  # Make sure the field is static.
-  if not field.is_static:
-    raise NameLinkingError(
-        'Field {0} is not static on {1}'.format(field_name,
-            '.'.join(parts[:type_index + 1])))
-
-  # Lastly, resolve the remaining identifiers as instance fields.
-  for p in parts[type_index + 2:]:
-    class_env = _get_environment_from_type_ast(field.type_node)
-    field = class_env.lookup_field(p)
-    if field is None:
-      raise NameLinkingError(
-          'Could not resolve field {0} on {1}'.format(p, full_name))
-
-  return field
-
-def _get_environment_from_type_ast(ast):
-  '''Helper function to get an environment from a type ast node'''
-  # TODO(a6song/a5song/a5): Check for array type and 'length' property.
-  if ast.is_primitive:
-    raise NameLinkingError(
-        'Tried to get property {0} on primitive type'.format(full_name))
-  return ast.definition.environment
-
-def _check_and_return_field_def(env, parts):
-  '''Check each remaining part is a (recursive) field given the environment env
-  Returns None if one of the parts is not a field.'''
-  field_def = None
-  for p in parts:
-    field_def = env.lookup_field(p)
-    if field_def is None:
-      return None
-    env = _get_environment_from_type_ast(field_def.type_node)
-    # TODO: Handle Array types.
-
-  return field_def
+  return ast_class_or_interface, '.'.join(parts[:type_index + 1])
 
 class NameLinkingError(Exception):
   def __init__(self, msg):
