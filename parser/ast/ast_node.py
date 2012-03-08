@@ -16,6 +16,10 @@ class ASTNode(object):
 
 class ASTUtils():
   '''Namespace class for AST utilities'''
+  
+  COLOR_GREEN = '\033[92m'
+  COLOR_RED = '\033[91m'
+  END_COLOR = '\033[0m'
 
   @staticmethod
   def get_ids_list(tree):
@@ -52,7 +56,11 @@ class ASTUtils():
 
   @staticmethod
   def type_string(type_node, show_types):
-    return '\t<{0}>'.format(str(type_node)) if show_types else ''
+    if show_types:
+      color = ASTUtils.COLOR_GREEN if type_node else ASTUtils.COLOR_RED 
+      return ' {0}<{1}>{2}'.format(color, str(type_node), ASTUtils.END_COLOR)
+    else:
+      return ''
 
   @staticmethod
   def get_nonpath_child(tree):
