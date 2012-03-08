@@ -31,6 +31,7 @@ class ASTVariableDeclaration(ast_node.ASTNode):
           declarator_node.children[2])
 
     self.children = [modifiers, type_ast, identifier, expression_ast]
+    self.expr_type = None
 
   @property
   def identifier(self):
