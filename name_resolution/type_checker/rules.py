@@ -4,6 +4,7 @@ import parser.ast.ast_type as ast_type
 import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_for as ast_for
 import parser.ast.statement.ast_if as ast_if
+import parser.ast.statement.ast_return as ast_return
 import parser.ast.statement.ast_while as ast_while
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 import type_checker
@@ -133,6 +134,17 @@ def string_plus(node):
     return t_left
   return None
 
+def instance_of(node):
+  if not isinstance(node, ast_expression.ASTInstanceOf):
+    return None
+
+  expr_type = type_checker.get_type(node.expressions[0])
+  if _is_assignable(expr_type, node.type_node) or \
+      _is_assignable(node.type_node, expr_type):
+    return ast_type.ASTType.ASTBoolean
+
+  return None
+
 def if_statement(node):
   '''Check statement: if (E) S'''
   if not isinstance(node, ast_if.ASTIf):
@@ -225,7 +237,7 @@ def variable_declaration(node):
     return None
 
   t_left = node.type_node
-  t_right = type_checker.get_type(node.expression)
+  t_right = type_checker.get_type(node.expressions[0])
 
   if _is_assignable(t_left, t_right):
     return ast_type.ASTType.ASTVoid
