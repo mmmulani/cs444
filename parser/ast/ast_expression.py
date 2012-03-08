@@ -394,7 +394,8 @@ class ASTIdentifiers(ASTExpression):
     super(ASTIdentifiers, self).__init__()
 
   def show(self, depth = 0, types = False):
-    ASTUtils.println('ASTIdentifiers: {0}'.format(str(self)), depth)
+    ASTUtils.println('ASTIdentifiers: {0} {1}'.format(str(self),
+        ASTUtils.type_string(self.expr_type, types)), depth)
 
   def __str__(self):
     return '.'.join(self.children)

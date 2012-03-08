@@ -134,8 +134,6 @@ def find_first_definition(ast_idens, env):
   '''Looks up the first definiton for an ast_identifiers node
   TODO(songandrew): Comment what "first definition" means here.
   Returns: an AST node of the definition'''
-  if ast_idens.parts[-1] == 'length':
-    return None, None
 
   # Suppose we are resolving 'a.b.c'.
   full_name = str(ast_idens)
