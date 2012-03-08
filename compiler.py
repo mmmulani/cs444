@@ -6,6 +6,7 @@ from optparse import OptionParser
 
 import name_resolution.env as env
 import name_resolution.name_resolution as name_resolution
+import name_resolution.type_checker.type_checker as type_checker
 import name_resolution.type_linker as type_linker
 import name_resolution.name_linker as name_linker
 import parser.ast.ast_class as ast_class
@@ -70,16 +71,7 @@ def compile(filenames):
 
   ast_store.close()
 
-  try:
-    name_resolution.resolve_names(asts)
-  except (env.EnvironmentError, type_linker.TypeLinkerError) as err:
-    exit_with_failure('name resolution', err.msg)
-
-  try:
-    for ast in asts:
-      name_linker.link_names(ast)
-  except name_linker.NameLinkingError as err:
-    exit_with_failure('name linking', err.msg)
+  resolve_names(asts)
 
   # Everything passes!
   exit_with_pass()
@@ -133,6 +125,16 @@ def add_environments(asts):
     environment.Environment.add_environments_to_trees(asts)
   except environment.EnvironmentError as err:
     exit_with_failure('environment creation', err.msg)
+
+def resolve_names(asts):
+  try:
+    name_resolution.resolve_names(asts)
+    if options.verbose:
+      for ast in asts:
+        ast.show(types = True)
+  except (env.EnvironmentError, type_linker.TypeLinkerError,
+          name_linker.NameLinkingError, type_checker.TypeCheckingError) as err:
+    exit_with_failure('name resolution', err.msg)
 
 def exit_with_pass():
   if options.verbose:

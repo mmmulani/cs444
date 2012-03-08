@@ -1,6 +1,7 @@
 import types
 
 import parser.ast.ast_expression as ast_expression
+import parser.ast.ast_type as ast_type
 import rules
 
 # get a list of all the type-checking rules:
@@ -19,7 +20,6 @@ def check_types(ast):
     for field in decl.fields:
       get_type(field)
 
-
 def get_type(ast):
   '''Tries to assign a type to the given AST by applying all the type checking
   rules. Exactly one rule should apply to an AST, so an exception is thrown if
@@ -35,14 +35,21 @@ def get_type(ast):
   # try all possible rules:
   possible_types = filter(None, [rule(ast) for rule in rule_funcs])
 
-  if len(possible_types) == 0:
-    raise TypeCheckingError('Expression could not be typed')
-  elif len(possible_types) > 1:
+  # TODO (gnleece) uncomment this when type checking is fully written
+  #if len(possible_types) == 0:
+  #  raise TypeCheckingError('Expression could not be typed')
+  if len(possible_types) > 1:
     raise TypeCheckingError('Expression has multiple possible types')
 
-  ast.expr_type = possible_types[0]
-  return possible_types[0]
+  if len(possible_types) == 0:
+    # TODO (gnleece) this is a temp hack, remove later
+    ast.expr_type = ast_type.ASTType.ASTNull
+    return ast_type.ASTType.ASTNull
+  else:
+    ast.expr_type = possible_types[0]
+    return possible_types[0]
 
 
 class TypeCheckingError(Exception):
-  pass
+  def __init__(self, msg):
+    self.msg = msg
