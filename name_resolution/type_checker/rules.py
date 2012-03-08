@@ -5,6 +5,7 @@ import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_for as ast_for
 import parser.ast.statement.ast_if as ast_if
 import parser.ast.statement.ast_while as ast_while
+import parser.ast.ast_variable_declaration as ast_variable_declaration
 import type_checker
 
 def literal_axiom(node):
@@ -205,6 +206,18 @@ def assignment(node):
 
   if _is_assignable(t_left, t_right):
     return t_left
+
+  return None
+
+def variable_declaration(node):
+  if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
+    return None
+
+  t_left = node.type_node
+  t_right = type_checker.get_type(node.expression)
+
+  if _is_assignable(t_left, t_right):
+    return ast_type.ASTType.ASTVoid
 
   return None
 
