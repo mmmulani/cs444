@@ -132,8 +132,8 @@ class ASTLiteral(ASTExpression):
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
-        'Literal of type {0}: {1}'.format(self.literal_type, self.children[0]),
-        depth)
+        'Literal of type {0}: {1} {2}'.format(self.literal_type,
+        self.children[0], ASTUtils.type_string(self.expr_type, types)), depth)
 
   def _get_literal_type(self, literal):
     # At this stage, we have already weeded out literals not of one of the types
@@ -166,7 +166,8 @@ class ASTUnary(ASTExpression):
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
-      'ASTUnary, operator: {0}'.format(self.operator), depth)
+      'ASTUnary, operator: {0} {1}'.format(self.operator,
+          ASTUtils(self.expr_node, types)), depth)
     ASTUtils.println('Operand:', depth)
     self.children[0].show(depth + 1, types)
 
@@ -324,7 +325,8 @@ class ASTBinary(ASTExpression):
     super(ASTBinary, self).__init__()
 
   def show(self, depth = 0, types = False):
-    ASTUtils.println('ASTBinary, operator: {0}'.format(self.operator), depth)
+    ASTUtils.println('ASTBinary, operator: {0} {1}'.format(self.operator,
+        ASTUtils.type_string(self.expr_type, types)), depth)
     ASTUtils.println('Left operand:', depth)
     self.children[0].show(depth + 1, types)
     ASTUtils.println('Right operand:', depth)

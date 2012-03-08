@@ -51,6 +51,10 @@ class ASTUtils():
       print out,
 
   @staticmethod
+  def type_string(type_node, show_types):
+    return '\t<{0}>'.format(str(type_node)) if show_types else ''
+
+  @staticmethod
   def get_nonpath_child(tree):
     '''
     Given a tree, returns the first child that has more than one child.
