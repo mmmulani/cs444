@@ -50,7 +50,7 @@ def unary_math(node):
   if node.operator != '-':
     return None
 
-  t = get_type(node.expressions[0])
+  t = type_checker.get_type(node.expressions[0])
   if _is_numeric(t):
     # Promote to int.
     return ast_type.ASTType.ASTInt
@@ -65,8 +65,8 @@ def numeric_comparisons(node):
   if node.operator not in ['<', '<=', '>', '>=']:
     return None
 
-  t_left = get_type(node.left_expr)
-  t_right = get_type(node.right_expr)
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
   if _is_numeric(t_left) and _is_numeric(t_right):
     return ast_type.ASTType.ASTBoolean
   return None
@@ -80,8 +80,8 @@ def generic_equality(node):
   if node.operator not in ['==', '!=']:
     return None
 
-  t_left = get_type(node.left_expr)
-  t_right = get_type(node.right_expr)
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
   if _is_assignable(t_left, t_right) or _is_assignable(t_right, t_left):
     return ast_type.ASTType.ASTBoolean
   return None
@@ -96,8 +96,8 @@ def boolean_ops(node):
     return None
 
   # Make sure both operands are booleans.
-  t_left = get_type(node.left_expr)
-  t_right = get_type(node.right_expr)
+  t_left = type_checker.get_type(node.left_expr)
+  t_right = type_checker.get_type(node.right_expr)
   if t_left == ast_type.ASTType.ASTBoolean and \
      t_right == ast_type.ASTType.ASTBoolean:
     return ast_type.ASTType.ASTBoolean
@@ -111,7 +111,7 @@ def boolean_not(node):
   if node.operator != '!':
     return None
 
-  t = get_type(node.expressions[0])
+  t = type_checker.get_type(node.expressions[0])
   if t == ast_type.ASTType.ASTBoolean:
     return ast_type.ASTType.ASTBoolean
   return None
