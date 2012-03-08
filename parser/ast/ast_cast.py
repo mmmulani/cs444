@@ -12,6 +12,7 @@ class ASTCast(ast_node.ASTNode):
 
     self.children = [self._create_type_node(tree),
         ast_expression.ASTExpression.get_expr_node(tree.children[-1])]
+    self.expr_type = None
 
   @property
   def type_node(self):
@@ -42,7 +43,7 @@ class ASTCast(ast_node.ASTNode):
       expr_node = expr_node.children[0]
     return expr_node
 
-  def show(self, depth):
+  def show(self, depth = 0):
     ast_node.ASTUtils.println(
         'ASTCast Type: {0}'.format(self.children[0]), depth)
     self.children[1].show(depth + 1)

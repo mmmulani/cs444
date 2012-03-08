@@ -1,3 +1,4 @@
+import parser.ast.ast_cast as ast_cast
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_type as ast_type
@@ -132,6 +133,19 @@ def string_plus(node):
   if _is_string(t_left) and _is_string(t_right):
     # Since both types are strings, we can use them as our return value.
     return t_left
+  return None
+
+def cast(node):
+  if not isinstance(node, ast_cast.ASTCast):
+    return None
+
+  expr_type = type_checker.get_type(node.expressions[0])
+  if _is_numeric(expr_type) and _is_numeric(node.type_node):
+    return node.type_node
+  if _is_assignable(expr_type, node.type_node) or \
+      _is_assignable(node.type_node, expr_type):
+    return node.type_node
+
   return None
 
 def instance_of(node):
