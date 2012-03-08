@@ -187,6 +187,17 @@ def for_statement(node):
 
   return ast_type.ASTType.ASTVoid
 
+def return_statement(node):
+  '''Check statement: return E'''
+  if not isinstance(node, ast_return.ASTReturn):
+    return None
+
+  # If there is an expression, make sure it is typeable.
+  if len(node.expressions) != 0:
+    type_checker.get_type(node.expressions[0])
+
+  return ast_type.ASTType.ASTVoid
+
 def block(node):
   if not isinstance(node, ast_block.ASTBlock):
     return None
