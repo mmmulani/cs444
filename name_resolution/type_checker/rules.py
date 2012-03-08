@@ -246,6 +246,13 @@ def assignment(node):
 
   return None
 
+def identifiers(node):
+  if not isinstance(node, ast_expression.ASTIdentifiers):
+    return None
+
+  #TODO (gnleece) not sure if this is right in general
+  return node.first_definition[0].type_node
+
 def variable_declaration(node):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
     return None
