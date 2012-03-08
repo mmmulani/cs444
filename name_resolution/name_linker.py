@@ -72,7 +72,12 @@ def _get_all_identifiers(expr):
     # ourself to the list.
     acc.append(expr)
   elif isinstance(expr, ast_expression.ASTAssignment):
-    # We are allowed to forward-declare on the LHS of an assignment.
+    # We are allowed to use a field declared after us if we are assigning
+    # to it on the LHS of a method.
+    if not isinstance(expr.left, ast_expression.ASTIdentifiers):
+      acc.extend(_get_all_identifiers(expr.left))
+
+    # Always get things from the RHS of an assignment.
     acc.extend(_get_all_identifiers(expr.right))
   else:
     for ex in expr.expressions:
