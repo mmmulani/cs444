@@ -183,7 +183,7 @@ def while_statement(node):
 
   # While expression must be a boolean
   t_while_expr = type_checker.get_type(node.expression)
-  if t_while_expr != ast_type.ASTType.Boolean:
+  if t_while_expr != ast_type.ASTType.ASTBoolean:
     return None
 
   # Make sure that the while body is typeable.
@@ -199,7 +199,7 @@ def for_statement(node):
   # If there is a for expression, the type of it must be a boolean.
   if node.expression is not None:
     t_for_expr = type_checker.get_type(node.expression)
-    if t_for_expr != ast_type.ASTType.Boolean:
+    if t_for_expr != ast_type.ASTType.ASTBoolean:
       return None
 
   # If there is an init or update statement, we must make sure that it is
@@ -251,16 +251,18 @@ def identifiers(node):
     return None
 
   #TODO (gnleece) not sure if this is right in general
-  return node.first_definition[0].type_node
+  #return node.first_definition[0].type_node
 
 def variable_declaration(node):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
     return None
 
   t_left = node.type_node
-  t_right = type_checker.get_type(node.expressions[0])
+  t_right = None
+  if len(node.expressions) > 0:
+    t_right = type_checker.get_type(node.expressions[0])
 
-  if _is_assignable(t_left, t_right):
+  if t_right is None or _is_assignable(t_left, t_right):
     return ast_type.ASTType.ASTVoid
 
   return None
@@ -307,7 +309,7 @@ def _is_assignable(type_1, type_2):
 
   if type_1 == ast_type.ASTType.ASTInt and type_2 in \
       [ast_type.ASTType.ASTShort, ast_type.ASTType.ASTChar,
-       ast_type.ASTTYpe.ASTByte]:
+       ast_type.ASTType.ASTByte]:
     return True
 
   if type_1 == ast_type.ASTType.ASTShort and type_2 == ast_type.ASTType.ASTByte:

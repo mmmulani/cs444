@@ -166,8 +166,7 @@ class ASTUnary(ASTExpression):
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
-      'ASTUnary, operator: {0} {1}'.format(self.operator,
-          ASTUtils(self.expr_node, types)), depth)
+      'ASTUnary, operator: {0}'.format(self.operator), depth)
     ASTUtils.println('Operand:', depth)
     self.children[0].show(depth + 1, types)
 
