@@ -5,3 +5,4 @@ utils/test.cfg
 test.java
 out
 ast_store.db
+ast_store
