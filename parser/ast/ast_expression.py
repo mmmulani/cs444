@@ -109,9 +109,13 @@ class ASTFieldAccess(ASTExpression):
     super(ASTFieldAccess, self).__init__()
 
   @property
+  def left(self):
+    return self.children[0]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
-    return [self.children[0]]
+    return list(self.children)
 
 class ASTLiteral(ASTExpression):
   # Enum of different literal types.
@@ -217,6 +221,10 @@ class ASTArrayAccess(ASTExpression):
     super(ASTArrayAccess, self).__init__()
 
   @property
+  def index(self):
+    return self.children[1]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     # Copy this array so the caller can modify it.
@@ -268,6 +276,14 @@ class ASTMethodInvocation(ASTExpression):
     for i, x in enumerate(self.children[1]):
       ASTUtils.println('Argument {0}:'.format(str(i)), depth)
       x.show(depth + 1)
+
+  @property
+  def arguments(self):
+    return self.children[1]
+
+  @property
+  def left(self):
+    return self.children[0][0]
 
   @property
   def expressions(self):
@@ -366,7 +382,7 @@ class ASTIdentifiers(ASTExpression):
     else:
       self.children = ASTUtils.get_ids_list(tree)
 
-    self.definition = None
+    self.first_definition = (None, None)
     super(ASTIdentifiers, self).__init__()
 
   def show(self, depth = 0):
@@ -377,6 +393,10 @@ class ASTIdentifiers(ASTExpression):
 
   def __eq__(a, b):
     return a.children == b.children
+
+  @property
+  def parts(self):
+    return list(self.children)
 
   @property
   def expressions(self):

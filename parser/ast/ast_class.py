@@ -4,7 +4,6 @@ import ast_node
 import ast_type
 import ast_variable_declaration
 
-
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree, package_name=''):
     '''Create an AST Class Declaration node'''

@@ -38,9 +38,13 @@ class ASTVariableDeclaration(ast_node.ASTNode):
     return self.children[2]
 
   @property
+  def expression(self):
+    return self.children[3]
+
+  @property
   def expressions(self):
     # Used to match ASTExpression format.
-    return [self.children[3]]
+    return [self.children[3]] if self.children[3] is not None else []
 
   @property
   def is_static(self):
