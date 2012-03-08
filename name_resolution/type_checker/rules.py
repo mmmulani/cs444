@@ -1,4 +1,5 @@
 import parser.ast.ast_cast as ast_cast
+import parser.ast.ast_class as ast_class
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_type as ast_type
@@ -250,8 +251,63 @@ def identifiers(node):
   if not isinstance(node, ast_expression.ASTIdentifiers):
     return None
 
-  #TODO (gnleece) not sure if this is right in general
-  #return node.first_definition[0].type_node
+  # Make sure a name was found in the identifiers.
+  if node.first_definition is None:
+    return None
+
+  (name, defn) = node.first_definition
+
+  # We can never access fields on an interface or use it in an expression.
+  if isinstance(defn, ast_interface.ASTInterface):
+    return None
+
+  # If the name found is the whole identifiers, the type has already been
+  # resolved but we have to make sure it is instance type. (i.e. the definition
+  # points to a field or local and not a type.
+  if name == str(node):
+    if isinstance(defn, ast_variable_declaration.ASTVariableDeclaration):
+      return defn.type_node
+    return None
+
+  # A list of identifiers that are not matched by defn.
+  remaining_idens = node.parts[name.count('.') + 1:]
+
+  # If defn is a type, the first part must be a static field and the remaining
+  # parts are instance fields/length. If defn is an instance variable, all the
+  # parts are instance fields/length.
+  if isinstance(defn, ast_class.ASTClass):
+    class_env = defn.environment
+    field = class_env.lookup_field(remaining_idens[0])
+    if field is None:
+      return None
+
+    if not field.is_static:
+      return None
+    defn = field
+    remaining_idens.pop(0)
+
+  # At this point, defn is a variable declarator and all the remaining idens are
+  # instance fields or 'length'.
+  for ix, part in enumerate(remaining_idens):
+    type_node = defn.type_node
+
+    # If the type is an array type and there are remaining parts, this part must
+    # be the last and it must be a 'length' access.
+    if type_node.is_array:
+      if ix + 1 != len(remaining_idens):
+        return None
+      elif part != 'length'
+        return None
+      return ast_type.ASTType.ASTInt
+
+    # The part is an instance field on the defn type.
+    type_env = type_node.environment
+    field = type_env.lookup_field(part)
+    if field is None or field.is_static:
+      return None
+    defn = field
+
+  return defn.type_node
 
 def variable_declaration(node):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):

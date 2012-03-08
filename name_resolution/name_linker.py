@@ -116,7 +116,7 @@ def _link_name_in_expr_or_stmt(expr, env):
     # on the type of the left expression.
     _link_name_in_expr_or_stmt(expr.left, env)
   elif isinstance(expr, ast_expression.ASTIdentifiers):
-    name, defn = find_first_definition(expr, env)
+    defn, name = find_first_definition(expr, env)
     expr.first_definition = (name, defn)
   elif isinstance(expr, ast_block.ASTBlock) or isinstance(expr, ast_for.ASTFor):
     # ASTBlock and ASTFor need to use their containing environment.
