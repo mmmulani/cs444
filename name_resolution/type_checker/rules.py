@@ -2,7 +2,9 @@ import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_type as ast_type
 import parser.ast.statement.ast_block as ast_block
+import parser.ast.statement.ast_for as ast_for
 import parser.ast.statement.ast_if as ast_if
+import parser.ast.statement.ast_while as ast_while
 import type_checker
 
 def literal_axiom(node):
@@ -144,6 +146,43 @@ def if_statement(node):
   type_checker.get_type(node.if_statement)
   if node.else_statement:
     type_checker.get_type(node.else_statement)
+
+  return ast_type.ASTType.ASTVoid
+
+def while_statement(node):
+  '''Check statement: while (E) S'''
+  if not isinstance(node, ast_while.ASTWhile):
+    return None
+
+  # While expression must be a boolean
+  t_while_expr = type_checker.get_type(node.expression)
+  if t_while_expr != ast_type.ASTType.Boolean:
+    return None
+
+  # Make sure that the while body is typeable.
+  type_checker.get_type(node.statement)
+
+  return ast_type.ASTType.ASTVoid
+
+def for_statement(node):
+  '''Check statement: for (S ; E ; S) S'''
+  if not isinstance(node, ast_for.ASTFor):
+    return None
+
+  # If there is a for expression, the type of it must be a boolean.
+  if node.expression is not None:
+    t_for_expr = type_checker.get_type(node.expression)
+    if t_for_expr != ast_type.ASTType.Boolean:
+      return None
+
+  # If there is an init or update statement, we must make sure that it is
+  # typeable.
+  if node.for_init is not None:
+    type_checker.get_type(node.for_init)
+  if node.for_update is not None:
+    type_checker.get_type(node.for_update)
+
+  type_checker.get_type(node.statement)
 
   return ast_type.ASTType.ASTVoid
 
