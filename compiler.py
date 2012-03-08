@@ -66,8 +66,12 @@ def compile(filenames):
     if filename.startswith('stdlib'):
       ast_store[filename] = ast
 
+  # Add the stdlib ASTs to the front of our ASTs so when we print out ASTs, the
+  # specified files appear last.
   if options.stdlib:
-    asts.extend(get_stdlib_asts())
+    stdlib_asts = get_stdlib_asts()
+    stdlib_asts.extend(asts)
+    asts = stdlib_asts
 
   ast_store.close()
 
