@@ -287,6 +287,13 @@ class ASTMethodInvocation(ASTExpression):
     return self.children[0][0]
 
   @property
+  def right(self):
+    if len(self.children[0]) == 2:
+      return self.children[0][1]
+    else:
+      return None
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return self.children[0] + self.children[1]

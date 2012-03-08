@@ -16,7 +16,7 @@ def link_names(ast):
 
   check_forward_field_init(ast.fields, env)
   for f in ast.fields:
-    _link_name_in_expr_or_stmt(f.children[3], env, is_field = True)
+    _link_name_in_expr_or_stmt(f.children[3], env)
 
   for m in ast.methods:
     if m.body is None:
@@ -57,8 +57,7 @@ def get_all_field_identifiers(f):
   return _get_all_identifiers(f.expression)
 
 def _get_all_identifiers(expr):
-  '''Helper to get all identifiers from an expression or statement node
-  '''
+  '''Helper to get all identifiers from an expression or statement node'''
   acc = []
   if isinstance(expr, ast_expression.ASTMethodInvocation):
     # Only check the left side and the arguments.
@@ -81,7 +80,7 @@ def _get_all_identifiers(expr):
 
   return acc
 
-def _link_name_in_expr_or_stmt(expr, env, is_field = False):
+def _link_name_in_expr_or_stmt(expr, env):
   if expr is None:
     return
 
@@ -89,31 +88,49 @@ def _link_name_in_expr_or_stmt(expr, env, is_field = False):
     # We check everything except the right part of a method invocation,
     # since that will depend on the type of the left part.  That is, for the
     # expression (a.b).c(foo, bar), we will link a.b, foo, and bar.
-    '''
-    _link_name_in_expr_or_stmt(expr.left, env)
+    if expr.right is None:
+      # The method name will be on the left hand side.
+      if isinstance(expr.left, ast_expression.ASTIdentifiers):
+        if len(expr.left.parts) == 1:
+          # A simple name -- lets ghetto this out by manually doing it
+          # here instead of recursing.
+          # TODO(songandrew)
+          pass
+        else:
+          # A qualified name can just be done in a recursive call.
+          _link_name_in_expr_or_stmt(expr.left, env)
+      else:
+        # Something more complex.  Just recurse.
+        _link_name_in_expr_or_stmt(expr.left, env)
+    else:
+      # If there's something on the right, then just recuse on the left side
+      # since the method name will not be there.
+      _link_name_in_expr_or_stmt(expr.left, env)
+
+    # Always check the arguments
     for arg in expr.arguments:
       _link_name_in_expr_or_stmt(arg, env)
-    '''
+
   elif isinstance(expr, ast_expression.ASTFieldAccess):
     # We check only the left side since the "right" field access will depend
     # on the type of the left expression.
     _link_name_in_expr_or_stmt(expr.left, env)
   elif isinstance(expr, ast_expression.ASTIdentifiers):
-    name, defn = find_first_definition(expr, env, is_field)
+    name, defn = find_first_definition(expr, env)
     expr.first_definition = (name, defn)
   elif isinstance(expr, ast_block.ASTBlock) or isinstance(expr, ast_for.ASTFor):
     # ASTBlock and ASTFor need to use their containing environment.
-    _link_containing_expressions(expr, expr.environment, is_field)
+    _link_containing_expressions(expr, expr.environment)
   else:
     # If it's not one of the special cases, just recuse on all the expressions
     # and statements.
-    _link_containing_expressions(expr, env, is_field)
+    _link_containing_expressions(expr, env)
 
-def _link_containing_expressions(expr, env, is_field = False):
+def _link_containing_expressions(expr, env):
   for ex in expr.expressions:
-    _link_name_in_expr_or_stmt(ex, env, is_field)
+    _link_name_in_expr_or_stmt(ex, env)
 
-def find_first_definition(ast_idens, env, is_field = False):
+def find_first_definition(ast_idens, env):
   '''Looks up the first definiton for an ast_identifiers node
   TODO(songandrew): Comment what "first definition" means here.
   Returns: an AST node of the definition'''
