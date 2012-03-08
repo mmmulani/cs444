@@ -23,7 +23,6 @@ class ASTWhile(ast_statement.ASTStatement):
 
     self.children = [expression, statement]
 
-
   @property
   def expression(self):
     return self.children[0]
@@ -31,6 +30,10 @@ class ASTWhile(ast_statement.ASTStatement):
   @property
   def statement(self):
     return self.children[1]
+
+  @property
+  def expressions(self):
+    return list(self.children)
 
   def show(self, depth = 0):
     ast_node.ASTUtils.println('While:', depth)

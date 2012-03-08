@@ -66,6 +66,10 @@ class ASTFor(ast_statement.ASTStatement):
   def statement(self):
     return self.children[3]
 
+  @property
+  def expressions(self):
+    return [x for x in self.children if x is not None]
+
   def show(self, depth = 0):
     ast_node.ASTUtils.println('For:', depth)
     if self.children[0]:

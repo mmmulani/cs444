@@ -62,5 +62,10 @@ class ASTStatement(ast_node.ASTNode):
     else:
       raise ASTStatementError('Got a non-statement tree node')
 
+  @property
+  def expressions(self):
+    # Used to match ASTExpression interface
+    return []
+
 class ASTStatementError(Exception):
   pass

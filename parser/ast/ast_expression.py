@@ -167,6 +167,10 @@ class ASTUnary(ASTExpression):
     self.children[0].show(depth + 1)
 
   @property
+  def expr(self):
+    return self.children[0]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     # Copy this array so the caller can modify it.
@@ -180,6 +184,14 @@ class ASTAssignment(ASTExpression):
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
                      ASTExpression.get_expr_node(tree.children[2])]
     super(ASTAssignment, self).__init__()
+
+  @property
+  def left(self):
+    return self.children[0]
+
+  @property
+  def right(self):
+    return self.children[1]
 
   @property
   def expressions(self):

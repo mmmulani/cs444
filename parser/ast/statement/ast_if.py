@@ -38,6 +38,10 @@ class ASTIf(ast_statement.ASTStatement):
   def else_statement(self):
     return self.children[2]
 
+  @property
+  def expressions(self):
+    return [x for x in self.children if x is not None]
+
   def show(self, depth = 0):
     ast_node.ASTUtils.println('If:', depth)
     self.children[0].show(depth+1)

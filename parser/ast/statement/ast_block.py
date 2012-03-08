@@ -82,7 +82,11 @@ class ASTBlock(ast_statement.ASTStatement):
 
   @property
   def statements(self):
-    return self.children
+    return list(self.children)
+
+  @property
+  def expressions(self):
+    return self.statements
 
   def show(self, depth=0, show_name=False):
     if show_name:
