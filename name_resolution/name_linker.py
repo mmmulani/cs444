@@ -54,7 +54,7 @@ def check_forward_field_init(fields, env):
       # Just use the first part of the name since this is only an error for
       # short names.
       name = id.parts[0]
-      tmp = env.lookup_field(name)
+      tmp, enclosing_type = env.lookup_field(name)
       if tmp and tmp in fields and fields.index(tmp) >= ix:
         # A field existed that was declared in the enclosing class, and
         # its declaration appears after the current declaration or is itself
@@ -172,7 +172,7 @@ def find_first_definition(ast_idens, env, is_static):
       # definition.
       pass
 
-    ret = env.lookup_field(full_name)
+    ret, enclosing_type = env.lookup_field(full_name)
     if ret is None:
       raise NameLinkingError('No definition found for simple name {0}'.format(
         full_name))
@@ -195,7 +195,7 @@ def find_first_definition(ast_idens, env, is_static):
     pass
 
   # Try to resolve 'a' to a field variable of the enclosing class.
-  field = env.lookup_field(parts[0])
+  field, enclosing_type = env.lookup_field(parts[0])
   if field:
     if is_static and not field.is_static:
       raise NameLinkingError('Static lookup in non-static context')

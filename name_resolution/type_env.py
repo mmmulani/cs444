@@ -251,13 +251,16 @@ class TypeEnvironment(env.Environment):
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
-    ret = self.fields.get(name)
-    if not ret:
-      for inherited in self.inherited:
-        ret = inherited.lookup_field(name)
-        if ret:
-          break
-    return ret
+    field = self.fields.get(name)
+    if field:
+      return field, self.definition
+
+    for inherited in self.inherited:
+      field, enclosing_type = inherited.lookup_field(name)
+      if field:
+        return field, enclosing_type
+
+    return None, None
 
   def lookup_type(self, name):
     # We prioritize the enclosing class when doing simple name lookup.

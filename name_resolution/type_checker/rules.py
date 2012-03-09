@@ -410,7 +410,7 @@ def _resolve_identifier(node, method_type=None):
 
       return method
 
-    field = class_env.lookup_field(part)
+    field, enclosing_type = class_env.lookup_field(part)
     if field is None or not field.is_static:
       return None
     defn = field
@@ -474,7 +474,7 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
       return method
 
     # The part is an instance field on the defn type.
-    field = type_env.lookup_field(part)
+    field, enclosing_type = type_env.lookup_field(part)
     if field is None or field.is_static:
       return None
     defn = field
