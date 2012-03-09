@@ -163,6 +163,8 @@ class ASTMethod(ast_node.ASTNode):
       node = node.children[0]
     self.params.append(ast_param.ASTParam(node.children[0]))
 
+    self.params.reverse()
+
   def _handle_body(self, tree):
     '''Get the method's body from a MethodBody node'''
     body = tree.children[0]
