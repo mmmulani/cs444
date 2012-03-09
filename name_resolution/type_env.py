@@ -200,6 +200,17 @@ class TypeEnvironment(env.Environment):
             'Abstract method defined in a non-abstract class: {0}'.format(
                 self.short_name))
 
+  def check_constructors(self):
+    for inherited in self.inherited:
+      if not isinstance(inherited.definition, ast_class.ASTClass):
+        continue
+
+      constructor_sig = (inherited.short_name, [])
+      method = inherited.lookup_method(constructor_sig)
+      if method is None or not method.is_constructor:
+        raise TypeEnvironmentError('No {0}() constructor'.format(
+            inherited.short_name))
+
 
   def lookup_method(self, sig):
     '''Look up a method based on its signature'''
@@ -246,6 +257,7 @@ class TypeEnvironment(env.Environment):
     elif round_number == 2:
       self.check_hierarchy()
       self.check_method_overrides()
+      self.check_constructors()
 
     super(TypeEnvironment, self).post_create(round_number)
 
