@@ -7,7 +7,7 @@ from ast_method import ASTMethod
 from ast_param import ASTParam
 
 class ASTInterface(ast_node.ASTNode):
-  def __init__(self, tree):
+  def __init__(self, tree, package_name = ''):
     '''Create an AST Interface Declaration node
     Takes in an InterfaceDeclaration parse tree node'''
     self._modifiers = self._get_modifiers(tree)
@@ -24,6 +24,8 @@ class ASTInterface(ast_node.ASTNode):
 
     # To match ASTClass, add a canonical name.
     self.canonical_name = str(self.name)
+    if package_name != '':
+      self.canonical_name = '{0}.{1}'.format(package_name, self.name)
 
     # If we do not extend any interfaces, we automatically extend
     # java.lang.Object, so we synthetically add the methods here.

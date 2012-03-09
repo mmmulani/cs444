@@ -74,16 +74,14 @@ class ASTRoot(ast_node.ASTNode):
     else:
       return None
 
+    package_name = ''
+    if self.package:
+      package_name = str(self.package)
+
     node = node.children[0]
     if node.value == ';':
       return None
     elif node.value == 'ClassDeclaration':
-      # Class declarations need to know about the package name to avoid having
-      # java.lang.Object extend itself.
-      package_name = ''
-      if self.package:
-        package_name = str(self.package)
-
       return ast_class.ASTClass(node, package_name)
     elif node.value == 'InterfaceDeclaration':
-      return ast_interface.ASTInterface(node)
+      return ast_interface.ASTInterface(node, package_name)
