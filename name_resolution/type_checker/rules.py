@@ -165,6 +165,25 @@ def instance_of(node):
 
   return None
 
+def constructor(node):
+  '''new D(E1, E2, .., Ek) types to D'''
+  if not isinstance(node, ast_expression.ASTClassInstanceCreation):
+    return None
+
+  if node.type_node.definition is None:
+    import pdb; pdb.set_trace()
+
+  name = node.type_node.name
+  env = node.type_node.definition.environment
+  param_types = [type_checker.get_type(x) for x in node.arguments]
+
+  if env.lookup_method((name, param_types)):
+    # Matching constructor found!
+    return node.type_node
+
+  # No matching constructor found.  Whoops...!
+  return None
+
 def if_statement(node):
   '''Check statement: if (E) S'''
   if not isinstance(node, ast_if.ASTIf):

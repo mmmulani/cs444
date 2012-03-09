@@ -402,6 +402,10 @@ class ASTClassInstanceCreation(ASTExpression):
     return self.children[0]
 
   @property
+  def arguments(self):
+    return self.children[1]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return self.children[1]
