@@ -97,9 +97,13 @@ class FileEnvironment(env.Environment):
 
       # Check canonical names to see if it's a type in the same package.
       if self.package_name:
-        t = self._lookup_canonical('{0}.{1}'.format(self.package_name, name))
-        if t:
-          return t
+        full_name = '{0}.{1}'.format(self.package_name, name)
+      else:
+        full_name = name
+
+      t = self._lookup_canonical(full_name)
+      if t:
+        return t
 
       # Check if it's part of an on-demand import.
       results = []
