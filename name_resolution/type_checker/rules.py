@@ -16,7 +16,7 @@ import parser.ast.statement.ast_while as ast_while
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 import type_checker
 
-def literal_axiom(node, method_type = None):
+def literal_axiom(node):
   '''Axiom for deriving types from a literal'''
   if not isinstance(node, ast_expression.ASTLiteral):
     return None
@@ -34,7 +34,7 @@ def literal_axiom(node, method_type = None):
 
   return None
 
-def numeric_math(node, method_type = None):
+def numeric_math(node):
   '''Math operator for numeric types (+, -, *, /, %)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -51,7 +51,7 @@ def numeric_math(node, method_type = None):
     return ast_type.ASTType.ASTInt
   return None
 
-def unary_math(node, method_type = None):
+def unary_math(node):
   '''Unary negation operator for numeric types (-)'''
   if not isinstance(node, ast_expression.ASTUnary):
     return None
@@ -65,7 +65,7 @@ def unary_math(node, method_type = None):
     return ast_type.ASTType.ASTInt
   return None
 
-def numeric_comparisons(node, method_type = None):
+def numeric_comparisons(node):
   '''Comparison operators for numeric types (<, <=, >, >=)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -80,7 +80,7 @@ def numeric_comparisons(node, method_type = None):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def generic_equality(node, method_type = None):
+def generic_equality(node):
   '''Equality comparisons for assignable types (==, !=)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -95,7 +95,7 @@ def generic_equality(node, method_type = None):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def boolean_ops(node, method_type = None):
+def boolean_ops(node):
   '''Eager and lazy boolean operations (&, |, &&, ||)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -112,7 +112,7 @@ def boolean_ops(node, method_type = None):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def boolean_not(node, method_type = None):
+def boolean_not(node):
   '''Unary boolean operator: !'''
   if not isinstance(node, ast_expression.ASTUnary):
     return None
@@ -125,7 +125,7 @@ def boolean_not(node, method_type = None):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def string_plus(node, method_type = None):
+def string_plus(node):
   '''Binary expression of string + string'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -147,7 +147,7 @@ def string_plus(node, method_type = None):
     return ast_type.ASTType.ASTString
   return None
 
-def cast(node, method_type = None):
+def cast(node):
   if not isinstance(node, ast_cast.ASTCast):
     return None
 
@@ -160,7 +160,7 @@ def cast(node, method_type = None):
 
   return None
 
-def instance_of(node, method_type = None):
+def instance_of(node):
   if not isinstance(node, ast_expression.ASTInstanceOf):
     return None
 
@@ -171,7 +171,7 @@ def instance_of(node, method_type = None):
 
   return None
 
-def constructor(node, method_type = None):
+def constructor(node):
   '''new D(E1, E2, .., Ek) types to D'''
   if not isinstance(node, ast_expression.ASTClassInstanceCreation):
     return None
@@ -187,7 +187,7 @@ def constructor(node, method_type = None):
   # No matching constructor found.  Whoops...!
   return None
 
-def if_statement(node, method_type = None):
+def if_statement(node):
   '''Check statement: if (E) S'''
   if not isinstance(node, ast_if.ASTIf):
     return None
@@ -204,7 +204,7 @@ def if_statement(node, method_type = None):
 
   return ast_type.ASTType.ASTVoid
 
-def while_statement(node, method_type = None):
+def while_statement(node):
   '''Check statement: while (E) S'''
   if not isinstance(node, ast_while.ASTWhile):
     return None
@@ -219,7 +219,7 @@ def while_statement(node, method_type = None):
 
   return ast_type.ASTType.ASTVoid
 
-def for_statement(node, method_type = None):
+def for_statement(node):
   '''Check statement: for (S ; E ; S) S'''
   if not isinstance(node, ast_for.ASTFor):
     return None
@@ -241,7 +241,7 @@ def for_statement(node, method_type = None):
 
   return ast_type.ASTType.ASTVoid
 
-def return_statement(node, method_type = None):
+def return_statement(node):
   '''Check statement: return E'''
   if not isinstance(node, ast_return.ASTReturn):
     return None
@@ -252,7 +252,7 @@ def return_statement(node, method_type = None):
 
   return ast_type.ASTType.ASTVoid
 
-def block(node, method_type = None):
+def block(node):
   if not isinstance(node, ast_block.ASTBlock):
     return None
 
@@ -262,7 +262,7 @@ def block(node, method_type = None):
 
   return ast_type.ASTType.ASTVoid
 
-def assignment(node, method_type = None):
+def assignment(node):
   if not isinstance(node, ast_expression.ASTAssignment):
     return None
 
@@ -274,7 +274,7 @@ def assignment(node, method_type = None):
 
   return None
 
-def identifiers(node, method_type = None):
+def identifiers(node):
   if not isinstance(node, ast_expression.ASTIdentifiers):
     return None
 
@@ -286,7 +286,7 @@ def identifiers(node, method_type = None):
 
   return type_or_decl
 
-def field_access(node, method_type = None):
+def field_access(node):
   if not isinstance(node, ast_expression.ASTFieldAccess):
     return None
 
@@ -305,7 +305,7 @@ def field_access(node, method_type = None):
 
   return type_or_decl
 
-def method_invocation(node, method_type = None):
+def method_invocation(node):
   if not isinstance(node, ast_expression.ASTMethodInvocation):
     return None
 
@@ -431,7 +431,7 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
 
   return defn
 
-def variable_declaration(node, method_type = None):
+def variable_declaration(node):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
     return None
 
@@ -445,7 +445,7 @@ def variable_declaration(node, method_type = None):
 
   return None
 
-def array_access(node, method_type = None):
+def array_access(node):
   if not isinstance(node, ast_expression.ASTArrayAccess):
     return None
 
@@ -458,7 +458,7 @@ def array_access(node, method_type = None):
 
   return None
 
-def array_creation(node, method_type = None):
+def array_creation(node):
   if not isinstance(node, ast_expression.ASTArrayCreation):
     return None
 
@@ -469,7 +469,7 @@ def array_creation(node, method_type = None):
     new_t_array.is_array = True
     return new_t_array
 
-def this_rule(node, method_type = None):
+def this_rule(node):
   # The .expr_type of ASTThis is set in the name linker, so we don't actually
   # need any rule to determine its type.
   return None
