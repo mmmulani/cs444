@@ -134,7 +134,8 @@ def _link_name_in_expr_or_stmt(expr, env, this_type):
     # on the type of the left expression.
     _link_name_in_expr_or_stmt(expr.left, env, this_type)
   elif isinstance(expr, ast_expression.ASTIdentifiers):
-    defn, name = find_first_definition(expr, env)
+    is_static = this_type is None
+    defn, name = find_first_definition(expr, env, is_static)
     expr.first_definition = (name, defn)
   elif isinstance(expr, ast_block.ASTBlock) or isinstance(expr, ast_for.ASTFor):
     # ASTBlock and ASTFor need to use their containing environment.
@@ -151,7 +152,7 @@ def _link_containing_expressions(expr, env, this_type):
   for ex in expr.expressions:
     _link_name_in_expr_or_stmt(ex, env, this_type)
 
-def find_first_definition(ast_idens, env):
+def find_first_definition(ast_idens, env, is_static):
   '''Looks up the first definiton for an ast_identifiers node
   TODO(songandrew): Comment what "first definition" means here.
   Returns: an AST node of the definition'''
@@ -162,6 +163,11 @@ def find_first_definition(ast_idens, env):
   if len(ast_idens.children) == 1:
     # The ast contains a simple name. Use lookup_id to look for the type.
     ret = env.lookup_id(full_name)
+    # If the result is a field, we need to make sure that it is static if we are
+    # accessing it from a static method or field.
+    if isinstance(ret, ast_variable_declaration.ASTVariableDeclaration):
+      if ret == env.lookup_field(full_name) and is_static and not ret.is_static:
+        raise NameLinkingError('Static lookup in non-static context')
     if ret is None:
       raise NameLinkingError('No definition found for simple name {0}'.format(
         full_name))
@@ -182,6 +188,8 @@ def find_first_definition(ast_idens, env):
   # Try to resolve 'a' to a field variable of the enclosing class.
   field = env.lookup_field(parts[0])
   if field:
+    if is_static and not field.is_static:
+      raise NameLinkingError('Static lookup in non-static context')
     return field, parts[0]
 
   # Try all prefixes of 'a.b.c' until the shortest matches to a type.
