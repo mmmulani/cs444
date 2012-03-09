@@ -511,7 +511,7 @@ def _is_assignable(type_1, type_2):
   if type_1 is None or type_2 is None:
     return False    #TODO (gnleece) I think we actually want to assert here?
 
-  if type_1 == type_2:
+  if type_1 == type_2 and type_1 != ast_type.ASTType.ASTVoid:
     return True
 
   if type_1 == ast_type.ASTType.ASTInt and type_2 in \
