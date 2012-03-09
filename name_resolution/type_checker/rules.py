@@ -176,11 +176,11 @@ def constructor(node):
   if not isinstance(node, ast_expression.ASTClassInstanceCreation):
     return None
 
-  name = node.type_node.name
+  short_name = node.type_node.identifier.parts[-1]
   env = node.type_node.definition.environment
   param_types = [type_checker.get_type(x) for x in node.arguments]
 
-  if env.lookup_method((name, param_types)):
+  if env.lookup_method((short_name, param_types)):
     # Matching constructor found!
     return node.type_node
 

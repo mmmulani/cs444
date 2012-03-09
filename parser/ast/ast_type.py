@@ -95,6 +95,12 @@ class ASTType(ast_node.ASTNode):
   def name(self):
     return str(self.children[0])
 
+  @property
+  def identifier(self):
+    if self.is_primitive:
+      return None
+    return self.children[0]
+
 # We use this in ASTType to create a dummy object.
 class Dummy(object):
   def __init__(self):
