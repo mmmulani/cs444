@@ -4,6 +4,7 @@ import parser.ast.ast_cast as ast_cast
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_interface as ast_interface
+import parser.ast.ast_method as ast_method
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_param as ast_param
 import parser.ast.ast_type as ast_type
@@ -281,6 +282,25 @@ def field_access(node):
     return type_or_decl.type
 
   return type_or_decl
+
+def method_invocation(node):
+  if not isinstance(node, ast_expression.ASTMethodInvocation):
+    return None
+
+  param_types = [type_checker.get_type(arg) for arg in node.arguments]
+  # If we have a right node, we must do field access on the left. Otherwise the
+  # left is an ASTIdentifiers.
+  if node.right is None:
+    method = _resolve_identifier(node.left, method_type=param_types)
+  else:
+    t_left = type_checker.get_type(node.left)
+    method = _resolve_further_fields(t_left.definition, node.right.parts,
+        method_type=param_types, type_node=t_left)
+
+  if not isinstance(method, ast_method.ASTMethod):
+    return None
+
+  return method.return_type
 
 # _resolve_identifier takes an ASTIdentifiers node and returns either an ASTType
 # or a definition, which can be an: ASTVariableDeclaration, ASTParam or an

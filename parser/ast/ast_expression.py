@@ -267,10 +267,13 @@ class ASTMethodInvocation(ASTExpression):
   def __init__(self, tree):
     self.children = [[], []]
     # self.children is of length 2:
-    # - first is a list of expressions to be evaluated in order, and then
-    #   accessed by field. e.g.:
-    #     (i.j).k => [Expression for "(i.j)", Expression for "k"]
-    # - second is a list of argument expressions (possibly empty)
+    # 0. List of length 1 or 2.
+    #    If length 1, it is just an ASTIdentifiers.
+    #    If length 2, the first is an arbitrary expression and the second is an
+    #    identifier (a field access of the first).
+    #    e.g.:
+    #      (i.j).k => [Expression for "(i.j)", Expression for "k"]
+    # 1. List of argument expressions (possibly empty)
     if tree.children[0].value == 'Identifiers':
       self.children[0] = [ASTExpression.get_expr_node(tree.children[0])]
       if tree.children[2].value == 'ArgumentList':
@@ -291,12 +294,12 @@ class ASTMethodInvocation(ASTExpression):
         ASTUtils.type_string(self.expr_type, types)), depth)
     if len(self.children[0]) == 1:
       ASTUtils.println('Method identifiers:', depth)
-      self.children[0][0].show(depth + 1, types)
+      self.children[0][0].show(depth + 1, types=False)
     else:
       ASTUtils.println('Expression:', depth)
       self.children[0][0].show(depth + 1, types)
       ASTUtils.println('Field access from expression:', depth)
-      self.children[0][1].show(depth + 1, types)
+      self.children[0][1].show(depth + 1, types=False)
     for i, x in enumerate(self.children[1]):
       ASTUtils.println('Argument {0}:'.format(str(i)), depth)
       x.show(depth + 1, types)
