@@ -269,7 +269,7 @@ def assignment(node):
   t_left = type_checker.get_type(node.left_expr)
   t_right = type_checker.get_type(node.right_expr)
 
-  if _is_assignable(t_left, t_right):
+  if not t_left.is_final and _is_assignable(t_left, t_right):
     return t_left
 
   return None
@@ -408,7 +408,7 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
         return None
       elif part != 'length':
         return None
-      return ast_type.ASTType.ASTInt
+      return ast_type.ASTType.ASTFinalInt
 
     if type_node.is_primitive:
       return None

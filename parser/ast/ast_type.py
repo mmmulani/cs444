@@ -8,6 +8,7 @@ class ASTType(ast_node.ASTNode):
   ASTByte = None
   ASTChar = None
   ASTInt = None
+  ASTFinalInt = None
   ASTNull = None
   ASTShort = None
   # ASTString is defined in the post_create of CanonicalEnv as it requires a
@@ -22,6 +23,7 @@ class ASTType(ast_node.ASTNode):
       self.is_array = False
       self.children = []
       self.definition = None
+      self.is_final = False
       return
 
     self.is_array = False  # Checked in get_type_from_node.
@@ -34,6 +36,7 @@ class ASTType(ast_node.ASTNode):
       self.children = [self.get_type_from_node(tree)]
 
     self.definition = None
+    self.is_final = False
 
   @staticmethod
   def from_str(name, is_primitive=False, is_array=False):
@@ -111,6 +114,8 @@ ASTType.ASTBoolean = ASTType.from_str('boolean', is_primitive=True)
 ASTType.ASTByte = ASTType.from_str('byte', is_primitive=True)
 ASTType.ASTChar = ASTType.from_str('char', is_primitive=True)
 ASTType.ASTInt = ASTType.from_str('int', is_primitive=True)
+ASTType.ASTFinalInt = ASTType.from_str('int', is_primitive=True)
+ASTType.ASTFinalInt.is_final = True
 ASTType.ASTNull = ASTType.from_str('null', is_primitive=True)
 ASTType.ASTShort = ASTType.from_str('short', is_primitive=True)
 ASTType.ASTVoid = ASTType.from_str('void', is_primitive=True)
