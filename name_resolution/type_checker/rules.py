@@ -1,3 +1,5 @@
+import copy
+
 import parser.ast.ast_cast as ast_cast
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_expression as ast_expression
@@ -388,6 +390,19 @@ def variable_declaration(node):
 
   if t_right is None or _is_assignable(t_left, t_right):
     return ast_type.ASTType.ASTVoid
+
+  return None
+
+def array_access(node):
+  if not isinstance(node, ast_expression.ASTArrayAccess):
+    return None
+
+  t_array = type_checker.get_type(node.array_expression)
+  t_index = type_checker.get_type(node.index)
+  if t_array.is_array and _is_numeric(t_index):
+    new_t_array = copy.copy(t_array)
+    new_t_array.is_array = False
+    return new_t_array
 
   return None
 

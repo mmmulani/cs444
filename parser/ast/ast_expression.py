@@ -233,6 +233,10 @@ class ASTArrayAccess(ASTExpression):
     super(ASTArrayAccess, self).__init__()
 
   @property
+  def array_expression(self):
+    return self.children[0]
+
+  @property
   def index(self):
     return self.children[1]
 
@@ -241,6 +245,13 @@ class ASTArrayAccess(ASTExpression):
     '''Returns a list of all ASTExpression children.'''
     # Copy this array so the caller can modify it.
     return [self.children[0], self.children[1]]
+
+  def show(self, depth = 0, types = False):
+    ASTUtils.println('ASTArrayAccess {0}'.format(ASTUtils.type_string(
+        self.expr_type)), depth)
+    for c in self.children:
+      if c is not None:
+        c.show(depth+1, types)
 
 class ASTThis(ASTExpression):
   def __init__(self, tree):
