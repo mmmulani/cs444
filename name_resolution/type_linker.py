@@ -62,7 +62,7 @@ def link_unambiguous_types(ast):
 
     for f in decl.fields:
       # Link field types.
-      link(f.type_node, env)
+      link_variable_declaration(f, env)
 
     seen_constructor = False
     for m in decl.methods:
@@ -108,6 +108,8 @@ def link(ast, env):
 
 def link_variable_declaration(ast, env):
   link(ast.type_node, env)
+  if ast.expression is not None:
+    link_expression(ast.expression, env)
 
 def link_block(ast, env):
   for x in ast.children:
