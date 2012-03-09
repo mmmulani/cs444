@@ -293,7 +293,7 @@ def field_access(node):
   t_left = type_checker.get_type(node.left)
 
   # Make sure that the left type can have fields.
-  if t_left.is_primitive:
+  if (t_left.is_primitive and not t_left.is_array):
     return None
 
   type_or_decl = _resolve_further_fields(t_left.definition, node.right.parts,
@@ -522,7 +522,8 @@ def _is_assignable(type_1, type_2):
   if type_1 == ast_type.ASTType.ASTShort and type_2 == ast_type.ASTType.ASTByte:
     return True
 
-  if not type_1.is_primitive and type_2 == ast_type.ASTType.ASTNull:
+  if (not type_1.is_primitive or type_1.is_array) and \
+      type_2 == ast_type.ASTType.ASTNull:
     return True
 
   if type_1.definition and type_2.definition:
