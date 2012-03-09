@@ -184,8 +184,15 @@ def constructor(node):
   env = node.type_node.definition.environment
   param_types = [type_checker.get_type(x) for x in node.arguments]
 
-  if env.lookup_method((short_name, param_types)) != (None, None):
-    # Matching constructor found!
+  method_sig = (short_name, param_types)
+  method, enclosing_type = env.lookup_method(method_sig)
+  if method is not None:
+    if method.is_protected:
+      # JLS 6.6.2. A protected constructor can be accessed only from within the
+      # package in which it is defined.
+      if enclosing_type.package_name != \
+          type_checker.get_param('cur_class').package_name:
+        return None
     return node.type_node
 
   # No matching constructor found.  Whoops...!

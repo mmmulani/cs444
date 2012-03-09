@@ -20,6 +20,7 @@ class ASTClass(ast_node.ASTNode):
     self.interfaces = self._get_interfaces(tree)
 
     self.canonical_name = str(self.name)
+    self.package_name = package_name
     if package_name != '':
       self.canonical_name = '{0}.{1}'.format(package_name, self.name)
 

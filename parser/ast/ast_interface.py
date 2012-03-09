@@ -22,7 +22,7 @@ class ASTInterface(ast_node.ASTNode):
 
     # No children.
 
-    # To match ASTClass, add a canonical name.
+    self.package_name = package_name
     self.canonical_name = str(self.name)
     if package_name != '':
       self.canonical_name = '{0}.{1}'.format(package_name, self.name)
