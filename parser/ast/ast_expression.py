@@ -256,6 +256,10 @@ class ASTThis(ASTExpression):
     '''Returns a list of all ASTExpression children.'''
     return []
 
+  def show(self, depth = 0, types = False):
+    ASTUtils.println('ASTThis {0}'.format(ASTUtils.type_string(
+        self.expr_type)), depth)
+
 class ASTMethodInvocation(ASTExpression):
   def __init__(self, tree):
     self.children = [[], []]

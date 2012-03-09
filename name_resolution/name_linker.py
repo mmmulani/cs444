@@ -1,5 +1,6 @@
 import env as env_package
 import parser.ast.ast_expression as ast_expression
+import parser.ast.ast_type as ast_type
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_for as ast_for
@@ -14,16 +15,19 @@ def link_names(ast):
   ast = ast.class_or_interface
   env = ast.environment
 
+  this_type = ast_type.ASTType.from_str(str(ast.name), is_primitive=False)
+  this_type.definition = ast
+
   check_forward_field_init(ast.fields, env)
   for f in ast.fields:
-    _link_name_in_expr_or_stmt(f.children[3], env)
+    _link_name_in_expr_or_stmt(f.children[3], env, this_type)
 
   for m in ast.methods:
     if m.body is None:
       continue
     block = m.body
     for ex in block.children:
-      _link_name_in_expr_or_stmt(ex, block.environment)
+      _link_name_in_expr_or_stmt(ex, block.environment, this_type)
 
 def check_forward_field_init(fields, env):
   '''Checks to make sure no fields do a forward declaration
@@ -85,7 +89,7 @@ def _get_all_identifiers(expr):
 
   return acc
 
-def _link_name_in_expr_or_stmt(expr, env):
+def _link_name_in_expr_or_stmt(expr, env, this_type):
   if expr is None:
     return
 
@@ -103,37 +107,40 @@ def _link_name_in_expr_or_stmt(expr, env):
           pass
         else:
           # A qualified name can just be done in a recursive call.
-          _link_name_in_expr_or_stmt(expr.left, env)
+          _link_name_in_expr_or_stmt(expr.left, env, this_type)
       else:
         # Something more complex.  Just recurse.
-        _link_name_in_expr_or_stmt(expr.left, env)
+        _link_name_in_expr_or_stmt(expr.left, env, this_type)
     else:
       # If there's something on the right, then just recuse on the left side
       # since the method name will not be there.
-      _link_name_in_expr_or_stmt(expr.left, env)
+      _link_name_in_expr_or_stmt(expr.left, env, this_type)
 
     # Always check the arguments
     for arg in expr.arguments:
-      _link_name_in_expr_or_stmt(arg, env)
+      _link_name_in_expr_or_stmt(arg, env, this_type)
 
   elif isinstance(expr, ast_expression.ASTFieldAccess):
     # We check only the left side since the "right" field access will depend
     # on the type of the left expression.
-    _link_name_in_expr_or_stmt(expr.left, env)
+    _link_name_in_expr_or_stmt(expr.left, env, this_type)
   elif isinstance(expr, ast_expression.ASTIdentifiers):
     defn, name = find_first_definition(expr, env)
     expr.first_definition = (name, defn)
   elif isinstance(expr, ast_block.ASTBlock) or isinstance(expr, ast_for.ASTFor):
     # ASTBlock and ASTFor need to use their containing environment.
-    _link_containing_expressions(expr, expr.environment)
+    _link_containing_expressions(expr, expr.environment, this_type)
+  elif isinstance(expr, ast_expression.ASTThis):
+    # ASTThis only needs a pointer to the current class.
+    expr.expr_type = this_type
   else:
     # If it's not one of the special cases, just recuse on all the expressions
     # and statements.
-    _link_containing_expressions(expr, env)
+    _link_containing_expressions(expr, env, this_type)
 
-def _link_containing_expressions(expr, env):
+def _link_containing_expressions(expr, env, this_type):
   for ex in expr.expressions:
-    _link_name_in_expr_or_stmt(ex, env)
+    _link_name_in_expr_or_stmt(ex, env, this_type)
 
 def find_first_definition(ast_idens, env):
   '''Looks up the first definiton for an ast_identifiers node

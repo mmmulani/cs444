@@ -426,6 +426,11 @@ def array_access(node):
 
   return None
 
+def this_rule(node):
+  # The .expr_type of ASTThis is set in the name linker, so we don't actually
+  # need any rule to determine its type.
+  return None
+
 # Helper functions for working with types.
 
 def _is_numeric(type_):
