@@ -419,7 +419,7 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
     if want_method and ix + 1 == len(remaining_idens):
       method_sig = (part, method_type)
       method = type_env.lookup_method(method_sig)
-      if method is None:
+      if method is None or method.is_static:
         return None
       return method
 
