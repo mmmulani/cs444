@@ -526,7 +526,8 @@ def _is_assignable(type_1, type_2):
       type_2 == ast_type.ASTType.ASTNull:
     return True
 
-  if type_1.definition and type_2.definition:
+  if type_1.definition and type_2.definition and \
+      type_1.is_array == type_2.is_array:
     if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
       return True
 
