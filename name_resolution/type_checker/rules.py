@@ -16,7 +16,7 @@ import parser.ast.statement.ast_while as ast_while
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 import type_checker
 
-def literal_axiom(node):
+def literal_axiom(node, method_type = None):
   '''Axiom for deriving types from a literal'''
   if not isinstance(node, ast_expression.ASTLiteral):
     return None
@@ -34,7 +34,7 @@ def literal_axiom(node):
 
   return None
 
-def numeric_math(node):
+def numeric_math(node, method_type = None):
   '''Math operator for numeric types (+, -, *, /, %)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -51,7 +51,7 @@ def numeric_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
-def unary_math(node):
+def unary_math(node, method_type = None):
   '''Unary negation operator for numeric types (-)'''
   if not isinstance(node, ast_expression.ASTUnary):
     return None
@@ -65,7 +65,7 @@ def unary_math(node):
     return ast_type.ASTType.ASTInt
   return None
 
-def numeric_comparisons(node):
+def numeric_comparisons(node, method_type = None):
   '''Comparison operators for numeric types (<, <=, >, >=)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -80,7 +80,7 @@ def numeric_comparisons(node):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def generic_equality(node):
+def generic_equality(node, method_type = None):
   '''Equality comparisons for assignable types (==, !=)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -95,7 +95,7 @@ def generic_equality(node):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def boolean_ops(node):
+def boolean_ops(node, method_type = None):
   '''Eager and lazy boolean operations (&, |, &&, ||)'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -112,7 +112,7 @@ def boolean_ops(node):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def boolean_not(node):
+def boolean_not(node, method_type = None):
   '''Unary boolean operator: !'''
   if not isinstance(node, ast_expression.ASTUnary):
     return None
@@ -125,7 +125,7 @@ def boolean_not(node):
     return ast_type.ASTType.ASTBoolean
   return None
 
-def string_plus(node):
+def string_plus(node, method_type = None):
   '''Binary expression of string + string'''
   if not isinstance(node, ast_expression.ASTBinary):
     return None
@@ -147,7 +147,7 @@ def string_plus(node):
     return ast_type.ASTType.ASTString
   return None
 
-def cast(node):
+def cast(node, method_type = None):
   if not isinstance(node, ast_cast.ASTCast):
     return None
 
@@ -160,7 +160,7 @@ def cast(node):
 
   return None
 
-def instance_of(node):
+def instance_of(node, method_type = None):
   if not isinstance(node, ast_expression.ASTInstanceOf):
     return None
 
@@ -171,7 +171,7 @@ def instance_of(node):
 
   return None
 
-def constructor(node):
+def constructor(node, method_type = None):
   '''new D(E1, E2, .., Ek) types to D'''
   if not isinstance(node, ast_expression.ASTClassInstanceCreation):
     return None
@@ -187,7 +187,7 @@ def constructor(node):
   # No matching constructor found.  Whoops...!
   return None
 
-def if_statement(node):
+def if_statement(node, method_type = None):
   '''Check statement: if (E) S'''
   if not isinstance(node, ast_if.ASTIf):
     return None
@@ -204,7 +204,7 @@ def if_statement(node):
 
   return ast_type.ASTType.ASTVoid
 
-def while_statement(node):
+def while_statement(node, method_type = None):
   '''Check statement: while (E) S'''
   if not isinstance(node, ast_while.ASTWhile):
     return None
@@ -219,7 +219,7 @@ def while_statement(node):
 
   return ast_type.ASTType.ASTVoid
 
-def for_statement(node):
+def for_statement(node, method_type = None):
   '''Check statement: for (S ; E ; S) S'''
   if not isinstance(node, ast_for.ASTFor):
     return None
@@ -241,7 +241,7 @@ def for_statement(node):
 
   return ast_type.ASTType.ASTVoid
 
-def return_statement(node):
+def return_statement(node, method_type = None):
   '''Check statement: return E'''
   if not isinstance(node, ast_return.ASTReturn):
     return None
@@ -252,7 +252,7 @@ def return_statement(node):
 
   return ast_type.ASTType.ASTVoid
 
-def block(node):
+def block(node, method_type = None):
   if not isinstance(node, ast_block.ASTBlock):
     return None
 
@@ -262,7 +262,7 @@ def block(node):
 
   return ast_type.ASTType.ASTVoid
 
-def assignment(node):
+def assignment(node, method_type = None):
   if not isinstance(node, ast_expression.ASTAssignment):
     return None
 
@@ -274,7 +274,7 @@ def assignment(node):
 
   return None
 
-def identifiers(node):
+def identifiers(node, method_type = None):
   if not isinstance(node, ast_expression.ASTIdentifiers):
     return None
 
@@ -286,7 +286,7 @@ def identifiers(node):
 
   return type_or_decl
 
-def field_access(node):
+def field_access(node, method_type = None):
   if not isinstance(node, ast_expression.ASTFieldAccess):
     return None
 
@@ -305,7 +305,7 @@ def field_access(node):
 
   return type_or_decl
 
-def method_invocation(node):
+def method_invocation(node, method_type = None):
   if not isinstance(node, ast_expression.ASTMethodInvocation):
     return None
 
@@ -431,7 +431,7 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
 
   return defn
 
-def variable_declaration(node):
+def variable_declaration(node, method_type = None):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
     return None
 
@@ -445,7 +445,7 @@ def variable_declaration(node):
 
   return None
 
-def array_access(node):
+def array_access(node, method_type = None):
   if not isinstance(node, ast_expression.ASTArrayAccess):
     return None
 
@@ -458,7 +458,7 @@ def array_access(node):
 
   return None
 
-def array_creation(node):
+def array_creation(node, method_type = None):
   if not isinstance(node, ast_expression.ASTArrayCreation):
     return None
 
@@ -469,7 +469,7 @@ def array_creation(node):
     new_t_array.is_array = True
     return new_t_array
 
-def this_rule(node):
+def this_rule(node, method_type = None):
   # The .expr_type of ASTThis is set in the name linker, so we don't actually
   # need any rule to determine its type.
   return None
