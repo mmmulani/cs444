@@ -42,13 +42,10 @@ def get_type(ast):
     raise TypeCheckingError('Expression has multiple possible types')
 
   if len(possible_types) == 0:
-    # TODO (gnleece) this is a temp hack, remove later
-    ast.expr_type = ast_type.ASTType.ASTNull
-    return ast_type.ASTType.ASTNull
-  else:
-    ast.expr_type = possible_types[0]
-    return possible_types[0]
+    raise TypeCheckingError('Expression has no type')
 
+  ast.expr_type = possible_types[0]
+  return possible_types[0]
 
 class TypeCheckingError(Exception):
   def __init__(self, msg):
