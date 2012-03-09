@@ -291,7 +291,18 @@ def method_invocation(node):
   # If we have a right node, we must do field access on the left. Otherwise the
   # left is an ASTIdentifiers.
   if node.right is None:
-    method = _resolve_identifier(node.left, method_type=param_types)
+    iden = node.left
+    name, defn = iden.first_definition
+    if defn is None:
+      return None
+
+    # When there is only one part to the identifier, it is meant to be called on
+    # "this", and we have that defn is an ASTType of the class.
+    if name == '':
+      method = _resolve_further_fields(defn.definition, iden.parts,
+          method_type=param_types, type_node=defn)
+    else:
+      method = _resolve_identifier(node.left, method_type=param_types)
   else:
     t_left = type_checker.get_type(node.left)
     method = _resolve_further_fields(t_left.definition, node.right.parts,
@@ -316,7 +327,6 @@ def _resolve_identifier(node, method_type=None):
   (name, defn) = node.first_definition
   if name is None:
     return None
-
 
   # We can never access fields on an interface or use it in an expression.
   if isinstance(defn, ast_interface.ASTInterface):

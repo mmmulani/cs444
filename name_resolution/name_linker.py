@@ -110,10 +110,10 @@ def _link_name_in_expr_or_stmt(expr, env, this_type):
       # The method name will be on the left hand side.
       if isinstance(expr.left, ast_expression.ASTIdentifiers):
         if len(expr.left.parts) == 1:
-          # A simple name -- lets ghetto this out by manually doing it
-          # here instead of recursing.
-          # TODO(songandrew)
-          pass
+          # In this case the method should be called on "this", so we can set
+          # the first definition and let it be handled by the method invocation
+          # rule.
+          expr.left.first_definition = ('', this_type)
         else:
           # A qualified name can just be done in a recursive call.
           _link_name_in_expr_or_stmt(expr.left, env, this_type)
