@@ -161,16 +161,25 @@ def find_first_definition(ast_idens, env, is_static):
   full_name = str(ast_idens)
 
   if len(ast_idens.children) == 1:
-    # The ast contains a simple name. Use lookup_id to look for the type.
-    ret = env.lookup_id(full_name)
-    # If the result is a field, we need to make sure that it is static if we are
-    # accessing it from a static method or field.
-    if isinstance(ret, ast_variable_declaration.ASTVariableDeclaration):
-      if ret == env.lookup_field(full_name) and is_static and not ret.is_static:
-        raise NameLinkingError('Static lookup in non-static context')
+    # The ast contains a simple name. Check if it is a local variable first and
+    # then resort to a field lookup.
+    try:
+      ret = env.lookup_local(full_name)
+      if ret:
+        return ret, full_name
+    except env_package.EnvironmentError:
+      # Not in a block environment since identifiers can be in a field
+      # definition.
+      pass
+
+    ret = env.lookup_field(full_name)
     if ret is None:
       raise NameLinkingError('No definition found for simple name {0}'.format(
         full_name))
+    # We need to make sure that it is static if we are
+    # accessing it from a static method or field.
+    if is_static and not ret.is_static:
+      raise NameLinkingError('Static lookup in non-static context')
     return ret, full_name
 
   # Name is qualified, i.e. contains a dot character.

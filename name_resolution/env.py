@@ -28,11 +28,6 @@ class Environment(object):
     # your context.
     raise EnvironmentError('lookup_type() not overloaded.')
 
-  def lookup_id(self, name):
-    # Overload this to look up an id for name resolution in the environment's
-    # context.
-    raise EnvironmentError('lookup_id() not overloaded.')
-
 
   def add_child(self, env):
     self.children.append(env)

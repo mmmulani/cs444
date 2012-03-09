@@ -70,10 +70,6 @@ class BlockEnvironment(env.Environment):
       ret = self.parent.lookup_local(name)
     return ret
 
-  def lookup_id(self, name):
-    '''Lookup an id for name linking.'''
-    return (self.lookup_local(name) or self.parent.lookup_id(name))
-
   # Lookups for other types of names will be delegated to the parent
   # environment.
   def lookup_type(self, name):
