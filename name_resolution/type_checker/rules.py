@@ -529,4 +529,10 @@ def _is_assignable(type_1, type_2):
     if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
       return True
 
+  # Java makes gnleece sad.
+  if type_2.is_array and type_1.definition and \
+      type_1.definition.canonical_name in \
+      ['java.lang.Cloneable', 'java.io.Serializable', 'java.lang.Object']:
+    return True
+
   return False
