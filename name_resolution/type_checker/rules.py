@@ -511,26 +511,32 @@ def _is_assignable(type_1, type_2):
   if type_1 is None or type_2 is None:
     return False    #TODO (gnleece) I think we actually want to assert here?
 
+  # A type is always assignable to itself:
   if type_1 == type_2 and type_1 != ast_type.ASTType.ASTVoid:
     return True
 
+  # byte, short, and char are all assignable to int:
   if type_1 == ast_type.ASTType.ASTInt and type_2 in \
       [ast_type.ASTType.ASTShort, ast_type.ASTType.ASTChar,
        ast_type.ASTType.ASTByte]:
     return True
 
+  # byte is a assignable to short:
   if type_1 == ast_type.ASTType.ASTShort and type_2 == ast_type.ASTType.ASTByte:
     return True
 
+  # null is assignable to reference types and arrays:
   if (not type_1.is_primitive or type_1.is_array) and \
       type_2 == ast_type.ASTType.ASTNull:
     return True
 
+  # Subtypes are assignable to their supertypes:
   if type_1.definition and type_2.definition and \
       type_1.is_array == type_2.is_array:
     if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
       return True
 
+  # An array of any type is assignable to Object/Cloneable/Serializable
   # Java makes gnleece sad.
   if type_2.is_array and type_1.definition and \
       type_1.definition.canonical_name in \
