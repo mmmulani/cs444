@@ -201,32 +201,53 @@ class TypeEnvironment(env.Environment):
                 self.short_name))
 
   def check_constructors(self):
+    '''Checks all types have a simple constructor defined.
+    A simple constructor is one that takes no paramaters.'''
     for inherited in self.inherited:
       if not isinstance(inherited.definition, ast_class.ASTClass):
         continue
 
       constructor_sig = (inherited.short_name, [])
-      method = inherited.lookup_method(constructor_sig)
+      method, defn = inherited.lookup_method(constructor_sig)
       if method is None or not method.is_constructor:
         raise TypeEnvironmentError('No {0}() constructor'.format(
             inherited.short_name))
 
-
   def lookup_method(self, sig):
-    '''Look up a method based on its signature'''
+    '''Look up a method based on its signature
+    Returns an (ASTMethod, ASTClass/Instance) tuple, where:
+      - ASTMethod is the definition of the method, and
+      - ASTClass/Instance is the containing type of the method'''
     ret = [ast for method_sig, ast in self.methods if method_sig == sig]
     if len(ret) > 1:
       raise TypeEnvironmentError(
           'Found more than one method matching signature {0}'.format(sig))
     elif len(ret) == 1:
-      return ret[0]
+      return ret[0], self.definition
 
     # We didn't find the method locally, so check inherited environments:
+
+    # First, we aggregate any methods that match the signature.
+    results = []
     for inherited in self.inherited:
-      ret = inherited.lookup_method(sig)
+      ret, defn = inherited.lookup_method(sig)
       if ret:
-        return ret
-    return None
+        results.append((ret, defn))
+
+    # Next, we filter the results based on the logic in _maybe_add_inherited.
+    new_results = []
+    if len(results) > 0:
+      for res, defn in results:
+        new_results = self._maybe_add_inherited([], new_results, sig, res)
+
+    # If there's a matching result, find the AST node and source of that result
+    # (which is stored only in the results list) and return the tuple.
+    if len(new_results) == 1:
+      ret = new_results[0][1]
+      x = [(t, s) for t, s in results if t == ret]
+      return x[0]
+
+    return None, None
 
   def lookup_field(self, name):
     '''Lookup a field in this environment'''
@@ -245,8 +266,7 @@ class TypeEnvironment(env.Environment):
     return self.parent.lookup_type(name)
 
   def lookup_id(self, name):
-    return (self.lookup_field(name) or self.lookup_method(name) or
-        self.lookup_type(name))
+    return (self.lookup_field(name) or self.lookup_type(name))
 
   # Lookup methods not shown here should throw an exception.
 

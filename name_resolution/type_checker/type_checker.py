@@ -9,7 +9,8 @@ rule_funcs = [rules.__dict__.get(x) for x in dir(rules) if
     isinstance(rules.__dict__.get(x), types.FunctionType) and x[0] != '_']
 
 _global_params = {
-  'cur_method' : None
+  'cur_method': None,
+  'cur_class': None
 }
 
 def set_params(param_dict):
@@ -22,6 +23,7 @@ def get_param(key):
   return _global_params[key]
 
 def clear_params():
+  '''Clear the global paramaters for re-use'''
   for key in _global_params.keys():
     _global_params[key] = None
 
@@ -33,7 +35,10 @@ def check_types(ast):
   # type check all fields and methods:
   if decl:
     for method in decl.methods:
-      set_params({'cur_method' : method})
+      set_params({
+        'cur_method': method,
+        'cur_class': decl
+      })
       get_type(method.body)
       clear_params()
     for field in decl.fields:

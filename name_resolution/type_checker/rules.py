@@ -184,7 +184,7 @@ def constructor(node):
   env = node.type_node.definition.environment
   param_types = [type_checker.get_type(x) for x in node.arguments]
 
-  if env.lookup_method((short_name, param_types)):
+  if env.lookup_method((short_name, param_types)) != (None, None):
     # Matching constructor found!
     return node.type_node
 
@@ -256,7 +256,7 @@ def return_statement(node):
   expr_type = None
   if len(node.expressions) != 0:
     expr_type = type_checker.get_type(node.expressions[0])
-  
+
   # Constructors have no return type, so you can't return something in one:
   if method.is_constructor and expr_type:
     return None
@@ -393,9 +393,21 @@ def _resolve_identifier(node, method_type=None):
     part = remaining_idens.pop(0)
     if len(remaining_idens) == 0 and want_method:
       method_sig = (part, method_type)
-      method = class_env.lookup_method(method_sig)
+      method, encl_type = class_env.lookup_method(method_sig)
+
+      # If the method is not static, this is an error because we are accessing
+      # off a type name.
       if method is None or not method.is_static:
         return None
+
+      # Check for protected access restrictions on method calls.
+      # XXX: this is correct.
+      if method.is_protected and \
+          not ast_node.ASTUtils.is_subtype(
+              type_checker.get_param('cur_class'),
+              encl_type):
+        return None
+
       return method
 
     field = class_env.lookup_field(part)
@@ -405,11 +417,12 @@ def _resolve_identifier(node, method_type=None):
 
   return _resolve_further_fields(defn, remaining_idens, method_type)
 
-# _resolve_further_fields is used to resolve more fields on a definition. It is
-# to type field accesses and method invocations.
-# Like _resolve_identifier, it can return an ASTType or a definition.
 def _resolve_further_fields(defn, remaining_idens, method_type=None,
     type_node=None):
+  '''_resolve_further_fields is used to resolve more fields on a definition.
+  It is to type field accesses and method invocations. Like
+  _resolve_identifier, it can return an ASTType or a definition.'''
+
   want_method = method_type is not None
 
   # At this point, defn is a variable declarator and all the remaining idens are
@@ -437,9 +450,27 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
     # If we are looking for a method, the last part must resolve to one.
     if want_method and ix + 1 == len(remaining_idens):
       method_sig = (part, method_type)
-      method = type_env.lookup_method(method_sig)
+      method, encl_type = type_env.lookup_method(method_sig)
+
+      # If the method is static, this is an error because we are accessing
+      # off an instance variable.
       if method is None or method.is_static:
         return None
+
+      # Check for protected access restrictions on method calls.
+      if method.is_protected:
+        # JLS 6.6.2.  Protected instance field access is allowed if:
+        #   - The class containing the body is a subtype of the class delcaring
+        #     the property, and
+        #   - The type of the variable with the instance field is a subtype of
+        #     the class containing the body.
+        if not ast_node.ASTUtils.is_subtype(
+              type_node.definition, type_checker.get_param('cur_class')) or \
+            not ast_node.ASTUtils.is_subtype(
+              type_checker.get_param('cur_class'),
+              encl_type):
+          return None
+
       return method
 
     # The part is an instance field on the defn type.
