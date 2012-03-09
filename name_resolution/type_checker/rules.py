@@ -176,6 +176,10 @@ def constructor(node):
   if not isinstance(node, ast_expression.ASTClassInstanceCreation):
     return None
 
+  # You can't instantiate abstract classes.
+  if node.type_node.definition.is_abstract:
+    return None
+
   short_name = node.type_node.identifier.parts[-1]
   env = node.type_node.definition.environment
   param_types = [type_checker.get_type(x) for x in node.arguments]
