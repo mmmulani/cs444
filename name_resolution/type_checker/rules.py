@@ -437,8 +437,8 @@ def variable_declaration(node):
 
   t_left = node.type_node
   t_right = None
-  if len(node.expressions) > 0:
-    t_right = type_checker.get_type(node.expressions[0])
+  if node.expression is not None:
+    t_right = type_checker.get_type(node.expression)
 
   if t_right is None or _is_assignable(t_left, t_right):
     return ast_type.ASTType.ASTVoid
@@ -543,4 +543,17 @@ def _is_assignable(type_1, type_2):
       ['java.lang.Cloneable', 'java.io.Serializable', 'java.lang.Object']:
     return True
 
+  # Any non-primitive type is assignable to java.lang.Object
+  if _is_object(type_1) and not type_2.is_primitive:
+    # If one is an array, the other must be as well.
+    if type_1.is_array == type_2.is_array:
+      return True
+
   return False
+
+def _is_object(t):
+  '''Checks if a type is java.lang.Object'''
+  if t.definition:
+    return t.definition.canonical_name == 'java.lang.Object'
+  else:
+    return False
