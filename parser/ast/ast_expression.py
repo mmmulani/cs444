@@ -244,7 +244,7 @@ class ASTArrayAccess(ASTExpression):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     # Copy this array so the caller can modify it.
-    return [self.children[0], self.children[1]]
+    return list(self.children)
 
 class ASTThis(ASTExpression):
   def __init__(self, tree):

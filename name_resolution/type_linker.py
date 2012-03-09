@@ -165,6 +165,8 @@ def link_expression(ast, env):
     link(ast.type_node, env)
   elif t == ast_expression.ASTClassInstanceCreation:
     link(ast.type_node, env)
+  elif t == ast_expression.ASTArrayCreation:
+    link(ast.type_node, env)
 
   # Recurse for each expression child.
   for e in ast.expressions:
