@@ -47,7 +47,9 @@ ClassBodyDeclaration ConstructorDeclaration
 ClassMemberDeclaration FieldDeclaration
 ClassMemberDeclaration MethodDeclaration
 ClassMemberDeclaration ;
-FieldDeclaration Modifiers_OPT Type VariableDeclarator ;
+FieldDeclaration Modifiers_OPT Type FieldVariableDeclarator ;
+FieldVariableDeclarator Identifier = Expression
+FieldVariableDeclarator Identifier
 MethodDeclaration MethodHeader MethodBody
 MethodHeader Modifiers_OPT Type MethodDeclarator
 MethodHeader Modifiers_OPT void MethodDeclarator
@@ -78,9 +80,8 @@ BlockStatements BlockStatements BlockStatement
 BlockStatement LocalVariableDeclarationStatement
 BlockStatement Statement
 LocalVariableDeclarationStatement LocalVariableDeclaration ;
-LocalVariableDeclaration Type VariableDeclarator
-VariableDeclarator Identifier = Expression
-VariableDeclarator Identifier
+LocalVariableDeclaration Type LocalVariableDeclarator
+LocalVariableDeclarator Identifier = Expression
 Statement StatementWithoutTrailingSubstatement
 Statement IfThenStatement
 Statement IfThenElseStatement

@@ -29,7 +29,8 @@ ClassMemberDeclaration
 ConstructorDeclaration
 FieldDeclaration
 MethodDeclaration
-VariableDeclarator
+LocalVariableDeclarator
+FieldVariableDeclarator
 Expression
 MethodHeader
 MethodBody
