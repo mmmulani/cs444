@@ -113,9 +113,20 @@ class ASTFieldAccess(ASTExpression):
     return self.children[0]
 
   @property
+  def right(self):
+    return self.children[1]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return list(self.children)
+
+  def show(self, depth = 0, types = False):
+    ASTUtils.println(
+      'ASTFieldAccess {0}'.format(ASTUtils.type_string(self.expr_type, types)),
+      depth)
+    self.children[0].show(depth + 1, types)
+    self.children[1].show(depth + 1, False)
 
 class ASTLiteral(ASTExpression):
   # Enum of different literal types.

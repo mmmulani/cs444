@@ -253,6 +253,43 @@ def identifiers(node):
   if not isinstance(node, ast_expression.ASTIdentifiers):
     return None
 
+  type_or_decl = _resolve_identifier(node)
+  if isinstance(type_or_decl, ast_variable_declaration.ASTVariableDeclaration):
+    return type_or_decl.type_node
+  elif isinstance(type_or_decl, ast_param.ASTParam):
+    return type_or_decl.type
+
+  return type_or_decl
+
+def field_access(node):
+  if not isinstance(node, ast_expression.ASTFieldAccess):
+    return None
+
+  t_left = type_checker.get_type(node.left)
+
+  # Make sure that the left type can have fields.
+  if t_left.is_primitive:
+    return None
+
+  type_or_decl = _resolve_further_fields(t_left.definition, node.right.parts,
+      type_node=t_left)
+  if isinstance(type_or_decl, ast_variable_declaration.ASTVariableDeclaration):
+    return type_or_decl.type_node
+  elif isinstance(type_or_decl, ast_param.ASTParams):
+    return type_or_decl.type
+
+  return type_or_decl
+
+# _resolve_identifier takes an ASTIdentifiers node and returns either an ASTType
+# or a definition, which can be an: ASTVariableDeclaration, ASTParam or an
+# ASTMethod.
+# To lookup a method, you must pass method_type as a list of the parameter
+# types.
+# It can return an ASTType as some ASTIdentifiers (such as one ending in
+# .length) do not have a corresponding definition.
+def _resolve_identifier(node, method_type=None):
+  want_method = method_type is not None
+
   # Make sure a name was found in the identifiers.
   (name, defn) = node.first_definition
   if name is None:
@@ -267,12 +304,10 @@ def identifiers(node):
   # resolved but we have to make sure it is instance type. (i.e. the definition
   # points to a field or local and not a type.
   if name == str(node):
-    if isinstance(defn, ast_variable_declaration.ASTVariableDeclaration):
-      return defn.type_node
-    if isinstance(defn, ast_param.ASTParam):
-      return defn.type
+    if isinstance(defn, ast_variable_declaration.ASTVariableDeclaration) or \
+       isinstance(defn, ast_param.ASTParam):
+      return defn
     return None
-
 
   # A list of identifiers that are not matched by defn.
   remaining_idens = node.parts[name.count('.') + 1:]
@@ -282,14 +317,27 @@ def identifiers(node):
   # parts are instance fields/length.
   if isinstance(defn, ast_class.ASTClass):
     class_env = defn.environment
-    field = class_env.lookup_field(remaining_idens[0])
-    if field is None:
-      return None
+    part = remaining_idens.pop(0)
+    if len(remaining_idens) == 0 and want_method:
+      method_sig = (part, method_type)
+      method = class_env.lookup_method(method_sig)
+      if method is None or not method.is_static:
+        return None
+      return method
 
-    if not field.is_static:
+    field = class_env.lookup_field(part)
+    if field is None or not field.is_static:
       return None
     defn = field
-    remaining_idens.pop(0)
+
+  return _resolve_further_fields(defn, remaining_idens, method_type)
+
+# _resolve_further_fields is used to resolve more fields on a definition. It is
+# to type field accesses and method invocations.
+# Like _resolve_identifier, it can return an ASTType or a definition.
+def _resolve_further_fields(defn, remaining_idens, method_type=None,
+    type_node=None):
+  want_method = method_type is not None
 
   # At this point, defn is a variable declarator and all the remaining idens are
   # instance fields or 'length'.
@@ -298,6 +346,9 @@ def identifiers(node):
       type_node = defn.type_node
     elif isinstance(defn, ast_param.ASTParam):
       type_node = defn.type
+
+    if type_node.is_primitive:
+      return None
 
     # If the type is an array type and there are remaining parts, this part must
     # be the last and it must be a 'length' access.
@@ -308,14 +359,23 @@ def identifiers(node):
         return None
       return ast_type.ASTType.ASTInt
 
-    # The part is an instance field on the defn type.
     type_env = type_node.definition.environment
+
+    # If we are looking for a method, the last part must resolve to one.
+    if want_method and ix + 1 == len(remaining_idens):
+      method_sig = (part, method_type)
+      method = type_env.lookup_method(method_sig)
+      if method is None:
+        return None
+      return method
+
+    # The part is an instance field on the defn type.
     field = type_env.lookup_field(part)
     if field is None or field.is_static:
       return None
     defn = field
 
-  return defn.type_node
+  return defn
 
 def variable_declaration(node):
   if not isinstance(node, ast_variable_declaration.ASTVariableDeclaration):
