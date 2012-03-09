@@ -136,9 +136,15 @@ def string_plus(node):
   # Check that both operands are of the string type.
   t_left = type_checker.get_type(node.left_expr)
   t_right = type_checker.get_type(node.right_expr)
-  if _is_string(t_left) and _is_string(t_right):
-    # Since both types are strings, we can use them as our return value.
-    return t_left
+
+  if t_left == ast_type.ASTType.ASTVoid or \
+      t_right == ast_type.ASTType.ASTVoid:
+    # You can't string + on void types.
+    return None
+
+  # Check to make sure one of part typed to a string.
+  if _is_string(t_left) or _is_string(t_right):
+    return ast_type.ASTType.ASTString
   return None
 
 def cast(node):
