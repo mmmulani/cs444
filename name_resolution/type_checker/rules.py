@@ -369,9 +369,6 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
     elif isinstance(defn, ast_param.ASTParam):
       type_node = defn.type
 
-    if type_node.is_primitive:
-      return None
-
     # If the type is an array type and there are remaining parts, this part must
     # be the last and it must be a 'length' access.
     if type_node.is_array:
@@ -380,6 +377,9 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
       elif part != 'length':
         return None
       return ast_type.ASTType.ASTInt
+
+    if type_node.is_primitive:
+      return None
 
     type_env = type_node.definition.environment
 
@@ -479,7 +479,8 @@ def _is_assignable(type_1, type_2):
   if type_1 == ast_type.ASTType.ASTShort and type_2 == ast_type.ASTType.ASTByte:
     return True
 
-  #TODO (gnleece) how to handle NULL?
+  if not type_1.is_primitive and type_2 == ast_type.ASTType.ASTNull:
+    return True
 
   if type_1.definition and type_2.definition:
     if ast_node.ASTUtils.is_subtype(type_2.definition, type_1.definition):
