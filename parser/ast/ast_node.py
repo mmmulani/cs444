@@ -12,7 +12,10 @@ class ASTNode(object):
         c.show(depth+1, types)
 
   def _show(self, depth = 0, types = False):
-    print ' '*4*depth + type(self).__name__
+    type_str = ''
+    if hasattr(self, 'expr_type'):
+      type_str = ASTUtils.type_string(self.expr_type, types);
+    ASTUtils.println('{0} {1}'.format(type(self).__name__, type_str), depth)
 
 class ASTUtils():
   '''Namespace class for AST utilities'''
