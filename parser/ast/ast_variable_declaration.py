@@ -52,7 +52,8 @@ class ASTVariableDeclaration(ast_node.ASTNode):
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(
-        'Var Decl: {0} {1}'.format(self.children[1], self.children[2]), depth)
+        'Var Decl: {0} {1} {2}'.format(self.children[1], self.children[2],
+            ast_node.ASTUtils.type_string(self.expr_type)), depth)
 
     # Only print modifiers if there are any.
     if len(self.children[0]) > 0:

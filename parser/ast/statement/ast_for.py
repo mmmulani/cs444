@@ -71,7 +71,8 @@ class ASTFor(ast_statement.ASTStatement):
     return [x for x in self.children if x is not None]
 
   def show(self, depth = 0, types = False):
-    ast_node.ASTUtils.println('For:', depth)
+    ast_node.ASTUtils.println('For: {0}'.format(
+        ast_node.ASTUtils.type_string(self.expr_type)), depth)
     if self.children[0]:
       ast_node.ASTUtils.println('ForInit:', depth+1)
       self.children[0].show(depth+2, types)

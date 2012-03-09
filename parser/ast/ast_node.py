@@ -55,7 +55,7 @@ class ASTUtils():
       print out,
 
   @staticmethod
-  def type_string(type_node, show_types):
+  def type_string(type_node, show_types = True):
     if show_types:
       color = ASTUtils.COLOR_GREEN if type_node else ASTUtils.COLOR_RED 
       return ' {0}<{1}>{2}'.format(color, str(type_node), ASTUtils.END_COLOR)

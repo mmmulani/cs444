@@ -166,7 +166,8 @@ class ASTUnary(ASTExpression):
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
-      'ASTUnary, operator: {0}'.format(self.operator), depth)
+      'ASTUnary, operator: {0} {1}'.format(self.operator,
+          ASTUtils.type_string(self.expr_type)), depth)
     ASTUtils.println('Operand:', depth)
     self.children[0].show(depth + 1, types)
 
@@ -264,7 +265,8 @@ class ASTMethodInvocation(ASTExpression):
     super(ASTMethodInvocation, self).__init__()
 
   def show(self, depth = 0, types = False):
-    self._show(depth)
+    ASTUtils.println('ASTMethodInvocation {0}'.format(
+        ASTUtils.type_string(self.expr_type, types)), depth)
     if len(self.children[0]) == 1:
       ASTUtils.println('Method identifiers:', depth)
       self.children[0][0].show(depth + 1, types)
@@ -313,7 +315,8 @@ class ASTInstanceOf(ASTExpression):
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
-        'ASTInstanceOf Type: {0}'.format(str(self.type_node)), depth)
+        'ASTInstanceOf Type: {0} {1}'.format(str(self.type_node),
+            ASTUtils.type_string(self.expr_type)), depth)
     self.children[0].show(depth + 1, types)
 
   @property
@@ -364,7 +367,8 @@ class ASTClassInstanceCreation(ASTExpression):
     super(ASTClassInstanceCreation, self).__init__()
 
   def show(self, depth = 0, types = False):
-    self._show(depth)
+    ASTUtils.println('ASTClassInstanceCreation {0}'.format(
+        ASTUtils.type_string(self.expr_type)), depth)
     ASTUtils.println('Class type:', depth)
     self.children[0].show(depth + 1, types)
     for i, x in enumerate(self.children[1]):

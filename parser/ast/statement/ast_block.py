@@ -90,7 +90,8 @@ class ASTBlock(ast_statement.ASTStatement):
 
   def show(self, depth = 0, types = False, show_name = False):
     if show_name:
-      ASTUtils.println('ASTBlock:', depth)
+      ASTUtils.println('ASTBlock: {0}'.format(
+          ASTUtils.type_string(self.expr_type)), depth)
       depth = depth + 1
 
     for c in self.children:

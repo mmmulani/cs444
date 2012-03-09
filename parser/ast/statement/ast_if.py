@@ -43,7 +43,8 @@ class ASTIf(ast_statement.ASTStatement):
     return [x for x in self.children if x is not None]
 
   def show(self, depth = 0, types = False):
-    ast_node.ASTUtils.println('If:', depth)
+    ast_node.ASTUtils.println('If: {0}'.format(
+        ast_node.ASTUtils.type_string(self.expr_type)), depth)
     self.children[0].show(depth+1, types)
     ast_node.ASTUtils.println('Then:', depth)
     self.children[1].show(depth+1, types)

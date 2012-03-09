@@ -36,7 +36,8 @@ class ASTWhile(ast_statement.ASTStatement):
     return list(self.children)
 
   def show(self, depth = 0, types = False):
-    ast_node.ASTUtils.println('While:', depth)
+    ast_node.ASTUtils.println('While: {0}'.format(
+        ast_node.ASTUtils.type_string(self.expr_type)), depth)
     self.children[0].show(depth+1, types)
     ast_node.ASTUtils.println('Do:', depth)
     self.children[1].show(depth+1, types)

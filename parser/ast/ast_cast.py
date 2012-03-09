@@ -45,7 +45,8 @@ class ASTCast(ast_node.ASTNode):
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println(
-        'ASTCast Type: {0}'.format(self.children[0]), depth)
+        'ASTCast Type: {0} {1}'.format(self.children[0],
+            ast_node.ASTUtils.type_string(self.expr_type)), depth)
     self.children[1].show(depth + 1, types)
 
   @property

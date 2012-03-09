@@ -19,7 +19,8 @@ class ASTReturn(ast_statement.ASTStatement):
 
   def show(self, depth = 0, types = False):
     if self.children[0]:
-      ast_node.ASTUtils.println('Return:', depth)
+      ast_node.ASTUtils.println('Return: {0}'.format(
+          ast_node.ASTUtils.type_string(self.expr_type)), depth)
       self.children[0].show(depth + 1, types)
 
   @property
