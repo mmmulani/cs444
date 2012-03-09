@@ -278,7 +278,7 @@ def field_access(node):
       type_node=t_left)
   if isinstance(type_or_decl, ast_variable_declaration.ASTVariableDeclaration):
     return type_or_decl.type_node
-  elif isinstance(type_or_decl, ast_param.ASTParams):
+  elif isinstance(type_or_decl, ast_param.ASTParam):
     return type_or_decl.type
 
   return type_or_decl
