@@ -8,6 +8,23 @@ import rules
 rule_funcs = [rules.__dict__.get(x) for x in dir(rules) if
     isinstance(rules.__dict__.get(x), types.FunctionType) and x[0] != '_']
 
+_global_params = {
+  'cur_method' : None
+}
+
+def set_params(param_dict):
+  clear_params()
+  for param in param_dict:
+    if param in _global_params:
+      _global_params[param] = param_dict[param]
+
+def get_param(key):
+  return _global_params[key]
+
+def clear_params():
+  for key in _global_params.keys():
+    _global_params[key] = None
+
 def check_types(ast):
   '''Takes an AST for a file and type-checks its class/interface'''
 
@@ -16,7 +33,9 @@ def check_types(ast):
   # type check all fields and methods:
   if decl:
     for method in decl.methods:
+      set_params({'cur_method' : method})
       get_type(method.body)
+      clear_params()
     for field in decl.fields:
       get_type(field)
 

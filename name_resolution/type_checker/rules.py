@@ -246,9 +246,24 @@ def return_statement(node):
   if not isinstance(node, ast_return.ASTReturn):
     return None
 
+  method = type_checker.get_param('cur_method')
+
   # If there is an expression, make sure it is typeable.
+  expr_type = None
   if len(node.expressions) != 0:
-    type_checker.get_type(node.expressions[0])
+    expr_type = type_checker.get_type(node.expressions[0])
+  
+  # Constructors have no return type, so you can't return something in one:
+  if method.is_constructor and expr_type:
+    return None
+
+  # void methods should return nothing:
+  if method.return_type == ast_type.ASTType.ASTVoid and not expr_type:
+    return True
+
+  # The type you return must be assignable to the current method return type:
+  if not _is_assignable(method.return_type, expr_type):
+    return None
 
   return ast_type.ASTType.ASTVoid
 
