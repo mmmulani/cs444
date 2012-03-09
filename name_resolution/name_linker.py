@@ -20,14 +20,23 @@ def link_names(ast):
 
   check_forward_field_init(ast.fields, env)
   for f in ast.fields:
-    _link_name_in_expr_or_stmt(f.children[3], env, this_type)
+    substitute_type = this_type
+    # Static fields cannot use "this", so we give the None type for it.
+    if f.is_static:
+      substitute_type = None
+    _link_name_in_expr_or_stmt(f.children[3], env, substitute_type)
 
   for m in ast.methods:
     if m.body is None:
       continue
     block = m.body
+    substitute_type = this_type
+    # Static methods cannot use "this", so we give the None type instead.
+    if m.is_static:
+      substitute_type = None
+
     for ex in block.children:
-      _link_name_in_expr_or_stmt(ex, block.environment, this_type)
+      _link_name_in_expr_or_stmt(ex, block.environment, substitute_type)
 
 def check_forward_field_init(fields, env):
   '''Checks to make sure no fields do a forward declaration
