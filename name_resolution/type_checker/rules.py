@@ -176,9 +176,6 @@ def constructor(node):
   if not isinstance(node, ast_expression.ASTClassInstanceCreation):
     return None
 
-  if node.type_node.definition is None:
-    import pdb; pdb.set_trace()
-
   name = node.type_node.name
   env = node.type_node.definition.environment
   param_types = [type_checker.get_type(x) for x in node.arguments]
