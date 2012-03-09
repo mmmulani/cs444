@@ -36,6 +36,7 @@ class Weeder(object):
     self._verify_literals(tree)
     self._verify_filename(tree, filename)
     self._verify_casts(tree)
+    self._verify_constructor(tree)
 
   def _verify_modifiers(self, tree):
     modifiers_set = set()
@@ -228,6 +229,28 @@ class Weeder(object):
 
     for child in tree.children:
       self._verify_casts(child)
+
+  def _verify_constructor(self, tree):
+    if tree.value != 'ClassDeclaration':
+      for child in tree.children:
+        self._verify_constructor(child)
+      return
+
+    class_name = ''
+    for child in tree.children:
+      if child.value == 'Identifier':
+        class_name = child.lexeme
+      elif child.value == 'ClassBody':
+        self._find_constructors(child, class_name)
+
+  def _find_constructors(self, tree, class_name):
+    if tree.value != 'ConstructorDeclarator':
+      for child in tree.children:
+        self._find_constructors(child, class_name)
+      return
+
+    if tree.children[0].lexeme != class_name:
+      raise WeedingError('Constructor does not match class name')
 
   def _ensure_identifiers(self, tree):
     if len(tree.children) != 1:
