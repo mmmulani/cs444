@@ -426,6 +426,17 @@ def array_access(node):
 
   return None
 
+def array_creation(node):
+  if not isinstance(node, ast_expression.ASTArrayCreation):
+    return None
+
+  t_length_expr = type_checker.get_type(node.length_expr)
+  t_array = node.type_node
+  if _is_numeric(t_length_expr):
+    new_t_array = copy.copy(t_array)
+    new_t_array.is_array = True
+    return new_t_array
+
 def this_rule(node):
   # The .expr_type of ASTThis is set in the name linker, so we don't actually
   # need any rule to determine its type.

@@ -448,6 +448,14 @@ class ASTArrayCreation(ASTExpression):
     super(ASTArrayCreation, self).__init__()
 
   @property
+  def type_node(self):
+    return self.children[0]
+
+  @property
+  def length_expr(self):
+    return self.children[1]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[1]]
