@@ -7,7 +7,7 @@ class Environment(object):
     if self.parent:
       self.parent.add_child(self)
 
-  def lookup_method(self, sig):
+  def lookup_method(self, sig, constructor=False):
     # Overload this if you need to look up methods in your context.
     raise EnvironmentError('lookup_method() not overloaded.')
 

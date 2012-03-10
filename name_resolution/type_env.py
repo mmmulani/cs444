@@ -208,17 +208,18 @@ class TypeEnvironment(env.Environment):
         continue
 
       constructor_sig = (inherited.short_name, [])
-      method, defn = inherited.lookup_method(constructor_sig)
-      if method is None or not method.is_constructor:
+      method, defn = inherited.lookup_method(constructor_sig, constructor=True)
+      if method is None:
         raise TypeEnvironmentError('No {0}() constructor'.format(
             inherited.short_name))
 
-  def lookup_method(self, sig):
+  def lookup_method(self, sig, constructor=False):
     '''Look up a method based on its signature
     Returns an (ASTMethod, ASTClass/Instance) tuple, where:
       - ASTMethod is the definition of the method, and
       - ASTClass/Instance is the containing type of the method'''
-    ret = [ast for method_sig, ast in self.methods if method_sig == sig]
+    ret = [ast for method_sig, ast in self.methods if method_sig == sig and
+        ast.is_constructor == constructor]
     if len(ret) > 1:
       raise TypeEnvironmentError(
           'Found more than one method matching signature {0}'.format(sig))
@@ -230,7 +231,7 @@ class TypeEnvironment(env.Environment):
     # First, we aggregate any methods that match the signature.
     results = []
     for inherited in self.inherited:
-      ret, defn = inherited.lookup_method(sig)
+      ret, defn = inherited.lookup_method(sig, constructor)
       if ret:
         results.append((ret, defn))
 

@@ -185,7 +185,7 @@ def constructor(node):
   param_types = [type_checker.get_type(x) for x in node.arguments]
 
   method_sig = (short_name, param_types)
-  method, enclosing_type = env.lookup_method(method_sig)
+  method, enclosing_type = env.lookup_method(method_sig, constructor=True)
   if method is not None:
     if method.is_protected:
       # JLS 6.6.2. A protected constructor can be accessed only from within the

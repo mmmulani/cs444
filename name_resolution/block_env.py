@@ -81,8 +81,8 @@ class BlockEnvironment(env.Environment):
   def lookup_field(self, name):
     return self.parent.lookup_field(name)
 
-  def lookup_method(self, sig):
-    return self.parent.lookup_method(sig)
+  def lookup_method(self, sig, constructor=False):
+    return self.parent.lookup_method(sig, constructor)
 
 class BlockEnvironmentError(env.EnvironmentError):
   pass
