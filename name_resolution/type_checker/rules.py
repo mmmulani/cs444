@@ -408,30 +408,19 @@ def _resolve_identifier(node, method_type=None):
         return None
 
       # Check for protected access restrictions on method calls.
-      # JLS 6.6.2.  Protected instance method access is allowed if:
-      #   - The class containing the body is a subtype of the class delcaring
-      #     the property
-      if method.is_protected and \
-          not ast_node.ASTUtils.is_subtype(
-              type_checker.get_param('cur_class'),
-              encl_type):
+      if method.is_protected and not _valid_protected_access(encl_type):
         return None
 
       return method
 
-    field, enclosing_type = class_env.lookup_field(part)
+    field, encl_type = class_env.lookup_field(part)
     # If the method is not static, this is an error because we are accessing
     # off a type name.
     if field is None or not field.is_static:
       return None
 
-    # JLS 6.6.2.  Protected instance field access is allowed if:
-    #   - The class containing the body is a subtype of the class delcaring
-    #     the property
-    if field.is_protected and \
-        not ast_node.ASTUtils.is_subtype(
-            type_checker.get_param('cur_class'),
-            enclosing_type):
+    # Check for protected access restrictions on field access.
+    if field.is_protected and not _valid_protected_access(encl_type):
       return None
 
     defn = field
@@ -479,41 +468,24 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
         return None
 
       # Check for protected access restrictions on method calls.
-      if method.is_protected:
-        # JLS 6.6.2.  Protected instance method access is allowed if:
-        #   - The class containing the body is a subtype of the class delcaring
-        #     the property, and
-        #   - The type of the variable with the instance method is a subtype of
-        #     the class containing the body.
-        if not ast_node.ASTUtils.is_subtype(
-              type_node.definition, type_checker.get_param('cur_class')) or \
-            not ast_node.ASTUtils.is_subtype(
-              type_checker.get_param('cur_class'),
-              encl_type):
-          return None
+      if method.is_protected and \
+          not _valid_protected_access(encl_type, type_node.definition):
+        return None
 
       return method
 
     # The part is an instance field on the defn type.
-    field, enclosing_type = type_env.lookup_field(part)
+    field, encl_type = type_env.lookup_field(part)
+
     # If the method is static, this is an error because we are accessing
     # off an instance variable.
     if field is None or field.is_static:
       return None
 
     # Check for protected access restrictions on field calls.
-    if field.is_protected:
-      # JLS 6.6.2.  Protected instance field access is allowed if:
-      #   - The class containing the body is a subtype of the class delcaring
-      #     the property, and
-      #   - The type of the variable with the instance field is a subtype of
-      #     the class containing the body.
-      if not ast_node.ASTUtils.is_subtype(
-            type_node.definition, type_checker.get_param('cur_class')) or \
-          not ast_node.ASTUtils.is_subtype(
-            type_checker.get_param('cur_class'),
-            enclosing_type):
-        return None
+    if field.is_protected and \
+        not _valid_protected_access(encl_type, type_node.definition):
+      return None
 
     defn = field
 
@@ -645,3 +617,38 @@ def _is_object(t):
     return t.definition.canonical_name == 'java.lang.Object'
   else:
     return False
+
+def _valid_protected_access(encl_type, instance_type = None):
+  '''Check if protected access is valid.
+
+  JLS 6.6:
+  Protected access is allowed if:
+    - The access is done from within the same package as the type declaring the
+      property. OR
+
+    - The class containing the property is a subtype of the class delcaring
+      the property, and
+    - (For instance property access) The type of the variable with the instance
+      property is a subtype of the calling type.
+  '''
+  cur_type = type_checker.get_param('cur_class')
+
+  # If the access is from the same package, then it is permitted.
+  if cur_type.package_name == encl_type.package_name:
+    # TODO(songandrew): I think this should be "within a packge", not
+    # "the same package"
+    return True
+
+  # If the calling type is not a subtype of the enclosing type, them the access
+  # is not permitted.
+  if not ast_node.ASTUtils.is_subtype(cur_type, encl_type):
+    return False
+
+  if instance_type is not None:
+    # If we're doing an instance property access and the instance variable is
+    # not a subtype of the type doing the access, then the access is not
+    # permitted.
+    if not ast_node.ASTUtils.is_subtype(instance_type, cur_type):
+      return False
+
+  return True
