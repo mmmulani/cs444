@@ -1,18 +1,19 @@
-`THIS IS A SCANNER.`
+Joos Compiler
+-------------
 
-         -
-        / \
-       -   -
-      /   / \
-    THIS IS  -
-            / \
-           A  PARSER
+A compiler for Joos, a subset of Java (using the JLS 2nd Edition).  The
+features of Joos can be found here: http://www.student.cs.uwaterloo.ca/~cs444/joos.html
 
-~~THIS IS A WEEEEEEDER.~~
+Usage
+-----
 
-`THIS IS A WEEDER.`
+To compile a Joos file, the Joos compiler can be invoked by the following command:
+`./joosc file_1.java file_2.java`
 
-Joosc usage
------------
+For debug output, include the `--verbose` flag.
 
-`./joosc --verbose --parser a1-test/J1_BigInt.java` to easily print out a parse tree.
+`./joosc --verbose file_1.java file_2.java`
+
+To include the standard library, use the `--stdlib` flag.
+
+`./joosc --stdlib file_1.java file_2.java`
