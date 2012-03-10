@@ -99,3 +99,11 @@ class ASTUtils():
       if ASTUtils.is_subtype(t.definition, type_2):
         return True
     return False
+
+  @staticmethod
+  def is_in_package(p1, p2):
+    '''Checks if p1 is in package p2'''
+    if p1 == p2:
+      return True
+
+    return p1.startswith(p2 + '.')

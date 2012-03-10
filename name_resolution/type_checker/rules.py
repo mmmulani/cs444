@@ -634,9 +634,8 @@ def _valid_protected_access(encl_type, instance_type = None):
   cur_type = type_checker.get_param('cur_class')
 
   # If the access is from the same package, then it is permitted.
-  if cur_type.package_name == encl_type.package_name:
-    # TODO(songandrew): I think this should be "within a packge", not
-    # "the same package"
+  if ast_node.ASTUtils.is_in_package(
+      cur_type.package_name, encl_type.package_name):
     return True
 
   # If the calling type is not a subtype of the enclosing type, them the access
