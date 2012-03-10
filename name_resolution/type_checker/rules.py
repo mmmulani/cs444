@@ -631,7 +631,7 @@ def _is_assignable(type_1, type_2):
       ['java.lang.Cloneable', 'java.io.Serializable', 'java.lang.Object']:
     return True
 
-  # Any non-primitive type is assignable to java.lang.Object
+  # Any non-primitive type is assignable to java.lang.Object.
   if _is_object(type_1) and not type_2.is_primitive:
     # If one is an array, the other must be as well.
     if type_1.is_array == type_2.is_array:
