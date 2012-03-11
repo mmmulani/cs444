@@ -384,10 +384,10 @@ def _resolve_identifier(node, method_type=None):
   # resolved but we have to make sure it is instance type. (i.e. the definition
   # points to a field or local and not a type.
   if name == str(node):
-    if isinstance(defn, ast_variable_declaration.ASTVariableDeclaration) or \
-       isinstance(defn, ast_param.ASTParam):
-      return defn
-    return None
+    is_instance_type = \
+        isinstance(defn, ast_variable_declaration.ASTVariableDeclaration) or \
+        isinstance(defn, ast_param.ASTParam)
+    return (defn if is_instance_type else None)
 
   # A list of identifiers that are not matched by defn.
   remaining_idens = node.parts[name.count('.') + 1:]
@@ -398,20 +398,9 @@ def _resolve_identifier(node, method_type=None):
   if isinstance(defn, ast_class.ASTClass):
     class_env = defn.environment
     part = remaining_idens.pop(0)
+
     if len(remaining_idens) == 0 and want_method:
-      method_sig = (part, method_type)
-      method, encl_type = class_env.lookup_method(method_sig)
-
-      # If the method is not static, this is an error because we are accessing
-      # off a type name.
-      if method is None or not method.is_static:
-        return None
-
-      # Check for protected access restrictions on method calls.
-      if method.is_protected and not _valid_protected_access(encl_type):
-        return None
-
-      return method
+      return _resolve_method(class_env, (part, method_type))
 
     field, encl_type = class_env.lookup_field(part)
     # If the method is not static, this is an error because we are accessing
@@ -459,20 +448,8 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
 
     # If we are looking for a method, the last part must resolve to one.
     if want_method and ix + 1 == len(remaining_idens):
-      method_sig = (part, method_type)
-      method, encl_type = type_env.lookup_method(method_sig)
-
-      # If the method is static, this is an error because we are accessing
-      # off an instance variable.
-      if method is None or method.is_static:
-        return None
-
-      # Check for protected access restrictions on method calls.
-      if method.is_protected and \
-          not _valid_protected_access(encl_type, type_node.definition):
-        return None
-
-      return method
+      return _resolve_method(
+          type_env, (part, method_type), type_node.definition)
 
     # The part is an instance field on the defn type.
     field, encl_type = type_env.lookup_field(part)
@@ -617,6 +594,32 @@ def _is_object(t):
     return t.definition.canonical_name == 'java.lang.Object'
   else:
     return False
+
+def _resolve_method(env, method_sig, instance_type = None):
+  '''Resolve a method given an engironment and it's signature.
+
+  If the method access is off of an instance variable (i.e. we expect a
+  non-static method invocation), the type of the instance variable must
+  be given.'''
+  method, encl_type = env.lookup_method(method_sig)
+
+  # No method with the matching signature found.
+  if method is None:
+    return None
+
+  # If the method is static, check to make sure we're not trying to access
+  # it off an instance var.
+  want_static = (instance_type is None)
+  if want_static != method.is_static:
+    return None
+
+  # Check for protected access restrictions on method calls.
+  if method.is_protected and \
+      not _valid_protected_access(encl_type, instance_type):
+    return None
+
+  # Method is valid.
+  return method
 
 def _valid_protected_access(encl_type, instance_type = None):
   '''Check if protected access is valid.
