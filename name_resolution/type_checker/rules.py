@@ -272,6 +272,10 @@ def return_statement(node):
   if method.return_type == ast_type.ASTType.ASTVoid and not expr_type:
     return True
 
+  # constructors should return nothing:
+  if method.is_constructor and not expr_type:
+    return True
+
   # The type you return must be assignable to the current method return type:
   if not _is_assignable(method.return_type, expr_type):
     return None
