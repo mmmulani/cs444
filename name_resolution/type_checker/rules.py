@@ -399,17 +399,12 @@ def _resolve_identifier(node, method_type=None):
     class_env = defn.environment
     part = remaining_idens.pop(0)
 
+    # If we're looking for a method, it should be the last identifier.
     if len(remaining_idens) == 0 and want_method:
       return _resolve_method(class_env, (part, method_type))
 
     field, encl_type = class_env.lookup_field(part)
-    # If the method is not static, this is an error because we are accessing
-    # off a type name.
-    if field is None or not field.is_static:
-      return None
-
-    # Check for protected access restrictions on field access.
-    if field.is_protected and not _valid_protected_access(encl_type):
+    if not _valid_property_access(field, encl_type):
       return None
 
     defn = field
@@ -451,20 +446,12 @@ def _resolve_further_fields(defn, remaining_idens, method_type=None,
       return _resolve_method(
           type_env, (part, method_type), type_node.definition)
 
-    # The part is an instance field on the defn type.
-    field, encl_type = type_env.lookup_field(part)
-
-    # If the method is static, this is an error because we are accessing
-    # off an instance variable.
-    if field is None or field.is_static:
+    # Otherwise do a property lookup
+    property, encl_type = type_env.lookup_field(part)
+    if not _valid_property_access(property, encl_type, type_node.definition):
       return None
 
-    # Check for protected access restrictions on field calls.
-    if field.is_protected and \
-        not _valid_protected_access(encl_type, type_node.definition):
-      return None
-
-    defn = field
+    defn = property
 
   return defn
 
@@ -596,30 +583,37 @@ def _is_object(t):
     return False
 
 def _resolve_method(env, method_sig, instance_type = None):
-  '''Resolve a method given an engironment and it's signature.
+  '''Resolve a method given an environment and its signature.
 
   If the method access is off of an instance variable (i.e. we expect a
   non-static method invocation), the type of the instance variable must
   be given.'''
   method, encl_type = env.lookup_method(method_sig)
 
-  # No method with the matching signature found.
-  if method is None:
+  # Check for a valid method invocation.
+  if not _valid_property_access(method, encl_type, instance_type):
     return None
 
-  # If the method is static, check to make sure we're not trying to access
-  # it off an instance var.
-  want_static = (instance_type is None)
-  if want_static != method.is_static:
-    return None
-
-  # Check for protected access restrictions on method calls.
-  if method.is_protected and \
-      not _valid_protected_access(encl_type, instance_type):
-    return None
-
-  # Method is valid.
   return method
+
+def _valid_property_access(prop, encl_type, instance_type = None):
+  '''Check that a property (field or method) access is valid'''
+  # No property given.
+  if prop is None:
+    return False
+
+  # If the property is static, check to make sure we're not trying to access
+  # off of an instance var.
+  want_static = (instance_type is None)
+  if want_static != prop.is_static:
+    return False
+
+  # If the property is protected, check for access restrictions.
+  if prop.is_protected and \
+      not _valid_protected_access(encl_type, instance_type):
+    return False
+
+  return True
 
 def _valid_protected_access(encl_type, instance_type = None):
   '''Check if protected access is valid.
