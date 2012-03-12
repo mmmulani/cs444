@@ -537,7 +537,7 @@ def _is_assignable(type_1, type_2):
   '''Returns true iff type_2 is assignable to type_1'''
 
   if type_1 is None or type_2 is None:
-    return False    #TODO (gnleece) I think we actually want to assert here?
+    return False
 
   # A type is always assignable to itself:
   if type_1 == type_2 and type_1 != ast_type.ASTType.ASTVoid:
