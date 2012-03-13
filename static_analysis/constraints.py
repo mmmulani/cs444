@@ -57,4 +57,4 @@ def if_statement(ast, i, o):
 
   # If statement with no else:
   #   Out[L] = Out[S_1] OR In[L] = In[L] = o
-  return o, o 
+  return o, o
