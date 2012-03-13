@@ -7,6 +7,7 @@ class ASTExpression(ASTNode):
 
   def __init__(self):
     self.expr_type = None
+    self.const_value = None
 
   @staticmethod
   def get_expr_node(tree):
@@ -137,9 +138,10 @@ class ASTLiteral(ASTExpression):
   STRING = 'string'
 
   def __init__(self, tree):
+    super(ASTLiteral, self).__init__()
     self.children = [tree.lexeme]
     self.literal_type = self._get_literal_type(tree.lexeme)
-    super(ASTLiteral, self).__init__()
+    self.const_value = self._get_literal_value()
 
   def show(self, depth = 0, types = False):
     ASTUtils.println(
@@ -161,6 +163,19 @@ class ASTLiteral(ASTExpression):
       return ASTLiteral.STRING
 
     raise Exception('Bad literal: {0}'.format(literal))
+
+  def _get_literal_value(self):
+    '''Convert the string of the literal into its real value (int, bool, etc)'''
+    if self.literal_type == ASTLiteral.BOOLEAN:
+      return self.children[0] == 'true'
+    elif self.literal_type == ASTLiteral.CHAR:
+      return self.children[0]
+    elif self.literal_type == ASTLiteral.INT:
+      return int(self.children[0])
+    elif self.literal_type == ASTLiteral.NULL:
+      return None   #TODO (gnleece) dunno what to do here
+    elif self.literal_type == ASTLiteral.STRING:
+      return self.children[0]
 
   @property
   def expressions(self):
