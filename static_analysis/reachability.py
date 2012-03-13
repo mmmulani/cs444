@@ -18,6 +18,7 @@ statement_map = {
   ast_return.ASTReturn: constraints.return_statement,
   ast_variable_declaration.ASTVariableDeclaration: constraints.var_decl,
   ast_while.ASTWhile: constraints.while_loop,
+  ast_for.ASTFor: constraints.for_loop,
 }
 
 def check_reachability(ast):

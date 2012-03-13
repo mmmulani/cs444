@@ -84,14 +84,59 @@ def while_loop(ast, i, o):
     if ast.expression.const_value:
       # Though it doesn't affect our return value, check the children
       # statements for reachability.
-      if ast.statement is not None:
+      if ast.statement:
         reachability.check_block_or_statement(ast.statement, in_value=o)
       return o, NO
     else:
-      # This while loop is unreachable, we must immediately throw an error.
-      raise reachability.ReachabilityError('While body not reachable')
+      # This while loop is unreachable.
+      return NO, o
 
   # The last case, where our expression is not a constant.
   if ast.statement is not None:
     reachability.check_block_or_statement(ast.statement, in_value=o)
+  return o, o
+
+def for_loop(ast, i, o):
+  '''Reachability for a for loop.
+  L: for (S_1; false; S_2) S_3
+  In[S] = No
+  Out[L] = In[L]
+
+  L: for (S_1; true; S_2) S_3
+  In[S] = In[L]
+  Out[L] = No
+
+  L: for (S_1; E; S_2) S_3
+  In[S] = In[L]
+  Out[L] = In[L]'''
+
+  # Make sure the for expression is a Boolean.
+  if ast.expression.expr_type != ast_type.ASTType.ASTBoolean:
+    raise reachability.ReachabilityError('For expression is not a boolean.')
+
+  # The first two cases, where the condition expression is a constant.
+  if ast.expression.const_value is not None:
+    if ast.expression.const_value:
+      # Check all children statements for reachability.
+      if ast.init:
+        reachability.check_block_or_statement(ast.init, in_value=o)
+      if ast.update:
+        reachability.check_block_or_statement(ast.update, in_value=o)
+      if ast.statement:
+        reachability.check_block_or_statement(ast.statement, in_value=o)
+
+      return o, NO
+    else:
+      # The for loop is unreachable.
+      return NO, o
+
+  # Our expression is not a constant.
+  # Check all children statements for reachability.
+  if ast.init:
+    reachability.check_block_or_statement(ast.init, in_value=o)
+  if ast.update:
+    reachability.check_block_or_statement(ast.update, in_value=o)
+  if ast.statement:
+    reachability.check_block_or_statement(ast.statement, in_value=o)
+
   return o, o
