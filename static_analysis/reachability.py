@@ -91,7 +91,8 @@ def _check_statement(ast, in_value, out_value):
     ast.reachability = (in_value, out_value)
 
   # TODO(songandrew): Remove print.
-  print ast
+  print '{0} - {1}, {2}'.format(ast, in_value, out_value)
+
   return in_value, out_value
 
 class ReachabilityError(Exception):
