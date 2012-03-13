@@ -33,6 +33,9 @@ class ASTVariableDeclaration(ast_node.ASTNode):
     self.children = [modifiers, type_ast, identifier, expression_ast]
     self.expr_type = None
 
+    # A tuple for (In, Out) for the reachability of this node.
+    self.reachability = (None, None)
+
   @property
   def identifier(self):
     return self.children[2]
