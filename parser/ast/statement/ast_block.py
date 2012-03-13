@@ -33,7 +33,9 @@ class ASTBlock(ast_statement.ASTStatement):
     statements = []
     for stmt in stmt_list:
       if stmt.value == 'Statement':
-        statements.append(ast_statement.ASTStatement.get_statement(stmt))
+        new_statement = ast_statement.ASTStatement.get_statement(stmt)
+        if new_statement is not None:
+          statements.append(ast_statement.ASTStatement.get_statement(stmt))
       elif stmt.value == 'LocalVariableDeclarationStatement':
         statements.append(ast_variable_declaration.ASTVariableDeclaration(
             stmt.children[0]))
@@ -44,7 +46,6 @@ class ASTBlock(ast_statement.ASTStatement):
     statements.reverse()
 
     self.children = self.process_statements(statements)
-
 
   @staticmethod
   def from_statements(statements):
