@@ -53,17 +53,14 @@ def _check_method(ast):
     if out_value == MAYBE:
       raise ReachabilityError('Method {0} has OUT = MAYBE'.format(ast.name))
 
-def _check_block(ast, in_value = MAYBE):
+def _check_block(ast, in_value = MAYBE, out_value = MAYBE):
   '''Check the reachability of a block'''
   original_i = in_value
-  out_value = MAYBE
 
   for statement in ast.statements:
-    if isinstance(statement, ast_expression.ASTExpression):
-      # Skip over any ASTExpressions.
-      pass
-    elif isinstance(statement, ast_block.ASTBlock):
-      in_value, out_value = _check_block(statement, in_value)
+    if isinstance(statement, ast_block.ASTBlock):
+      # For a new block, the IN value is the OUT value of the statement before.
+      in_value, out_value = _check_block(statement, out_value)
     else:
       in_value, out_value = _check_statement(statement, in_value, out_value)
 
@@ -77,6 +74,10 @@ def _check_statement(ast, in_value, out_value):
   '''Checks the reachability of a single statement.
   This takes in the previous statement's in and out values.'''
 
+  # Skip over any ASTExpressions.
+  if isinstance(ast, ast_expression.ASTExpression):
+    return in_value, out_value
+
   # Check if we've memoized the result for this node already.
   if ast.reachability != (None, None):
     return ast.reachability
@@ -89,9 +90,6 @@ def _check_statement(ast, in_value, out_value):
     constraint = statement_map[type(ast)]
     in_value, out_value = constraint(ast, in_value, out_value)
     ast.reachability = (in_value, out_value)
-
-  # TODO(songandrew): Remove print.
-  print '{0} - {1}, {2}'.format(ast, in_value, out_value)
 
   return in_value, out_value
 
