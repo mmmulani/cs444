@@ -12,6 +12,7 @@ import name_resolution.type_linker as type_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
+import static_analysis.reachability as reachability
 import scanner.scanner as scanner
 import weeder.weeder as weeder
 
@@ -76,6 +77,7 @@ def compile(filenames):
   ast_store.close()
 
   resolve_names(asts)
+  static_analysis(asts)
 
   # Everything passes!
   exit_with_pass()
@@ -139,6 +141,13 @@ def resolve_names(asts):
   except (env.EnvironmentError, type_linker.TypeLinkerError,
           name_linker.NameLinkingError, type_checker.TypeCheckingError) as err:
     exit_with_failure('name resolution', err.msg)
+
+def static_analysis(asts):
+  try:
+    for ast in asts:
+      reachability.check_reachability(ast)
+  except reachability.ReachabilityError as err:
+    exit_with_failure('static analysis', err.msg)
 
 def exit_with_pass():
   if options.verbose:
