@@ -5,10 +5,10 @@ import shelve
 from optparse import OptionParser
 
 import name_resolution.env as env
+import name_resolution.name_linker as name_linker
 import name_resolution.name_resolution as name_resolution
 import name_resolution.type_checker.type_checker as type_checker
 import name_resolution.type_linker as type_linker
-import name_resolution.name_linker as name_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
