@@ -7,6 +7,9 @@ class ASTStatement(ast_node.ASTNode):
     super(ASTStatement, self).__init__()
     self.expr_type = None
 
+    # A tuple for (In, Out) for the reachability of this node.
+    self.reachability = (None, None)
+
   @staticmethod
   def get_statement(tree):
     '''Return an AST node that is one of:
