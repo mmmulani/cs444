@@ -1,3 +1,4 @@
+import parser.ast.ast_type as ast_type
 import reachability
 
 # from reachability import check_block_or_statement
@@ -30,7 +31,7 @@ def var_decl(ast, i, o):
 
   # If the previous statement finished executing, then we can start executing.
   # By the "Any other statement" rule, out[L] = in[L] (= o, in this case)
-  return o, o 
+  return o, o
 
 def return_statement(ast, i, o):
   '''Reachabilty for a return statement.'''
@@ -57,4 +58,40 @@ def if_statement(ast, i, o):
 
   # If statement with no else:
   #   Out[L] = Out[S_1] OR In[L] = In[L] = o
+  return o, o
+
+def while_loop(ast, i, o):
+  '''Reachability for a while loop.
+  L: while (true) S
+  In[S] = In[L]
+  Out[L] = No
+
+  L: while (false) S
+  In[S] = No
+  Out[L] = In[L]
+
+  L: while (E) S
+  In[S] = In[L]
+  Out[L] = In[L]'''
+
+  # Make sure that the while expression is a Boolean.
+  if ast.expression.expr_type != ast_type.ASTType.ASTBoolean:
+    raise reachability.ReachabilityError('While expression is not a boolean.')
+
+  # The first two cases, where the expression has been resolved to True or
+  # False.
+  if ast.expression.const_value is not None:
+    if ast.expression.const_value:
+      # Though it doesn't affect our return value, check the children
+      # statements for reachability.
+      if ast.statement is not None:
+        reachability.check_block_or_statement(ast.statement, in_value=o)
+      return o, NO
+    else:
+      # This while loop is unreachable, we must immediately throw an error.
+      raise reachability.ReachabilityError('While body not reachable')
+
+  # The last case, where our expression is not a constant.
+  if ast.statement is not None:
+    reachability.check_block_or_statement(ast.statement, in_value=o)
   return o, o

@@ -9,13 +9,15 @@ import parser.ast.statement.ast_block as ast_block
 import parser.ast.statement.ast_if as ast_if
 import parser.ast.statement.ast_for as ast_for
 import parser.ast.statement.ast_return as ast_return
+import parser.ast.statement.ast_while as ast_while
 
 from constraints import MAYBE, NO
 
 statement_map = {
   ast_if.ASTIf: constraints.if_statement,
   ast_return.ASTReturn: constraints.return_statement,
-  ast_variable_declaration.ASTVariableDeclaration: constraints.var_decl
+  ast_variable_declaration.ASTVariableDeclaration: constraints.var_decl,
+  ast_while.ASTWhile: constraints.while_loop,
 }
 
 def check_reachability(ast):
