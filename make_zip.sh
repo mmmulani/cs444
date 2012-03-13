@@ -6,6 +6,7 @@ files_to_zip=(\
   name_resolution \
   parser \
   scanner \
+  static_analysis \
   utils \
   weeder \
   )
