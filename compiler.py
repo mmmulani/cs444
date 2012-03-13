@@ -12,6 +12,7 @@ import name_resolution.type_linker as type_linker
 import parser.ast.ast_class as ast_class
 import parser.ast.ast_root as ast_root
 import parser.parser as parser
+import static_analysis.constant_folding as constant_folding
 import static_analysis.reachability as reachability
 import scanner.scanner as scanner
 import weeder.weeder as weeder
@@ -145,6 +146,7 @@ def resolve_names(asts):
 def static_analysis(asts):
   try:
     for ast in asts:
+      constant_folding.fold_constants(ast)
       reachability.check_reachability(ast)
   except reachability.ReachabilityError as err:
     exit_with_failure('static analysis', err.msg)

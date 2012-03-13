@@ -169,13 +169,13 @@ class ASTLiteral(ASTExpression):
     if self.literal_type == ASTLiteral.BOOLEAN:
       return self.children[0] == 'true'
     elif self.literal_type == ASTLiteral.CHAR:
-      return self.children[0]
+      return self.children[0].strip('\'')
     elif self.literal_type == ASTLiteral.INT:
       return int(self.children[0])
     elif self.literal_type == ASTLiteral.NULL:
       return None   #TODO (gnleece) dunno what to do here
     elif self.literal_type == ASTLiteral.STRING:
-      return self.children[0]
+      return self.children[0].strip('"')
 
   @property
   def expressions(self):
