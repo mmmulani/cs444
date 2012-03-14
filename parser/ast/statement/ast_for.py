@@ -44,11 +44,7 @@ class ASTFor(ast_statement.ASTStatement):
       if child.value in ['Statement', 'StatementNoShortIf']:
         statement = ast_statement.ASTStatement.get_statement(child)
 
-    if statement is None:
-      raise ASTForError('For treenode must have a statement')
-
     self.children = [for_init, expression, for_update, statement]
-
 
   @property
   def init(self):
@@ -82,8 +78,12 @@ class ASTFor(ast_statement.ASTStatement):
     if self.children[2]:
       ast_node.ASTUtils.println('ForUpdate:', depth+1)
       self.children[2].show(depth+2, types)
+
     ast_node.ASTUtils.println('Statement:', depth+1)
-    self.children[3].show(depth+2, types)
+    if self.children[3] is not None:
+      self.children[3].show(depth+2, types)
+    else:
+      ast_node.ASTUtils.println('<Nothing>', depth+2)
 
 class ASTForError(Exception):
   pass
