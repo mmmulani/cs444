@@ -1,10 +1,10 @@
+import parser.ast.ast_expression as ast_expression
+import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_variable_declaration as ast_variable_declaration
+import parser.ast.statement.ast_block as ast_block
+import parser.ast.statement.ast_for as ast_for
 import parser.ast.statement.ast_if as ast_if
-import parser.ast.statement.ast_while as ast_while 
-import parser.ast.statement.ast_for as ast_for 
-import parser.ast.statement.ast_block as ast_block 
-import parser.ast.ast_expression as ast_expression
-import parser.ast.ast_expression as ast_expression
+import parser.ast.statement.ast_while as ast_while
 
 def check_variable_initializers(ast):
   '''Checks for variable initialization constraints.
@@ -23,7 +23,7 @@ def check_variable_initializers(ast):
 
   # No exception thrown.  Just return.
   return
-  
+
 def _check_variable_init_in_method(ast):
   if ast.body is None:
     return
@@ -55,7 +55,7 @@ def _check_statement(ast, env):
     _check_statement(ast.statement, ast.environment)
   elif isinstance(ast, ast_block.ASTBlock):
     _check_variable_init_in_block(ast, ast.environment)
-    
+
   return
 
 def _check_variable_decl(ast, env):
@@ -73,7 +73,7 @@ def _check_variable_decl(ast, env):
 
 def _get_identifiers(expr):
   '''Get all the identifiers from an expression
-  
+
   NOTE: This is copied from name_resolution/name_linking.py.  If you fix
   something here, FIX IT OVER THERE TOO!
   '''
@@ -103,7 +103,7 @@ def _get_identifiers(expr):
       acc.extend(_get_identifiers(ex))
 
   return acc
-  
+
 class InitializerError(Exception):
   def __init__(self, msg=''):
     self.msg = msg
