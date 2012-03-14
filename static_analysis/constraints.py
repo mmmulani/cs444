@@ -110,13 +110,14 @@ def for_loop(ast, i, o):
   L: for (S_1; E; S_2) S_3
   In[S] = In[L]
   Out[L] = In[L]'''
+  has_expr = (ast.expression is not None)
 
-  # Make sure the for expression is a Boolean.
-  if ast.expression.expr_type != ast_type.ASTType.ASTBoolean:
+  # Make sure the for expression is a Boolean if it exists.
+  if has_expr and ast.expression.expr_type != ast_type.ASTType.ASTBoolean:
     raise reachability.ReachabilityError('For expression is not a boolean.')
 
   # The first two cases, where the condition expression is a constant.
-  if ast.expression.const_value is not None:
+  if has_expr and ast.expression.const_value is not None:
     if ast.expression.const_value:
       # Check all children statements for reachability.
       if ast.init:
