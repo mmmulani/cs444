@@ -8,7 +8,7 @@ class ASTWhile(ast_statement.ASTStatement):
     'WhileStatementNoShortIf' TreeNode'''
     # Two children:
     #   0. An expression
-    #   1. A statement
+    #   1. A statement, or None (if the statement is ;)
 
     super(ASTWhile, self).__init__()
 
