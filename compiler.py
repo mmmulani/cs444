@@ -14,6 +14,7 @@ import parser.ast.ast_root as ast_root
 import parser.parser as parser
 import static_analysis.constant_folding as constant_folding
 import static_analysis.reachability as reachability
+import static_analysis.initializer_analysis as initializer_analysis
 import scanner.scanner as scanner
 import weeder.weeder as weeder
 
@@ -148,7 +149,9 @@ def static_analysis(asts):
     for ast in asts:
       constant_folding.fold_constants(ast)
       reachability.check_reachability(ast)
-  except reachability.ReachabilityError as err:
+      initializer_analysis.check_variable_initializers(ast)
+  except (reachability.ReachabilityError,
+      initializer_analysis.InitializerError) as err:
     exit_with_failure('static analysis', err.msg)
 
 def exit_with_pass():

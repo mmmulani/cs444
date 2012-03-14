@@ -19,6 +19,8 @@ class ASTWhile(ast_statement.ASTStatement):
       raise ASTWhileError('While treenode has incorrect children')
 
     expression = ast_expression.ASTExpression.get_expr_node(tree.children[2])
+    # TODO(songandrew): Check for While/For/If statements with an empty
+    # statement, e.g.: if (x);
     statement = ast_statement.ASTStatement.get_statement(tree.children[4])
 
     self.children = [expression, statement]
