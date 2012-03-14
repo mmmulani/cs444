@@ -45,8 +45,9 @@ def if_statement(ast, i, o):
   In[S_2] = In[L]
   Out[L] = Out[S_1] or Out[S_2]'''
 
-  if_in, if_out = reachability.check_block_or_statement(
-      ast.if_statement, in_value=o)
+  if ast.if_statement is not None:
+    if_in, if_out = reachability.check_block_or_statement(
+        ast.if_statement, in_value=o)
 
   if ast.else_statement is not None:
     else_in, else_out = reachability.check_block_or_statement(

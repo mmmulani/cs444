@@ -8,7 +8,7 @@ class ASTIf(ast_statement.ASTStatement):
     or 'IfThenElseStatementNoShortIf' TreeNode'''
     # Three children:
     #   0. The 'if' expression
-    #   1. The 'if' statement
+    #   1. The 'if' statement, or None (if the statement is just ;)
     #   2. The 'else' statement, if there is one (otherwise, None)
 
     super(ASTIf, self).__init__()
@@ -46,8 +46,13 @@ class ASTIf(ast_statement.ASTStatement):
     ast_node.ASTUtils.println('If: {0}'.format(
         ast_node.ASTUtils.type_string(self.expr_type)), depth)
     self.children[0].show(depth+1, types)
+
     ast_node.ASTUtils.println('Then:', depth)
-    self.children[1].show(depth+1, types)
+    if self.children[1] is not None:
+      self.children[1].show(depth+1, types)
+    else:
+      ast_node.ASTUtils.println('<Nothing>', depth + 1)
+
     if self.children[2]:
       ast_node.ASTUtils.println('Else:', depth)
       self.children[2].show(depth+1, types)
