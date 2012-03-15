@@ -6,6 +6,8 @@ import parser.ast.statement.ast_while as ast_while
 #TODO (gnleece) what about overflow?
 #TODO (gnleece) what about division? is it a special case?
 #TODO (gnleece) casts!
+#TODO (gnleece) |, &, ^ operators for boolean
+#TODO (gnleece) arrays?
 
 #TODO (gnleece) change these lambdas to operator.(...) ?
 binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
@@ -52,6 +54,18 @@ def _fold_constants(ast):
     left_value = ast.left_expr.const_value
     right_value = ast.right_expr.const_value
     if left_value is not None and right_value is not None:
+      if ast.operator == '+':
+        # '+' could be string concatenation, which is a special case:
+        left_type = ast.left_expr.expr_type
+        right_type = ast.right_expr.expr_type
+        if (left_type.definition and \
+              left_type.definition.canonical_name == 'java.lang.String') or \
+           (right_type.definition and
+              right_type.definition.canonical_name == 'java.lang.String') :
+          # anything plus a string creates a string:
+          left_value = str(left_value)
+          right_value = str(right_value)
+
       value = binary_ops[ast.operator](left_value, right_value)
       ast.const_value = value
   elif isinstance(ast, ast_expression.ASTUnary):
