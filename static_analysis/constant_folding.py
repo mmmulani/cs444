@@ -4,7 +4,6 @@ import parser.ast.statement.ast_if as ast_if
 import parser.ast.statement.ast_while as ast_while
 
 #TODO (gnleece) what about overflow?
-#TODO (gnleece) what about division? is it a special case?
 #TODO (gnleece) casts!
 #TODO (gnleece) arrays?
 
