@@ -6,7 +6,6 @@ import parser.ast.statement.ast_while as ast_while
 #TODO (gnleece) what about overflow?
 #TODO (gnleece) what about division? is it a special case?
 #TODO (gnleece) casts!
-#TODO (gnleece) |, &, ^ operators for boolean
 #TODO (gnleece) arrays?
 
 #TODO (gnleece) change these lambdas to operator.(...) ?
@@ -14,7 +13,8 @@ binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
   '*': lambda x,y : x*y, '/': lambda x,y : x/y, '%': lambda x,y : x%y,
   '<': lambda x,y : x<y, '<=': lambda x,y : x<=y, '>': lambda x,y : x>y,
   '>=': lambda x,y : x>=y, '==': lambda x,y : x==y, '!=': lambda x,y : x!= y,
-  '&&': lambda x,y : x and y, '||': lambda x,y: x or y}
+  '&&': lambda x,y : x and y, '||': lambda x,y: x or y,
+  '&': lambda x,y : x and y, '|': lambda x,y: x or y}
 
 unary_ops = {'-': lambda x : -x, '!': lambda x : not x}
 
