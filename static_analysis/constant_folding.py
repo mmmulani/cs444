@@ -5,9 +5,8 @@ import parser.ast.statement.ast_while as ast_while
 
 #TODO (gnleece) what about overflow?
 #TODO (gnleece) casts!
-#TODO (gnleece) arrays?
+#TODO (gnleece) Null
 
-#TODO (gnleece) change these lambdas to operator.(...) ?
 binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
   '*': lambda x,y : x*y, '/': lambda x,y : x/y, '%': lambda x,y : x%y,
   '<': lambda x,y : x<y, '<=': lambda x,y : x<=y, '>': lambda x,y : x>y,
@@ -71,9 +70,4 @@ def _fold_constants(ast):
     right_value = ast.expr.const_value
     if right_value is not None:
       value = unary_ops[ast.operator](right_value)
-      ast.const_value = value
-  elif isinstance(ast, ast_expression.ASTAssignment):
-    right_value = ast.right.const_value
-    if right_value is not None:
-      value = right_value
       ast.const_value = value
