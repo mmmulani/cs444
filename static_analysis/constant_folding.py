@@ -70,7 +70,7 @@ def _fold_constants(ast):
 
       # check for integer overflow:
       if not is_string:
-        value = _check_overflow(value)
+        value = _handle_overflow(value)
 
       ast.const_value = value
 
@@ -78,9 +78,16 @@ def _fold_constants(ast):
     right_value = ast.expr.const_value
     if right_value is not None:
       value = unary_ops[ast.operator](right_value)
+      if value == -INT_MIN:
+        # -(INT_MIN) is a special case, because |INT_MIN| = |INT_MAX| + 1,
+        # and so -(INT_MIN) = INT_MIN (it overflows back to itself!)
+        value = -value
       ast.const_value = value
 
-def _check_overflow(value):
+def _handle_overflow(value):
+  ''' If the given value is big enough/small enough for overflow, return the
+  "overflowed" value that it should be converted to '''
+
   # we only need to compare with INT_MAX, because the result of binary math
   # ops are always promoted to ints
   if value > INT_MAX:
