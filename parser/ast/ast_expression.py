@@ -173,7 +173,7 @@ class ASTLiteral(ASTExpression):
     elif self.literal_type == ASTLiteral.INT:
       return int(self.children[0])
     elif self.literal_type == ASTLiteral.NULL:
-      return None   #TODO (gnleece) dunno what to do here
+      return None   # null is not considered a constant value (JLS 15.28)
     elif self.literal_type == ASTLiteral.STRING:
       return self.children[0].strip('"')
 

@@ -5,7 +5,6 @@ import parser.ast.statement.ast_while as ast_while
 
 #TODO (gnleece) what about overflow?
 #TODO (gnleece) casts!
-#TODO (gnleece) Null
 
 binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
   '*': lambda x,y : x*y, '/': lambda x,y : x/y, '%': lambda x,y : x%y,

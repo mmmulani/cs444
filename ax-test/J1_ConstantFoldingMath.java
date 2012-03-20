@@ -5,7 +5,7 @@ public class J1_ConstantFoldingMath {
 
     // Constant folding should detect that the while expression equals true,
     // which should NOT cause a reachability error
-    while ((1+2) == 3 && (7+9) < (100+5)) {}
+    while ((1+2) == 3 && (7+9) < (100+5) && (4-5) == -1) {}
 
   }
 
