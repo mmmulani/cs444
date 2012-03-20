@@ -19,7 +19,7 @@ import scanner.scanner as scanner
 import weeder.weeder as weeder
 
 options = {}
-STDLIB_PATH = 'stdlib/5.0'
+STDLIB_PATH = 'stdlib/3.0'
 ast_store = shelve.open('ast_store')
 
 def main():
