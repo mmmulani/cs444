@@ -1,5 +1,6 @@
 #!/bin/bash
 files_to_zip=(\
+  ax-test \
   compiler.py \
   joosc \
   Makefile \
