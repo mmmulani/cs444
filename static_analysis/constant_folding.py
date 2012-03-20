@@ -3,7 +3,6 @@ import parser.ast.ast_node as ast_node
 import parser.ast.statement.ast_if as ast_if
 import parser.ast.statement.ast_while as ast_while
 
-#TODO (gnleece) what about overflow?
 #TODO (gnleece) casts!
 
 binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
@@ -15,6 +14,8 @@ binary_ops = {'+': lambda x,y : x+y, '-': lambda x,y : x-y,
 
 unary_ops = {'-': lambda x : -x, '!': lambda x : not x}
 
+INT_MAX = pow(2,31) - 1
+INT_MIN = -pow(2,31)
 
 def fold_constants(ast):
   ''' Folds constants for all expressions. This means we compute the constant
@@ -51,6 +52,7 @@ def _fold_constants(ast):
     left_value = ast.left_expr.const_value
     right_value = ast.right_expr.const_value
     if left_value is not None and right_value is not None:
+      is_string = False
       if ast.operator == '+':
         # '+' could be string concatenation, which is a special case:
         left_type = ast.left_expr.expr_type
@@ -60,13 +62,29 @@ def _fold_constants(ast):
            (right_type.definition and
               right_type.definition.canonical_name == 'java.lang.String') :
           # anything plus a string creates a string:
+          is_string = True
           left_value = str(left_value)
           right_value = str(right_value)
 
       value = binary_ops[ast.operator](left_value, right_value)
+
+      # check for integer overflow:
+      if not is_string:
+        value = _check_overflow(value)
+
       ast.const_value = value
+
   elif isinstance(ast, ast_expression.ASTUnary):
     right_value = ast.expr.const_value
     if right_value is not None:
       value = unary_ops[ast.operator](right_value)
       ast.const_value = value
+
+def _check_overflow(value):
+  # we only need to compare with INT_MAX, because the result of binary math
+  # ops are always promoted to ints
+  if value > INT_MAX:
+    value = value - INT_MAX + INT_MIN - 1
+  elif value < INT_MIN:
+    value = value + INT_MAX - INT_MIN + 1
+  return value
