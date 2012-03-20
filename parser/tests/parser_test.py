@@ -1,7 +1,7 @@
 import unittest
 
-from parser.parser import Parser, ParsingError
-from scanner.scanner import Token, TokenType
+from ..parser import Parser, ParsingError
+from scanner.scanner import Token
 
 class ParserTest(unittest.TestCase):
   def setUp(self):
