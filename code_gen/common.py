@@ -53,3 +53,7 @@ def get_param(dest, index, num_params):
   return [
     'mov {0}, [ebp + {1}]'.format(dest, offset)
   ]
+
+def unwrap_primitive(dest, src):
+  '''Unwraps the primitive at *src and stores it in the register dest.'''
+  return 'mov {0}, [{1} + 4]'.format(src, dest)
