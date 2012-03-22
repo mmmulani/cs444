@@ -141,6 +141,7 @@ class ASTLiteral(ASTExpression):
     super(ASTLiteral, self).__init__()
     self.children = [tree.lexeme]
     self.literal_type = self._get_literal_type(tree.lexeme)
+
     self.const_value = self._get_literal_value()
 
   def show(self, depth = 0, types = False):
@@ -181,6 +182,18 @@ class ASTLiteral(ASTExpression):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return []
+
+  # Code gen functions start here.
+
+  def c_gen_code(self):
+    # XXX: Assume int for now.
+    return [
+        'push {0}'.format(self.const_value),
+        'call _create_int',
+        'pop ebx ; pop to garbage',
+        '; _create_int will store the address in eax'
+    ]
+
 
 class ASTUnary(ASTExpression):
   def __init__(self, tree):

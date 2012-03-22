@@ -6,3 +6,5 @@ test.java
 out
 ast_store.db
 ast_store
+*.o
+output
