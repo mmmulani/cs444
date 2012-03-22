@@ -404,6 +404,32 @@ class ASTBinary(ASTExpression):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0], self.children[1]]
 
+  def c_gen_code(self):
+    # We provide the code to generate the value of each operand separately as
+    # some operators (e.g. &&) will not necessarily evaluate both.
+    left_operand = [
+      self.left_expr.c_gen_code(),
+      'push eax  ; store left operand as a parameter'
+    ]
+    right_operand = [
+      self.right_expr.c_gen_code(),
+      'push eax  ; store right operand as a parameter'
+    ]
+
+    operator_code = []
+    if self.operator == '+':
+      operator_code = [
+          # TODO: Make sure we can evaluate the left operand before the right.
+          left_operand,
+          right_operand,
+          'call _add_int',
+          'pop ebx  ; pop second param',
+          'pop ebx  ; pop first param',
+          '; eax contains a pointer to the result'
+      ]
+
+    return operator_code
+
 class ASTClassInstanceCreation(ASTExpression):
   def __init__(self, tree):
     # Children is of length 2:
