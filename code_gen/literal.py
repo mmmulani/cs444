@@ -16,7 +16,7 @@ def create_int():
       common.malloc(8),
       'mov dword [eax], {0}'.format(0xDEADBEEF),
       # XXX: Put the real tag here when we have it.
-      common.get_param('ebx', 0, N_PARAMS)
-      'mov dword [eax + 4], [ebx]',
+      common.get_param('ebx', 0, N_PARAMS),
+      'mov dword [eax + 4], ebx',
       common.function_epilogue()
   ]

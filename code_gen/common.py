@@ -14,7 +14,7 @@ def function_prologue(frame_size=0):
     'push edx',
     'push esi',
     'push edi',
-    '; END FUCNTION PROLOGUE ----------'
+    '; END FUNCTION PROLOGUE ----------'
   ]
 
 def function_epilogue():
@@ -28,8 +28,8 @@ def function_epilogue():
    'pop ebx',
    'mov esp, ebp  ; restore original stack pointer',
    'pop ebp  ; restore original frame pointer',
-   'ret'
-   '; END FUCNTION EPILOGUE ----------'
+   'ret',
+   '; END FUNCTION EPILOGUE ----------'
   ]
 
 def malloc(n_bytes):
