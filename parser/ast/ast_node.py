@@ -17,10 +17,12 @@ class ASTNode(object):
       type_str = ASTUtils.type_string(self.expr_type, types);
     ASTUtils.println('{0} {1}'.format(type(self).__name__, type_str), depth)
 
+  def c_gen_code(self):
+    return []
 
 class ASTUtils():
   '''Namespace class for AST utilities'''
-  
+
   COLOR_GREEN = '\033[92m'
   COLOR_RED = '\033[91m'
   END_COLOR = '\033[0m'

@@ -25,7 +25,7 @@ def main():
       scanner.Scanner.get_token_list(file_str))
   parse_tree = (parser.Parser()).parse(toks)
   (weeder.Weeder()).weed(parse_tree, FILENAME)
-  ast = ast_root.ASTRoot(parse_tree)
+  ast = ast_root.ASTRoot(parse_tree, FILENAME)
   class_ast = ast.children[2]
 
   # Get the assembly of the return statement.

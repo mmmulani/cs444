@@ -4,6 +4,8 @@ import sys
 import shelve
 from optparse import OptionParser
 
+import code_gen.code_gen as code_gen
+import code_gen.sit.selector_index_table as selector_index_table
 import name_resolution.env as env
 import name_resolution.name_linker as name_linker
 import name_resolution.name_resolution as name_resolution
@@ -58,7 +60,7 @@ def compile(filenames):
     toks = scan_file(s)
     parse_tree = parse_toks(toks)
     weed(parse_tree, filename)
-    ast = make_ast(parse_tree)
+    ast = make_ast(parse_tree, filename)
     asts.append(ast)
 
     if options.verbose:
@@ -80,6 +82,9 @@ def compile(filenames):
 
   resolve_names(asts)
   static_analysis(asts)
+  gen_code(asts)
+
+  import pdb; pdb.set_trace()
 
   # Everything passes!
   exit_with_pass()
@@ -122,8 +127,8 @@ def weed(parse_tree, filename):
       sys.stderr.write('Weeding failed\n')
     exit_with_failure('weeding', err.msg)
 
-def make_ast(parse_tree):
-  ast = ast_root.ASTRoot(parse_tree)
+def make_ast(parse_tree, filename):
+  ast = ast_root.ASTRoot(parse_tree, filename)
   if options.til_ast or options.verbose:
     ast.show()
   return ast
@@ -153,6 +158,15 @@ def static_analysis(asts):
   except (reachability.ReachabilityError,
       initializer_analysis.InitializerError) as err:
     exit_with_failure('static analysis', err.msg)
+
+def gen_code(asts):
+  try:
+    selector_index_table.make_sit(asts)
+    for ast in asts:
+      code_gen.generate_ast_code(ast)
+    code_gen.generate_common_code()
+  except code_gen.CodeGenerationError as err:
+    exit_with_failure('code generation', err.msg)
 
 def exit_with_pass():
   if options.verbose:
@@ -185,7 +199,7 @@ def get_stdlib_asts():
     toks = scan_file(s)
     parse_tree = parse_toks(toks)
     weed(parse_tree, file)
-    ast = make_ast(parse_tree)
+    ast = make_ast(parse_tree, file)
     asts.append(ast)
 
     # Since we weren't able to load it from cache, store it for later.

@@ -6,9 +6,10 @@ import ast_package
 
 class ASTRoot(ast_node.ASTNode):
   '''The root of an AST Tree'''
-  def __init__(self, tree):
+  def __init__(self, tree, filename):
     '''Creates an AST Root node from the CompilationUnit state'''
     package = self._get_package_decl(tree)
+    self.filename = filename
 
     # Three children:
     #   0. The package declaration, if any.
