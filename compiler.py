@@ -4,6 +4,7 @@ import sys
 import shelve
 from optparse import OptionParser
 
+import code_gen.code_gen as code_gen
 import name_resolution.env as env
 import name_resolution.name_linker as name_linker
 import name_resolution.name_resolution as name_resolution
@@ -80,6 +81,7 @@ def compile(filenames):
 
   resolve_names(asts)
   static_analysis(asts)
+  gen_code(asts)
 
   # Everything passes!
   exit_with_pass()
@@ -153,6 +155,14 @@ def static_analysis(asts):
   except (reachability.ReachabilityError,
       initializer_analysis.InitializerError) as err:
     exit_with_failure('static analysis', err.msg)
+
+def gen_code(asts):
+  try:
+    for ast in asts:
+      code_gen.generate_ast_code(ast)
+    code_gen.generate_common_code()
+  except code_gen.CodeGenerationError as err:
+    exit_with_failure('code generation', err.msg)
 
 def exit_with_pass():
   if options.verbose:

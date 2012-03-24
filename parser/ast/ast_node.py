@@ -17,6 +17,8 @@ class ASTNode(object):
       type_str = ASTUtils.type_string(self.expr_type, types);
     ASTUtils.println('{0} {1}'.format(type(self).__name__, type_str), depth)
 
+  def c_gen_code():
+    return []
 
 class ASTUtils():
   '''Namespace class for AST utilities'''
