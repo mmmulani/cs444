@@ -59,7 +59,7 @@ def compile(filenames):
     toks = scan_file(s)
     parse_tree = parse_toks(toks)
     weed(parse_tree, filename)
-    ast = make_ast(parse_tree)
+    ast = make_ast(parse_tree, filename)
     asts.append(ast)
 
     if options.verbose:
@@ -124,8 +124,8 @@ def weed(parse_tree, filename):
       sys.stderr.write('Weeding failed\n')
     exit_with_failure('weeding', err.msg)
 
-def make_ast(parse_tree):
-  ast = ast_root.ASTRoot(parse_tree)
+def make_ast(parse_tree, filename):
+  ast = ast_root.ASTRoot(parse_tree, filename)
   if options.til_ast or options.verbose:
     ast.show()
   return ast
@@ -195,7 +195,7 @@ def get_stdlib_asts():
     toks = scan_file(s)
     parse_tree = parse_toks(toks)
     weed(parse_tree, file)
-    ast = make_ast(parse_tree)
+    ast = make_ast(parse_tree, file)
     asts.append(ast)
 
     # Since we weren't able to load it from cache, store it for later.
