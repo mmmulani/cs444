@@ -5,6 +5,7 @@ import shelve
 from optparse import OptionParser
 
 import code_gen.code_gen as code_gen
+import code_gen.sit.selector_index_table as selector_index_table
 import name_resolution.env as env
 import name_resolution.name_linker as name_linker
 import name_resolution.name_resolution as name_resolution
@@ -83,6 +84,8 @@ def compile(filenames):
   static_analysis(asts)
   gen_code(asts)
 
+  import pdb; pdb.set_trace()
+
   # Everything passes!
   exit_with_pass()
 
@@ -158,6 +161,7 @@ def static_analysis(asts):
 
 def gen_code(asts):
   try:
+    selector_index_table.make_sit(asts)
     for ast in asts:
       code_gen.generate_ast_code(ast)
     code_gen.generate_common_code()

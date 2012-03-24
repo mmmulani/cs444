@@ -20,6 +20,10 @@ class ASTMethod(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # A label corresponding to where the method is defined in assembly.
+    # This is set in the c_defn_label property.
+    self._c_defn_label = None
+
     # In some cases, we want to create ASTMethod's synthetically. For example,
     # we want to add abstract methods to interfaces if they do not extend
     # anything.
@@ -172,6 +176,19 @@ class ASTMethod(ast_node.ASTNode):
       # Empty body.
       return
     self.children = [ast_block.ASTBlock(body)]
+
+  # The label looks like 'method_defn_<method name>' followed by a suffix to
+  # guarantee uniqueness.
+  # TODO: Work the class name in the label.
+  @property
+  def c_defn_label(self):
+    if self._c_defn_label is None:
+      import code_gen.manager as manager
+      label = 'method_defn_{0}'.format(str(self.name))
+      uniq_label = manager.CodeGenManager.get_label(label)
+      self._c_defn_label = uniq_label
+
+    return self._c_defn_label
 
 class ASTMethodError(Exception):
   pass

@@ -32,6 +32,12 @@ class ASTClass(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # Set by the Selector Index Table script in the code gen stage.
+    self.c_sit_column = []
+    # Set by the c_sit_column_label property. It is an assembly label for the
+    # SIT column.
+    self._c_sit_column_label = None
+
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
 
@@ -171,6 +177,41 @@ class ASTClass(ast_node.ASTNode):
     ret.append(ast_type.ASTType(node.children[0].children[0]))
     ret.reverse()
     return ret
+
+  @property
+  def c_sit_column_label(self):
+    if self._c_sit_column_label is None:
+      import code_gen.manager as manager
+      label = 'sit_column_{0}'.format(self.canonical_name)
+      uniq_label = manager.CodeGenManager.get_label(label)
+      self._c_sit_column_label = uniq_label
+
+    return self._c_sit_column_label
+
+  def c_gen_code_sit_column(self):
+    import code_gen.manager as manager
+    table_entries = []
+    for ix, m in enumerate(self.c_sit_column):
+      # Add an assembly comment to explain the row.
+      selector = manager.CodeGenManager.get_selector(ix)
+      ret_type, (name, params) = selector
+      param_strs = [str(t) for t in params]
+      method_str = '{0} {1}({2})'.format(str(ret_type), name,
+          ', '.join(param_strs))
+      table_entries.append('; {0}'.format(method_str))
+
+      entry = ''
+      if m is None:
+        entry = '.word dword 0x0'
+      else:
+        entry = '.word {0}'.format(m.c_defn_label)
+
+      table_entries.append(entry)
+
+    return [
+        '{0}:'.format(self.c_sit_column_label),
+        table_entries
+    ]
 
 class ASTClassError(Exception):
   pass
