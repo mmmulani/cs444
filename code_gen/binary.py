@@ -1,6 +1,6 @@
 import common
 
-NAMES = ['_add_int', '_sub_int']
+NAMES = ['_add_int', '_sub_int', '_divide_int']
 
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
