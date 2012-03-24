@@ -1,3 +1,5 @@
+import code_gen.common
+
 from ast_node import ASTNode, ASTUtils
 from ast_cast import ASTCast
 from ast_type import ASTType
@@ -407,14 +409,8 @@ class ASTBinary(ASTExpression):
   def c_gen_code(self):
     # We provide the code to generate the value of each operand separately as
     # some operators (e.g. &&) will not necessarily evaluate both.
-    left_operand = [
-      self.left_expr.c_gen_code(),
-      'push eax  ; store left operand as a parameter'
-    ]
-    right_operand = [
-      self.right_expr.c_gen_code(),
-      'push eax  ; store right operand as a parameter'
-    ]
+    left_operand = code_gen.common.store_param(self.left_expr)
+    right_operand = code_gen.common.store_param(self.right_expr)
 
     arithmetic_ops = {
         '+': '_add_int',

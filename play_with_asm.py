@@ -31,8 +31,8 @@ def main():
   # Get the assembly of the return statement.
   blocks = get_blocks_from_class(class_ast)
   asm = blocks[1].children[0].children[0].c_gen_code()
-  print_asm(asm)
 
+  print_asm(asm)
 
 def get_blocks_from_class(class_ast):
   blocks = []
