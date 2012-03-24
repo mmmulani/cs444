@@ -7,8 +7,15 @@ class CodeGenManager(object):
   _label_count = 0
 
   @staticmethod
+  def get_label(prefix):
+    '''Get a label with a unique suffix attached to the end. Uses
+    CodeGenManager.get_labels() internally.'''
+    suffix, = CodeGenManager.get_labels(prefix)
+    return suffix
+
+  @staticmethod
   def get_labels(*args):
-    '''Get a set of labels with a unique prefix attached to the end of them
+    '''Get a set of labels with a unique suffix attached to the end of them
 
     Example usage:
       >> if_label, else_label = CodeGenManager.get_labels('if', 'then')
