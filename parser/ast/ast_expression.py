@@ -435,6 +435,7 @@ class ASTBinary(ASTExpression):
           'pop ebx  ; pop second param',
           'pop ebx  ; pop first param',
           '; eax contains a pointer to the result'
+      ]
     elif self.operator == '/':
       operator_code = [
         left_operand,
