@@ -9,3 +9,4 @@ ast_store
 *.o
 output
 j_play_with_asm.java
+main
