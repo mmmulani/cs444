@@ -416,37 +416,25 @@ class ASTBinary(ASTExpression):
       'push eax  ; store right operand as a parameter'
     ]
 
-    operator_code = []
-    if self.operator == '+':
-      operator_code = [
-          # TODO: Make sure we can evaluate the left operand before the right.
+    arithmetic_ops = {
+        '+': '_add_int',
+        '-': '_sub_int',
+        # '*': '_add_int',
+        '/': '_divide_int'
+    }
+
+    if self.operator in arithmetic_ops.keys():
+      op_function = arithmetic_ops[self.operator]
+      return [
           left_operand,
           right_operand,
-          'call _add_int',
+          'call {0}'.format(op_function),
           'pop ebx  ; pop second param',
           'pop ebx  ; pop first param',
           '; eax contains a pointer to the result'
-      ]
-    elif self.operator == '-':
-      operator_code = [
-          left_operand,
-          right_operand,
-          'call _sub_int',
-          'pop ebx  ; pop second param',
-          'pop ebx  ; pop first param',
-          '; eax contains a pointer to the result'
-      ]
-    elif self.operator == '/':
-      operator_code = [
-        left_operand,
-        right_operand,
-        'call _divide_int',
-        'pop ebx  ; pop second param',
-        'pop ebx  ; pop first param',
-        '; eax contains a pointer to the result'
       ]
 
-    return operator_code
+    return []
 
 class ASTClassInstanceCreation(ASTExpression):
   def __init__(self, tree):
