@@ -52,3 +52,33 @@ def sub_int():
       'pop ebx ; pop param',
       common.function_epilogue()
   ]
+
+def divide_int():
+  '''Divides one integer by another and returns the address of a new integer
+  equal to the result.
+
+  2 Params:
+    1. The address of an integer (left operand - dividend)
+    2. The address of another integer (right operand - divisor)'''
+  N_PARAMS = 2
+
+  return [
+    '_divide_int:',
+    common.function_prologue(),
+    '; get the value for the left operand and put it in eax',
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    '; get the value for the right operand and put in in ebx',
+    common.get_param('ebx', 1, N_PARAMS),
+    common.unwrap_primitive('ebx', 'ebx'),
+    '; fill edx with the high order bit of eax by copying then shifting',
+    'mov edx, eax',
+    'sar edx, 31  ; arithmetic right shift (all bits equal to high order bit)',
+    'idiv ebx  ; sets eax to edx:eax/ebx',
+    '; create an int with the result',
+    'push eax  ; the result of div has to be in eax',
+    'call _create_int',
+    'pop ebx ; pop param',
+    '; eax is an integer object with the old value of eax',
+    common.function_epilogue()
+  ]
