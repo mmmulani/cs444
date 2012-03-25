@@ -84,8 +84,6 @@ def compile(filenames):
   static_analysis(asts)
   gen_code(asts)
 
-  import pdb; pdb.set_trace()
-
   # Everything passes!
   exit_with_pass()
 
