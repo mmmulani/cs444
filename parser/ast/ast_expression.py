@@ -188,13 +188,25 @@ class ASTLiteral(ASTExpression):
   # Code gen functions start here.
 
   def c_gen_code(self):
-    # XXX: Assume int for now.
-    return [
-        'push {0}'.format(self.const_value),
-        'call _create_int',
-        'pop ebx ; pop to garbage',
-        '; _create_int will store the address in eax'
-    ]
+    if self.literal_type == ASTLiteral.BOOLEAN:
+      if self.const_value:
+        boolean_as_int = 1
+      else:
+        boolean_as_int = 0
+
+      return [
+          'push {0}'.format(boolean_as_int),
+          'call _create_boolean',
+          'pop ebx ; pop to garbage',
+          '; _create_boolean will store the address in eax',
+      ]
+    elif self.literal_type == ASTLiteral.INT:
+      return [
+          'push {0}'.format(self.const_value),
+          'call _create_int',
+          'pop ebx ; pop to garbage',
+          '; _create_int will store the address in eax'
+      ]
 
 
 class ASTUnary(ASTExpression):
