@@ -415,7 +415,7 @@ class ASTBinary(ASTExpression):
     arithmetic_ops = {
         '+': '_add_int',
         '-': '_sub_int',
-        # '*': '_add_int',
+        '*': '_mult_int',
         '/': '_divide_int'
     }
 

@@ -1,6 +1,10 @@
 import common
 
-NAMES = ['_add_int', '_sub_int', '_divide_int']
+NAMES = [
+    '_add_int',
+    '_sub_int',
+    '_mult_int',
+    '_divide_int']
 
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
@@ -51,6 +55,32 @@ def sub_int():
       'call _create_int',
       'pop ebx ; pop param',
       common.function_epilogue()
+  ]
+
+def multiply_int():
+  '''Multiplies two integers and returns the address of the result
+
+  2 Params:
+    1. The address of an integer (left operand)
+    2. The address of an integer (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_mult_int:',
+    common.function_prologue(),
+    '; Get the left param and put it in eax',
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    '; Get the right param and put it in ebx',
+    common.get_param('ebx', 1, N_PARAMS),
+    common.unwrap_primitive('ebx', 'ebx'),
+    'imul eax, ebx  ; Multiply the two params',
+    '; Create an int with the result.',
+    'push eax  ; Push the int as a param',
+    'call _create_int',
+    'pop ebx ; Pop off param',
+    common.function_epilogue()
   ]
 
 def divide_int():
