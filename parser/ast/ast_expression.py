@@ -416,7 +416,8 @@ class ASTBinary(ASTExpression):
         '+': '_add_int',
         '-': '_sub_int',
         '*': '_mult_int',
-        '/': '_divide_int'
+        '/': '_divide_int',
+        '%': '_mod_int'
     }
 
     if self.operator in arithmetic_ops.keys():
