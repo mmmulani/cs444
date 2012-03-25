@@ -202,9 +202,9 @@ class ASTClass(ast_node.ASTNode):
 
       entry = ''
       if m is None:
-        entry = '.word dword 0x0'
+        entry = 'dw 0x0'
       else:
-        entry = '.word {0}'.format(m.c_defn_label)
+        entry = 'dw {0}'.format(m.c_defn_label)
 
       table_entries.append(entry)
 
