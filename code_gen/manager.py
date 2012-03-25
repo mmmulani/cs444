@@ -118,7 +118,7 @@ class CodeGenManager(object):
   def get_tag(ast_type):
     '''Gets the tag of an AST type'''
     k = CodeGenManager._type_to_str(ast_type)
-    if CodeGenManager._has_tag(k):
+    if not CodeGenManager._has_tag(k):
       raise Exception(
           'Trying to get a tag for type {0} that does not exist.'.format(k))
 
