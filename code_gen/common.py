@@ -56,7 +56,7 @@ def get_param(dest, index, num_params):
 
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
-  return 'mov {0}, [{1} + 4]'.format(src, dest)
+  return 'mov {0}, [{1} + 4]'.format(dest, src)
 
 def store_param(ast_node):
   '''Pushes the value of the ast node on to the stack to be used as a param'''
