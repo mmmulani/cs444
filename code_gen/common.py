@@ -72,3 +72,27 @@ def fill_high_order_bit(src, dest):
     'mov {0}, {1}'.format(dest, src),
     'sar {0}, 31  ; Arithmetic right shift 31 positions'.format(dest)
   ]
+
+def if_false(ast_node, label):
+  '''Computes the value of the ast node and if it is false, branches to label.
+  This expects the value of ast_node to be a boolean. A reference to the boolean
+  value is left in eax.'''
+  return [
+    ast_node.c_gen_code(),
+    unwrap_primitive('ebx', 'eax'),
+    'mov ecx, 0',
+    'cmp ebx, ecx',
+    'je {0}'.format(label),
+  ]
+
+def if_true(ast_node, label):
+  '''Computes the value of the ast node and if it is true, branches to label.
+  This expects the value of ast_node to be a boolean. A reference to the boolean
+  value is left in eax.'''
+  return [
+    ast_node.c_gen_code(),
+    unwrap_primitive('ebx', 'eax'),
+    'mov ecx, 1',
+    'cmp ebx, ecx',
+    'je {0}'.format(label),
+  ]

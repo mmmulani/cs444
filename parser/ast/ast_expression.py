@@ -1,4 +1,5 @@
 import code_gen.common
+import code_gen.manager as manager
 
 from ast_node import ASTNode, ASTUtils
 from ast_cast import ASTCast
@@ -441,6 +442,22 @@ class ASTBinary(ASTExpression):
           'pop ebx  ; pop second param',
           'pop ebx  ; pop first param',
           '; eax contains a pointer to the result'
+      ]
+    elif self.operator == '&&':
+      done_eval = manager.CodeGenManager.get_label('done_and_and_operator')
+      return [
+          code_gen.common.if_false(self.left_expr, done_eval),
+          self.right_expr.c_gen_code(),
+          '{0}:'.format(done_eval),
+          '; eax contains a pointer to the result',
+      ]
+    elif self.operator == '||':
+      done_eval = manager.CodeGenManager.get_label('done_or_or_operator')
+      return [
+          code_gen.common.if_true(self.left_expr, done_eval),
+          self.right_expr.c_gen_code(),
+          '{0}:'.format(done_eval),
+          '; eax contains a pointer to the result',
       ]
 
     return []
