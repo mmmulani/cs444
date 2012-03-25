@@ -30,10 +30,25 @@ def get_all_files(path):
 passing_tests = []
 failing_tests = []
 
+# clean up the output folder:
+def rm_files(dir_):
+  for f in os.listdir(dir_):
+    path = os.path.join(dir_, f)
+    if os.path.isfile(path):
+      os.remove(path)
+    elif os.path.isdir(path):
+      rm_files(path)
+      os.rmdir(path)
+
+rm_files('output')
+
+
 for file in tests:
   if file.startswith('.'):
     # Skip hidden files.
     continue
+
+  test_name = file.split('.')[0]
 
   path = '{0}/{1}'.format(A5_FOLDER, file)
   files = []
@@ -42,8 +57,15 @@ for file in tests:
   else:
     files.append(path)
 
-  args = ['./joosc', '--stdlib']
+  args = ['./joosc', '--stdlib', '--outputdir=output/'+test_name]
   args.extend(files)
+
+  # Set up the test output directory
+  output_dir = os.path.join('output', test_name)
+  if not os.path.exists(output_dir):
+    os.mkdir(output_dir)
+  else:
+    raise Exception('Test directory already exists, something went wrong')
 
   ret = subprocess.call(args)
   color = FAIL_COLOR

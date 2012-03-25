@@ -163,8 +163,8 @@ def gen_code(asts):
   try:
     selector_index_table.make_sit(asts)
     for ast in asts:
-      code_gen.generate_ast_code(ast)
-    code_gen.generate_common_code()
+      code_gen.generate_ast_code(ast, options.output_dir)
+    code_gen.generate_common_code(options.output_dir)
   except code_gen.CodeGenerationError as err:
     exit_with_failure('code generation', err.msg)
 
@@ -242,6 +242,8 @@ if __name__ == '__main__':
   optparser.add_option('-w', '--weeder', action='store_true', dest='til_weed')
   optparser.add_option('-v', '--verbose', action='store_true', dest='verbose')
   optparser.add_option('--stdlib', action='store_true', dest='stdlib')
+  optparser.add_option('--outputdir', action='store', type='string',
+      dest='output_dir', default='output')
 
   (my_options, args) = optparser.parse_args()
   options = my_options

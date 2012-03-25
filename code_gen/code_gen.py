@@ -5,7 +5,7 @@ import common
 import literal
 import runtime
 
-def generate_ast_code(ast):
+def generate_ast_code(ast, output_dir='output'):
   ''' Generates assembly for the given AST, and saves it to a .s file in
   the output directory. ''' 
  
@@ -28,13 +28,14 @@ def generate_ast_code(ast):
 
   # write out to a file:
   filename = os.path.basename(ast.filename).split('.')[0] + '.s'
-  asm_file = open('output/' + filename, 'w')
+  filepath = os.path.join(output_dir, filename)
+  asm_file = open(filepath, 'w')
   asm_file.write('\n'.join([header_asm, body_asm]))
   asm_file.close()
   
   #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
 
-def generate_common_code():
+def generate_common_code(output_dir='output'):
   ''' Saves the code for the assembly helper functions to a file ''' 
 
   # generate the code header (externs, globals)
@@ -50,7 +51,8 @@ def generate_common_code():
 
   # write out to a file:
   filename = '_common.s'
-  asm_file = open('output/' + filename, 'w')
+  filepath = os.path.join(output_dir, filename)
+  asm_file = open(filepath, 'w')
   asm_file.write('\n'.join([header_asm, body_asm]))
   asm_file.close()
   
