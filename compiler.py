@@ -5,6 +5,7 @@ import shelve
 from optparse import OptionParser
 
 import code_gen.code_gen as code_gen
+import code_gen.manager as code_gen_manager
 import code_gen.sit.selector_index_table as selector_index_table
 import name_resolution.env as env
 import name_resolution.name_linker as name_linker
@@ -165,6 +166,9 @@ def gen_code(asts):
     code_gen.generate_common_code(options.output_dir)
   except code_gen.CodeGenerationError as err:
     exit_with_failure('code generation', err.msg)
+
+  if not code_gen_manager.CodeGenManager.found_start_method:
+    exit_with_failure('code generation', 'No start method found')
 
 def exit_with_pass():
   if options.verbose:

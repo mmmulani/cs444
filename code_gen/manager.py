@@ -4,6 +4,8 @@ class CodeGenManager(object):
     # This should be a static class only.
     raise Exception('Code generation manager is a static global singleton.')
 
+  found_start_method = False
+
 # ------ LABEL METHODS -------
   _label_count = 0
 

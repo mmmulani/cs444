@@ -3,22 +3,32 @@ import os
 import binary
 import common
 import literal
+import manager
 import runtime
+
+import parser.ast.ast_type as ast_type
 
 def generate_ast_code(ast, output_dir='output'):
   ''' Generates assembly for the given AST, and saves it to a .s file in
   the output directory. '''
 
   # generate the code header (externs, globals)
-  header_asm = ''
   externs = _get_helper_function_names()
   externs.extend(runtime.NAMES)
   extern_asm = '\n'.join(['extern {0}'.format(x) for x in externs])
 
-  # TODO (gnleece) check if this ast contains "static int test()", and if so,
-  # add start label & initialize static fields
+  # check whether this AST has the start method:
+  start_asm = ''
+  start_method = _get_start_method(ast)
+  if start_method is not None:
+    if manager.CodeGenManager.found_start_method:
+      # there should be only one start method
+      raise CodeGenerationError('Multiple start methods found')
+    manager.CodeGenManager.found_start_method = True
+    # TODO (gnleece) generate start code here
+    # TODO (gnleece) initialize static variables here
 
-  header_asm = extern_asm + '\n\n'
+  header_asm = extern_asm + start_asm + '\n\n'
 
   # generate the body code (from the AST):
   body_asm = ast.c_gen_code()
@@ -63,6 +73,15 @@ def _get_helper_function_names():
   names.extend(common.NAMES)
   names.extend(literal.NAMES)
   return names
+
+def _get_start_method(ast):
+  methods = ast.children[2].methods
+  # the start method is 'static int test()'
+  for method in methods:
+    if str(method.name) == 'test' and method.is_static and \
+        method.return_type == ast_type.ASTType.ASTInt:
+      return method
+  return None
 
 def flatten_asm(lst):
   strs = []
