@@ -4,6 +4,8 @@ import ast_node
 import ast_type
 import ast_variable_declaration
 
+from code_gen.manager import CodeGenManager
+
 class ASTClass(ast_node.ASTNode):
   def __init__(self, tree, package_name=''):
     '''Create an AST Class Declaration node'''
@@ -37,6 +39,9 @@ class ASTClass(ast_node.ASTNode):
     # Set by the c_sit_column_label property. It is an assembly label for the
     # SIT column.
     self._c_sit_column_label = None
+
+    # Set by the Subtype Table script in the code gen stage.
+    self.c_subtype_column = None
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
@@ -180,20 +185,14 @@ class ASTClass(ast_node.ASTNode):
 
   @property
   def c_sit_column_label(self):
-    if self._c_sit_column_label is None:
-      import code_gen.manager as manager
-      label = 'sit_column_{0}'.format(self.canonical_name)
-      uniq_label = manager.CodeGenManager.get_label(label)
-      self._c_sit_column_label = uniq_label
-
-    return self._c_sit_column_label
+    label = 'sit_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
 
   def c_gen_code_sit_column(self):
-    import code_gen.manager as manager
     table_entries = []
     for ix, m in enumerate(self.c_sit_column):
       # Add an assembly comment to explain the row.
-      selector = manager.CodeGenManager.get_selector(ix)
+      selector = CodeGenManager.get_selector(ix)
       ret_type, (name, params) = selector
       param_strs = [str(t) for t in params]
       method_str = '{0} {1}({2})'.format(str(ret_type), name,
@@ -212,6 +211,32 @@ class ASTClass(ast_node.ASTNode):
         '{0}:'.format(self.c_sit_column_label),
         table_entries
     ]
+
+  @property
+  def c_subtype_column_label(self):
+    label = 'subtype_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  def c_gen_code_subtype_column(self):
+    # We use a helper as subtype columns for classes and interfaces are created
+    # the same way.
+    return ASTClass.c_gen_code_subtype_column_helper(
+        self.c_subtype_column_label, self.c_subtype_column)
+
+  @staticmethod
+  def c_gen_code_subtype_column_helper(label, subtype_column):
+    subtype_cells = []
+    for ix, val in enumerate(subtype_column):
+      # Add a comment for each subtype cell.
+      type_ = CodeGenManager.get_subtype_table_type(ix)
+      subtype_cells.append('; supertype = {0}'.format(str(type_)))
+
+      if val:
+        subtype_cells.append('dw 1')
+      else:
+        subtype_cells.append('dw 0')
+
+    return ['{0}:'.format(label), subtype_cells]
 
 class ASTClassError(Exception):
   pass

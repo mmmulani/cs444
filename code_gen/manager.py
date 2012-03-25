@@ -143,3 +143,26 @@ class CodeGenManager(object):
       ret += '[]'
 
     return ret
+
+# ------ SUBTYPE TABLE METHODS ------
+  _subtype_column_guide = []
+
+  @staticmethod
+  def get_subtype_table_index(type_):
+    matched_is = [i for (i, t) in CodeGenManager._subtype_column_guide if
+        t == type_]
+
+    if len(matched_is) != 1:
+      raise Exception('Lookup for type in subtype table failed.')
+
+    return matched_is[0]
+
+  @staticmethod
+  def get_subtype_table_type(ix):
+    matched_types = [t for (i, t) in CodeGenManager._subtype_column_guide if
+        i == ix]
+
+    if len(matched_types) != 1:
+      raise Exception('Lookup for index in subtype table failed.')
+
+    return matched_types[0]

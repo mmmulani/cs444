@@ -6,6 +6,8 @@ from ast_expression import ASTIdentifiers
 from ast_method import ASTMethod
 from ast_param import ASTParam
 
+from code_gen.manager import CodeGenManager
+
 class ASTInterface(ast_node.ASTNode):
   def __init__(self, tree, package_name = ''):
     '''Create an AST Interface Declaration node
@@ -31,6 +33,9 @@ class ASTInterface(ast_node.ASTNode):
     # java.lang.Object, so we synthetically add the methods here.
     if len(self.super) == 0:
       self.extend_object_interface()
+
+    # Set by the Subtype Table script during the code gen stage.
+    self.c_subtype_column = None
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Interface: {0}'.format(self.name), depth)
@@ -157,6 +162,18 @@ class ASTInterface(ast_node.ASTNode):
     get_class.is_abstract = True
 
     self.methods.extend([equals, to_string, hash_code, clone, get_class])
+
+  @property
+  def c_subtype_column_label(self):
+    label = 'subtype_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  def c_gen_code_subtype_column(self):
+    import ast_class
+    # We use a helper as subtype columns for classes and interfaces are created
+    # the same way.
+    return ast_class.ASTClass.c_gen_code_subtype_column_helper(
+        self.c_subtype_column_label, self.c_subtype_column)
 
 class ASTInterfaceError(Exception):
   pass
