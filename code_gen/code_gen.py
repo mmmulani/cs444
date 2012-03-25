@@ -7,8 +7,8 @@ import runtime
 
 def generate_ast_code(ast, output_dir='output'):
   ''' Generates assembly for the given AST, and saves it to a .s file in
-  the output directory. ''' 
- 
+  the output directory. '''
+
   # generate the code header (externs, globals)
   header_asm = ''
   externs = _get_helper_function_names()
@@ -32,11 +32,11 @@ def generate_ast_code(ast, output_dir='output'):
   asm_file = open(filepath, 'w')
   asm_file.write('\n'.join([header_asm, body_asm]))
   asm_file.close()
-  
+
   #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
 
 def generate_common_code(output_dir='output'):
-  ''' Saves the code for the assembly helper functions to a file ''' 
+  ''' Saves the code for the assembly helper functions to a file '''
 
   # generate the code header (externs, globals)
   externs = runtime.NAMES
@@ -55,7 +55,7 @@ def generate_common_code(output_dir='output'):
   asm_file = open(filepath, 'w')
   asm_file.write('\n'.join([header_asm, body_asm]))
   asm_file.close()
-  
+
 def _get_helper_function_names():
   ''' Returns a list of the names of all the assembly helper functions '''
   names = []
