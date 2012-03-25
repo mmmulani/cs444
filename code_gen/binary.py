@@ -4,7 +4,8 @@ NAMES = [
     '_add_int',
     '_sub_int',
     '_mult_int',
-    '_divide_int']
+    '_divide_int',
+    '_mod_int']
 
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
@@ -101,14 +102,40 @@ def divide_int():
     '; get the value for the right operand and put in in ebx',
     common.get_param('ebx', 1, N_PARAMS),
     common.unwrap_primitive('ebx', 'ebx'),
-    '; fill edx with the high order bit of eax by copying then shifting',
-    'mov edx, eax',
-    'sar edx, 31  ; arithmetic right shift (all bits equal to high order bit)',
+    common.fill_high_order_bit('eax', 'edx'),
     'idiv ebx  ; sets eax to edx:eax/ebx',
     '; create an int with the result',
     'push eax  ; the result of div has to be in eax',
     'call _create_int',
     'pop ebx ; pop param',
     '; eax is an integer object with the old value of eax',
+    common.function_epilogue()
+  ]
+
+def mod_int():
+  '''Computes the modulus of two integers and returns the address of the result
+
+  2 Params:
+    1. The address of an integer (dividend)
+    2. The address of an integer (dividend)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_mod_int:',
+    common.function_prologue(),
+    '; get the value for the left operand and put it in eax',
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    '; get the value for the right operand and put in in ebx',
+    common.get_param('ebx', 1, N_PARAMS),
+    common.unwrap_primitive('ebx', 'ebx'),
+    common.fill_high_order_bit('eax', 'edx'),
+    'idiv ebx  ; sets edx to edx:eax mod ebx',
+    '; create an int with the result',
+    'push edx ; the result of mod is placed in ebx',
+    'call _create_int',
+    'pop ebx ; pop param',
+    '; eax is an integer object with the old value of edx',
     common.function_epilogue()
   ]

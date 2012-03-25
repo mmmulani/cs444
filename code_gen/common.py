@@ -64,3 +64,11 @@ def store_param(ast_node):
     ast_node.c_gen_code(),
     'push eax ; Push result as a paramater'
   ]
+
+def fill_high_order_bit(src, dest):
+  '''Fill a dest register with the high order bit of the src register'''
+  return [
+    '; Fill {0} with high order bit by copying then shifting'.format(dest),
+    'mov {0}, {1}'.format(dest, src),
+    'sar {0}, 31  ; Arithmetic right shift 31 positions'.format(dest)
+  ]
