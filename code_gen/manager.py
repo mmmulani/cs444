@@ -37,6 +37,29 @@ class CodeGenManager(object):
     return tuple(
         ['{0}_{1}'.format(x, CodeGenManager._label_count) for x in args])
 
+  _memoized_labels = {}
+  @staticmethod
+  def memoize_label(hashable, label):
+    '''Get a unique label for defined by label for the hashable object. It is
+    automatically memoized, so that the same label is returned for instance of
+    hashable.
+
+    Example usage:
+      (inside ASTClass instance method)
+      >> column_label = CodeGenManager.memoize_label(self, 'class_col')
+      >> column_label
+      class_col_1
+      >> CodeGenManager.memoize_label(self, 'class_col')
+      class_col_1
+    '''
+    index = (hashable, label)
+    if index not in CodeGenManager._memoized_labels:
+      # Cache miss! Create a unique label and store it.
+      unique_label = CodeGenManager.get_label(label)
+      CodeGenManager._memoized_labels[index] = unique_label
+
+    return CodeGenManager._memoized_labels[index]
+
 # ------ SIT METHODS -------
 
   _sit_column_guide = []
