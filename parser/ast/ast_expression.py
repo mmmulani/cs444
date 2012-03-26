@@ -1,4 +1,4 @@
-import code_gen.common
+import code_gen.asm.common
 import code_gen.manager as manager
 
 from ast_node import ASTNode, ASTUtils
@@ -422,8 +422,8 @@ class ASTBinary(ASTExpression):
   def c_gen_code(self):
     # We provide the code to generate the value of each operand separately as
     # some operators (e.g. &&) will not necessarily evaluate both.
-    left_operand = code_gen.common.store_param(self.left_expr)
-    right_operand = code_gen.common.store_param(self.right_expr)
+    left_operand = code_gen.asm.common.store_param(self.left_expr)
+    right_operand = code_gen.asm.common.store_param(self.right_expr)
 
     lazy_ops = {
         '+': '_add_int',
@@ -449,7 +449,7 @@ class ASTBinary(ASTExpression):
       done_eval = manager.CodeGenManager.get_label('done_and_and_operator')
       return [
           '; start &&',
-          code_gen.common.if_false(self.left_expr, done_eval),
+          code_gen.asm.common.if_false(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',
@@ -459,7 +459,7 @@ class ASTBinary(ASTExpression):
       done_eval = manager.CodeGenManager.get_label('done_or_or_operator')
       return [
           '; start ||',
-          code_gen.common.if_true(self.left_expr, done_eval),
+          code_gen.asm.common.if_true(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',

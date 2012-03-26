@@ -6,8 +6,8 @@ import parser.ast.ast_root as ast_root
 import parser.ast.statement.ast_block as ast_block
 import weeder.weeder as weeder
 
-import code_gen.literal as literal
-import code_gen.binary as binary
+import code_gen.asm.literal as literal
+import code_gen.asm.binary as binary
 
 # This script will read this file in the working dir.  It should have the form:
 # public class X {
