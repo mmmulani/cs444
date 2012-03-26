@@ -12,25 +12,9 @@ def generate_ast_code(ast, output_dir='output'):
   externs = _get_helper_function_names()
   externs.extend(runtime.NAMES)
   extern_asm = '\n'.join(['extern {0}'.format(x) for x in externs])
+  header_asm = extern_asm + '\n\n'
 
-  # check whether this AST has the start method:
-  start_asm = ''
-  start_method = _get_start_method(ast)
-  if start_method is not None:
-    if manager.CodeGenManager.found_start_method:
-      # there should be only one start method
-      raise CodeGenerationError('Multiple start methods found')
-    manager.CodeGenManager.found_start_method = True
-    # TODO (gnleece) generate start code here
-    # TODO (gnleece) initialize static variables here
-
-  header_asm = extern_asm + start_asm + '\n\n'
-
-  # generate the body code (from the AST):
-  body_asm = ast.c_gen_code()
-  body_asm = '\n'.join(flatten_asm(body_asm))
-
-  # TODO (gnleece) if start label is in this file, add exit code
+  body_asm = _generate_body_code(ast)
 
   # write out to a file:
   filename = os.path.basename(ast.filename).split('.')[0] + '.s'
@@ -40,6 +24,39 @@ def generate_ast_code(ast, output_dir='output'):
   asm_file.close()
 
   #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
+
+def _generate_body_code(ast):
+  body_asm = ''
+  start_method = _get_start_method(ast)
+  if start_method is not None:
+    # since this is the start method, we need to add extra code
+    # (like the _start label and the sys_exit code)
+
+    # make sure there's only one start method:
+    if manager.CodeGenManager.found_start_method:
+      raise CodeGenerationError('Multiple start methods found')
+    manager.CodeGenManager.found_start_method = True
+
+    # TODO (gnleece) initialize static variables here
+    # TODO (gnleece) make a proper function call to the start method
+
+    # add the start label
+    start_asm = 'global _start\n_start:\n'
+
+    # get the code for the start method body:
+    method_body_asm = start_method.body.c_gen_code()
+
+    # add the exit code
+    exit_asm = common.sys_exit('eax') 
+
+    body_asm = '\n'.join(flatten_asm([start_asm, method_body_asm, exit_asm]))
+
+  else:
+    # generate the regular body code:
+    body_asm = ast.c_gen_code()
+    body_asm = '\n'.join(flatten_asm(body_asm))
+
+  return body_asm
 
 def generate_common_code(output_dir='output'):
   ''' Saves the code for the assembly helper functions to a file '''

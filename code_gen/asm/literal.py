@@ -3,7 +3,7 @@ import common
 from code_gen.manager import CodeGenManager
 from parser.ast.ast_type import ASTType
 
-NAMES = ['_create_int', '_create_boolean']
+NAMES = ['_create_int', '_create_boolean', '_create_null']
 
 def create_int():
   '''Allocates space in memory for an integer (32-bits).
@@ -49,4 +49,20 @@ def create_boolean():
       '_create_boolean_done_compare:',
       'mov dword [eax + 4], ebx',
       common.function_epilogue()
+  ]
+
+def create_null():
+  '''Allocates space in memory for a null object.
+  It uses 32-bits, and only stores its tag there.
+
+  0 Params.'''
+  N_PARAMS = 0
+
+  return [
+    '_create_null:',
+    common.function_prologue(),
+    common.malloc(4),
+    'mov dword [eax], {0} ; null tag'.format(
+      CodeGenManager.get_tag(ASTType.ASTNull)),
+    common.function_epilogue()
   ]

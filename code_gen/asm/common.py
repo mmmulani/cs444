@@ -96,3 +96,15 @@ def if_true(ast_node, label):
     'cmp ebx, ecx',
     'je {0}'.format(label),
   ]
+
+def sys_exit(src):
+  '''Code used to exit the program (by making a system call). src should
+  contain the program's exit code.'''
+  return [
+    '; Put the program return value in ebx',
+    'mov ebx, {0}'.format(src),
+    '; Load 1 into eax to indicate sys_exit',
+    'mov eax, 1',
+    '; Exit!',
+    'int 0x80'
+  ]
