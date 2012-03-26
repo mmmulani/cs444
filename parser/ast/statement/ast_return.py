@@ -23,6 +23,14 @@ class ASTReturn(ast_statement.ASTStatement):
           ast_node.ASTUtils.type_string(self.expr_type)), depth)
       self.children[0].show(depth + 1, types)
 
+  # Code generation functions ----------------
+  def c_gen_code(self):
+    #TODO (gnleece) need to add function epilogue stuff here
+    # THIS IS A TEMP HACK!
+    if self.children[0] is not None:
+      return self.children[0].c_gen_code()
+    return []
+
   @property
   def expressions(self):
     return list(self.children) if self.children[0] else []
