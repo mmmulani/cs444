@@ -430,7 +430,9 @@ class ASTBinary(ASTExpression):
         '-': '_sub_int',
         '*': '_mult_int',
         '/': '_divide_int',
-        '%': '_mod_int'
+        '%': '_mod_int',
+        '&': '_eager_and',
+        '|': '_eager_or',
     }
 
     if self.operator in arithmetic_ops.keys():
@@ -446,18 +448,22 @@ class ASTBinary(ASTExpression):
     elif self.operator == '&&':
       done_eval = manager.CodeGenManager.get_label('done_and_and_operator')
       return [
+          '; start &&',
           code_gen.common.if_false(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',
+          '; end &&',
       ]
     elif self.operator == '||':
       done_eval = manager.CodeGenManager.get_label('done_or_or_operator')
       return [
+          '; start ||',
           code_gen.common.if_true(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',
+          '; end ||',
       ]
 
     return []

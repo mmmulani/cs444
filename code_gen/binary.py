@@ -5,7 +5,10 @@ NAMES = [
     '_sub_int',
     '_mult_int',
     '_divide_int',
-    '_mod_int']
+    '_mod_int',
+    '_eager_and',
+    '_eager_or',
+]
 
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
@@ -137,5 +140,53 @@ def mod_int():
     'call _create_int',
     'pop ebx ; pop param',
     '; eax is an integer object with the old value of edx',
+    common.function_epilogue()
+  ]
+
+def eager_and():
+  '''Computes the AND of two booleans and returns the address of the result.
+
+  2 Params:
+    1. Address of a boolean (left operand)
+    2. Address of a boolean (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_eager_and:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('ebx', 'eax'),
+    common.get_param('eax', 1, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    'and eax, ebx',
+    'push eax',
+    'call _create_boolean',
+    'pop ebx ; pop param to garbage',
+    '; result is stored in eax',
+    common.function_epilogue()
+  ]
+
+def eager_or():
+  '''Computes the OR of two booleans and returns the address of the result.
+
+  2 Params:
+    1. Address of a boolean (left operand)
+    2. Address of a boolean (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_eager_or:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('ebx', 'eax'),
+    common.get_param('eax', 1, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    'or eax, ebx',
+    'push eax',
+    'call _create_boolean',
+    'pop ebx ; pop param to garbage',
+    '; result is stored in eax',
     common.function_epilogue()
   ]
