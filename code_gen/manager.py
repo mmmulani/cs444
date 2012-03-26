@@ -6,7 +6,7 @@ class CodeGenManager(object):
 
   found_start_method = False
 
-# ------ LABEL METHODS -------
+  # ------ LABEL METHODS -------
   _label_count = 0
 
   @staticmethod
@@ -59,7 +59,7 @@ class CodeGenManager(object):
 
     return CodeGenManager._memoized_labels[index]
 
-# ------ SIT METHODS -------
+  # ------ SIT METHODS -------
 
   _sit_column_guide = []
   @staticmethod
@@ -82,7 +82,7 @@ class CodeGenManager(object):
 
     return matched_sels[0]
 
-# ------ TYPE TAGGING -------
+  # ------ TYPE TAGGING -------
   tag_map = {
     'boolean': 1,
     'byte': 2,
@@ -143,7 +143,7 @@ class CodeGenManager(object):
 
     return ret
 
-# ------ SUBTYPE TABLE METHODS ------
+  # ------ SUBTYPE TABLE METHODS ------
   _subtype_column_guide = []
 
   @staticmethod
