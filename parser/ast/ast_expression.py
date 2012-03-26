@@ -425,7 +425,7 @@ class ASTBinary(ASTExpression):
     left_operand = code_gen.common.store_param(self.left_expr)
     right_operand = code_gen.common.store_param(self.right_expr)
 
-    arithmetic_ops = {
+    lazy_ops = {
         '+': '_add_int',
         '-': '_sub_int',
         '*': '_mult_int',
@@ -435,8 +435,8 @@ class ASTBinary(ASTExpression):
         '|': '_eager_or',
     }
 
-    if self.operator in arithmetic_ops.keys():
-      op_function = arithmetic_ops[self.operator]
+    if self.operator in lazy_ops.keys():
+      op_function = lazy_ops[self.operator]
       return [
           left_operand,
           right_operand,
