@@ -1,7 +1,6 @@
-from parser.ast.ast_type import ASTType
-from parser.ast.ast_node import ASTUtils
-
 from manager import CodeGenManager
+from parser.ast.ast_node import ASTUtils
+from parser.ast.ast_type import ASTType
 
 '''The subtype table has columns by subtype and rows by supertype.'''
 def make_subtype_table(asts):
