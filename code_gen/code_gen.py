@@ -1,11 +1,10 @@
 import os
 
-import binary
-import common
-import literal
+import asm.binary as binary
+import asm.common as common
+import asm.literal as literal
+import asm.runtime as runtime
 import manager
-import runtime
-
 import parser.ast.ast_type as ast_type
 
 def generate_ast_code(ast, output_dir='output'):
