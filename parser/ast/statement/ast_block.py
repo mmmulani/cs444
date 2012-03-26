@@ -101,6 +101,12 @@ class ASTBlock(ast_statement.ASTStatement):
       else:
         c.show(depth, types)
 
+  # Code generation functions ------------------
+  def c_gen_code(self):
+    asm = [c.c_gen_code() for c in self.children if c is not None]
+    return asm
+   
+
 class ASTBlockError(Exception):
   pass
 
