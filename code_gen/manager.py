@@ -89,15 +89,20 @@ class CodeGenManager(object):
     'char': 3,
     'int': 4,
     'null': 5,
-    'short': 6
+    'short': 6,
+    '_array': 7,  # _ is added to make sure there are no conflicts.
   }
-  _tag_count = 6
+  _tag_count = 7
 
   @staticmethod
   def add_tag(ast_type):
     '''Adds a tag to the tag_map given an AST type
 
     Returns the tag value.'''
+    # If it's an array tag, just return the array tag value.
+    if ast_type.is_array:
+      return CodeGenManager.tab_map['_array']
+
     k = CodeGenManager._type_to_str(ast_type)
     if CodeGenManager._has_tag(k):
       raise Exception('Trying to insert duplicate type tag {0}.'.format(k))
@@ -111,11 +116,19 @@ class CodeGenManager(object):
   @staticmethod
   def has_tag(ast_type):
     '''Checks whether a tag exists for an AST type in the map'''
+    # Array types are added in by default.
+    if ast_type.is_array:
+      return True
+
     return CodeGenManager._has_tag(CodeGenManager._type_to_str(ast_type))
 
   @staticmethod
   def get_tag(ast_type):
     '''Gets the tag of an AST type'''
+    # Arrays get special treatment, as usual.
+    if ast_type.is_array:
+      return CodeGenManager.tag_map['_array']
+
     k = CodeGenManager._type_to_str(ast_type)
     if not CodeGenManager._has_tag(k):
       raise Exception(
@@ -136,10 +149,6 @@ class CodeGenManager(object):
       ret = str(ast_type)
     else:
       ret = ast_type.definition.canonical_name
-
-    # Array types end in "[]"
-    if ast_type.is_array:
-      ret += '[]'
 
     return ret
 
