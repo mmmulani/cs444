@@ -1,9 +1,6 @@
 import os
 
-import asm.binary as binary
-import asm.common as common
-import asm.literal as literal
-import asm.runtime as runtime
+import asm
 import manager
 import parser.ast.ast_type as ast_type
 
@@ -67,10 +64,21 @@ def generate_common_code(output_dir='output'):
 
 def _get_helper_function_names():
   ''' Returns a list of the names of all the assembly helper functions '''
+  # Get all files in the asm folder and get the NAMES.
   names = []
-  names.extend(binary.NAMES)
-  names.extend(common.NAMES)
-  names.extend(literal.NAMES)
+  asm_dir = os.path.dirname(asm.__file__)
+  for x in os.listdir(asm_dir):
+    part, ext = os.path.splitext(x)
+    if part == '__init__':
+      continue
+
+    # __import__ only returns the top level package that's bound to a name.
+    import sys
+    name = 'code_gen.asm.{0}'.format(part)
+    top_lvl_pkg = __import__(name)
+    pkg = sys.modules[name]
+    names.extend(pkg.NAMES)
+
   return names
 
 def _get_start_method(ast):
