@@ -40,9 +40,8 @@ class CodeGenManager(object):
   _memoized_labels = {}
   @staticmethod
   def memoize_label(hashable, label):
-    '''Get a unique label for defined by label for the hashable object. It is
-    automatically memoized, so that the same label is returned for instance of
-    hashable.
+    '''Get a unique label for the hashable object. It is automatically
+    memoized, so that the same label is returned for instance of hashable.
 
     Example usage:
       (inside ASTClass instance method)
