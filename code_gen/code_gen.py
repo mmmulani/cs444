@@ -1,6 +1,8 @@
 import os
 
 import asm
+import asm.runtime as runtime
+import asm.common as common
 import manager
 import parser.ast.ast_type as ast_type
 
