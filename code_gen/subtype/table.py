@@ -1,4 +1,4 @@
-from manager import CodeGenManager
+from code_gen.manager import CodeGenManager
 from parser.ast.ast_node import ASTUtils
 from parser.ast.ast_type import ASTType
 
