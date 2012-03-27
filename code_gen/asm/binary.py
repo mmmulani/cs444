@@ -1,15 +1,5 @@
 import common
 
-NAMES = [
-    '_add_int',
-    '_sub_int',
-    '_mult_int',
-    '_divide_int',
-    '_mod_int',
-    '_eager_and',
-    '_eager_or',
-]
-
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
   the result.
@@ -190,3 +180,13 @@ def eager_or():
     '; result is stored in eax',
     common.function_epilogue()
   ]
+
+NAMES = {
+    '_add_int': add_int,
+    '_sub_int': sub_int,
+    '_mult_int': multiply_int,
+    '_divide_int': divide_int,
+    '_mod_int': mod_int,
+    '_eager_and': eager_and,
+    '_eager_or': eager_or
+}

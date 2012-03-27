@@ -28,6 +28,11 @@ STDLIB_PATH = 'stdlib/3.0'
 ast_store = shelve.open('ast_store')
 
 def main():
+  # The default recursion limit is 1,000 but this easily fails, e.g. in a
+  # program with 300 local variables.
+  # 10,000 is arbitrary but seems to work. Increase this as necessary.
+  sys.setrecursionlimit(10000)
+
   global options
   if len(args) == 0:
     # No command line arguments provided

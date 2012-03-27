@@ -11,8 +11,8 @@ def generate_ast_code(ast, output_dir='output'):
   the output directory. '''
 
   # generate the code header (externs, globals)
-  externs = _get_helper_function_names()
-  externs.extend(runtime.NAMES)
+  externs = _get_helper_function_names().keys()
+  externs.extend(runtime.NAMES.keys())
   extern_asm = '\n'.join(['extern {0}'.format(x) for x in externs])
   header_asm = extern_asm + '\n\n'
 
@@ -64,15 +64,15 @@ def generate_common_code(output_dir='output'):
   ''' Saves the code for the assembly helper functions to a file '''
 
   # generate the code header (externs, globals)
-  externs = runtime.NAMES
+  externs = runtime.NAMES.keys()
   externs_asm = '\n'.join(['extern {0}'.format(x) for x in externs])
-  globals_ = _get_helper_function_names()
-  globals_asm = '\n'.join(['global {0}'.format(x) for x in globals_])
-  header_asm = externs_asm + '\n\n' + globals_asm
+  globals_dict = _get_helper_function_names()
+  globals_asm = '\n'.join(['global {0}'.format(x) for x in globals_dict.keys()])
+  header_asm = externs_asm + '\n\n' + globals_asm + '\n\n'
 
   # generate the code body (code from all the assembly helper functions)
-  # TODO (gnleece) add code body
-  body_asm = ''
+  body_asm = [func()+['\n'] for func in globals_dict.values()]
+  body_asm = '\n'.join(flatten_asm(body_asm)) 
 
   # write out to a file:
   filename = '_common.s'
@@ -82,13 +82,14 @@ def generate_common_code(output_dir='output'):
   asm_file.close()
 
 def _get_helper_function_names():
-  ''' Returns a list of the names of all the assembly helper functions '''
+  ''' Returns a list of the names of all the assembly helper functions, EXCEPT
+  those in runtime.py '''
   # Get all files in the asm folder and get the NAMES.
-  names = []
+  names = {}
   asm_dir = os.path.dirname(asm.__file__)
   for x in os.listdir(asm_dir):
     part, ext = os.path.splitext(x)
-    if part == '__init__':
+    if part == '__init__' or part == 'runtime' or part.startswith('.'):
       continue
 
     # __import__ only returns the top level package that's bound to a name.
@@ -96,7 +97,8 @@ def _get_helper_function_names():
     name = 'code_gen.asm.{0}'.format(part)
     top_lvl_pkg = __import__(name)
     pkg = sys.modules[name]
-    names.extend(pkg.NAMES)
+    #names.extend(pkg.NAMES)
+    names = dict(names.items() + pkg.NAMES.items())
 
   return names
 
