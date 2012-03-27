@@ -65,6 +65,10 @@ def _fold_constants(ast):
           is_string = True
           left_value = str(left_value)
           right_value = str(right_value)
+      elif ast.operator == '/':
+        # check for division by 0:
+        if right_value == 0:
+          return
 
       value = binary_ops[ast.operator](left_value, right_value)
 
