@@ -81,3 +81,14 @@ class ASTVariableDeclaration(ast_node.ASTNode):
   @property
   def type_node(self):
     return self.children[1]
+
+  def c_gen_code(self):
+    if self.c_parent_method is None:
+      return ''
+
+    # This is a local variable declaration.
+    import code_gen.asm.common as common
+    return [
+      self.expression.c_gen_code(),
+      common.save_local_var(self, 'eax')
+    ]

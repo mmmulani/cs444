@@ -52,6 +52,41 @@ def get_param(dest, index, num_params):
     'mov {0}, [ebp + {1}]'.format(dest, offset)
   ]
 
+def get_local_var(dest, local_var):
+  '''Takes an ASTVariableDeclaration and stores the pointer to its data in
+  dest.'''
+  index = local_var.c_method_frame_index
+  if index < 0:
+    raise Exception('Local variable does not appear on the stack')
+
+  offset = (index + 1) * 4
+
+  return 'mov {0}, [ebp - {1}]'.format(dest, offset)
+
+def save_local_var(local_var, src):
+  '''Takes an ASTVariableDeclaration and a register and replaces the value on
+  the stack corresponding to the variable declaration.'''
+  index = local_var.c_method_frame_index
+  if index < 0:
+    raise Exception('Local variable does not appear on the stack')
+
+  offset = (index + 1) * 4
+
+  if src != 'eax':
+    scratch_reg = 'eax'
+  else:
+    scratch_reg = 'ebx'
+
+  return [
+    '; using {0} as scratch'.format(scratch_reg),
+    'push {0}'.format(scratch_reg),
+    'mov {0}, ebp'.format(scratch_reg),
+    'sub {0}, {1}'.format(scratch_reg, offset),
+    'mov [{0}], {1}'.format(scratch_reg, src),
+    'pop {0}'.format(scratch_reg),
+    '; phew. no longer using {0} as scratch'.format(scratch_reg),
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1} + 4]'.format(dest, src)

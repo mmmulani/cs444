@@ -45,13 +45,18 @@ def _generate_body_code(ast):
     # add the start label
     start_asm = 'global _start\n_start:\n'
 
-    # get the code for the start method body:
-    method_body_asm = start_method.body.c_gen_code()
+    # print the code for the start method body:
+    method_asm = start_method.c_gen_code()
+
+    # now call it:
+
+    call_asm = 'call {0}'.format(start_method.c_defn_label)
 
     # add the exit code
-    exit_asm = common.sys_exit('eax') 
+    exit_asm = common.sys_exit('eax')
 
-    body_asm = '\n'.join(flatten_asm([start_asm, method_body_asm, exit_asm]))
+    body_asm = '\n'.join(flatten_asm(
+      [start_asm, call_asm, exit_asm, method_asm]))
 
   else:
     # generate the regular body code:

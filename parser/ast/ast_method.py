@@ -183,7 +183,8 @@ class ASTMethod(ast_node.ASTNode):
 
   # The label looks like 'method_defn_<method name>' followed by a suffix to
   # guarantee uniqueness.
-  # TODO: Work the class name in the label.
+  # TODO: Work the class name in the label and use
+  # CodeGenManager.memoize_label()
   @property
   def c_defn_label(self):
     if self._c_defn_label is None:
@@ -193,6 +194,20 @@ class ASTMethod(ast_node.ASTNode):
       self._c_defn_label = uniq_label
 
     return self._c_defn_label
+
+  def c_gen_code(self):
+    import code_gen.asm.common as common
+    if self.body:
+      body_code = self.body.c_gen_code()
+    else:
+      body_code = []
+
+    return [
+      '{0}:'.format(self.c_defn_label),
+      common.function_prologue(self.c_num_local_vars * 4),
+      body_code,
+      common.function_epilogue(),
+    ]
 
 class ASTMethodError(Exception):
   pass

@@ -4,6 +4,7 @@ import code_gen.manager as manager
 from ast_node import ASTNode, ASTUtils
 from ast_cast import ASTCast
 from ast_type import ASTType
+from ast_variable_declaration import ASTVariableDeclaration
 
 class ASTExpression(ASTNode):
   '''General ASTExpression class with a function to create the proper ASTNode'''
@@ -539,6 +540,15 @@ class ASTIdentifiers(ASTExpression):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return []
+
+  def c_gen_code(self):
+    # XXX: Hack to test local variables.
+    defn = self.first_definition[1]
+    import code_gen.asm.common as common
+    if isinstance(defn, ASTVariableDeclaration):
+      return common.get_local_var('eax', defn)
+    else:
+      return ''
 
 class ASTArrayCreation(ASTExpression):
   # Children is of length 2:
