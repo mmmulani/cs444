@@ -253,6 +253,7 @@ class ASTClass(ast_node.ASTNode):
         subtype_cells.append('dw 0')
 
     return [
+      '; EXAMPLE',
       '; subtype = X',
       '; dw 1',
       '; X is a subtype of the contained type',
