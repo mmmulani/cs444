@@ -3,8 +3,6 @@ import common
 from code_gen.manager import CodeGenManager
 from parser.ast.ast_type import ASTType
 
-NAMES = ['_create_int', '_create_boolean', '_create_null']
-
 def create_int():
   '''Allocates space in memory for an integer (32-bits).
   The value at the memory address will be set to the parameter passed in.
@@ -66,3 +64,9 @@ def create_null():
       CodeGenManager.get_tag(ASTType.ASTNull)),
     common.function_epilogue()
   ]
+
+NAMES = {
+    '_create_int': create_int,
+    '_create_boolean': create_boolean,
+    '_create_null': create_null
+}

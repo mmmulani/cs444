@@ -1,5 +1,3 @@
-NAMES = []
-
 def function_prologue(frame_size=0):
   ''' The code that should be at the start of every function. '''
   return [
@@ -108,3 +106,5 @@ def sys_exit(src):
     '; Exit!',
     'int 0x80'
   ]
+
+NAMES = {}
