@@ -183,12 +183,28 @@ class ASTClass(ast_node.ASTNode):
     ret.reverse()
     return ret
 
+  # ------ CODE GEN METHODS --------
+
   @property
   def c_sit_column_label(self):
     label = 'sit_column_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_subtype_column_label(self):
+    label = 'subtype_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  def c_gen_code(self):
+    return [
+      '', '',  # Padding before the SIT/Subtype columns.
+      self.c_gen_code_sit_column(),
+      '', '',  # Padding between tables.
+      self.c_gen_code_subtype_column()
+    ]
+
   def c_gen_code_sit_column(self):
+    '''Generates assembly for the SIT table for this type.'''
     table_entries = []
     for ix, m in enumerate(self.c_sit_column):
       # Add an assembly comment to explain the row.
@@ -212,12 +228,8 @@ class ASTClass(ast_node.ASTNode):
         table_entries
     ]
 
-  @property
-  def c_subtype_column_label(self):
-    label = 'subtype_column_{0}'.format(self.canonical_name)
-    return CodeGenManager.memoize_label(self, label)
-
   def c_gen_code_subtype_column(self):
+    '''Generates assembly for the subtype table for this type'''
     # We use a helper as subtype columns for classes and interfaces are created
     # the same way.
     return ASTClass.c_gen_code_subtype_column_helper(
@@ -225,18 +237,28 @@ class ASTClass(ast_node.ASTNode):
 
   @staticmethod
   def c_gen_code_subtype_column_helper(label, subtype_column):
+    '''Generates the subtype column given the label and the values for the type
+
+    subtype_column is a list of boolean values corresponding to whether the
+    type is a subtype of the row type.'''
     subtype_cells = []
     for ix, val in enumerate(subtype_column):
       # Add a comment for each subtype cell.
       type_ = CodeGenManager.get_subtype_table_type(ix)
-      subtype_cells.append('; supertype = {0}'.format(str(type_)))
+      subtype_cells.append('; subtype = {0}'.format(str(type_)))
 
       if val:
         subtype_cells.append('dw 1')
       else:
         subtype_cells.append('dw 0')
 
-    return ['{0}:'.format(label), subtype_cells]
+    return [
+      '; subtype = X',
+      '; dw 1',
+      '; X is a subtype of the contained type',
+      '{0}:'.format(label),
+      subtype_cells
+    ]
 
 class ASTClassError(Exception):
   pass

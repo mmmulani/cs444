@@ -86,3 +86,15 @@ class ASTRoot(ast_node.ASTNode):
       return ast_class.ASTClass(node, package_name)
     elif node.value == 'InterfaceDeclaration':
       return ast_interface.ASTInterface(node, package_name)
+
+  # ------ CODE GEN METHODS -------
+
+  def c_gen_code(self):
+    # TODO: We don't really need this here, but should we get rid of it?
+    ret = [
+      '; PACKAGE: {0}'.format(self.package)
+    ]
+    if self.class_or_interface:
+      ret.extend(self.class_or_interface.c_gen_code())
+
+    return ret
