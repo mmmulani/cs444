@@ -195,12 +195,20 @@ class ASTClass(ast_node.ASTNode):
     label = 'subtype_column_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_class_info_table_label(self):
+    label = 'class_info_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
   def c_gen_code(self):
+    '''Code generation for types'''
     return [
       '', '',  # Padding before the SIT/Subtype columns.
       self.c_gen_code_sit_column(),
       '', '',  # Padding between tables.
-      self.c_gen_code_subtype_column()
+      self.c_gen_code_subtype_column(),
+      '', '',
+      self.c_gen_class_info_table()
     ]
 
   def c_gen_code_sit_column(self):
@@ -234,6 +242,22 @@ class ASTClass(ast_node.ASTNode):
     # the same way.
     return ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
+
+  def c_gen_class_info_table(self):
+    '''Generats the class info table for the containing type
+
+    Class Info Table:
+      - Pointer to SIT column
+      - Pointer to Subtype column
+      - Static fields and methods (remembering inheritance order)
+    '''
+    return [
+      '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
+      '{0}:'.format(self.c_class_info_table_label),
+      'dw {0}'.format(self.c_sit_column_label),
+      'dw {0}'.format(self.c_subtype_column_label)
+      # TODO: add static fields and methods.
+    ]
 
   @staticmethod
   def c_gen_code_subtype_column_helper(label, subtype_column):

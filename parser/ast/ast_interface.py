@@ -163,10 +163,26 @@ class ASTInterface(ast_node.ASTNode):
 
     self.methods.extend([equals, to_string, hash_code, clone, get_class])
 
+  # ------ CODE GEN METHODS --------
+
   @property
   def c_subtype_column_label(self):
     label = 'subtype_column_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
+
+  @property
+  def c_class_info_table_label(self):
+    label = 'class_info_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  def c_gen_code(self):
+    '''Code generation for types'''
+    return [
+      '', '',  # Padding before the Subtype column.
+      self.c_gen_code_subtype_column(),
+      '', '',
+      self.c_gen_class_info_table()
+    ]
 
   def c_gen_code_subtype_column(self):
     import ast_class
@@ -174,6 +190,22 @@ class ASTInterface(ast_node.ASTNode):
     # the same way.
     return ast_class.ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
+
+  def c_gen_class_info_table(self):
+    '''Generats the class info table for the containing type
+
+    Class Info Table:
+      - Pointer to SIT column (Nothing for interfaces)
+      - Pointer to Subtype column
+      - Static fields and methods (remembering inheritance order)
+    '''
+    return [
+      '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
+      '{0}:'.format(self.c_class_info_table_label),
+      'dw 0xdeadbeef', # Dummy value for no SIT
+      'dw {0}'.format(self.c_subtype_column_label)
+      # TODO: add static fields and methods.
+    ]
 
 class ASTInterfaceError(Exception):
   pass
