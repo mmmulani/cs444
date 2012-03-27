@@ -1,5 +1,6 @@
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
+import parser.ast.ast_type as ast_type
 import parser.ast.statement.ast_if as ast_if
 import parser.ast.statement.ast_while as ast_while
 
@@ -65,6 +66,12 @@ def _fold_constants(ast):
           is_string = True
           left_value = str(left_value)
           right_value = str(right_value)
+        else:
+          # char + char => int in Java, so convert chars to ints
+          if left_type == ast_type.ASTType.ASTChar:
+            left_value = ord(left_value)
+          if right_type == ast_type.ASTType.ASTChar:
+            right_value = ord(right_value)
       elif ast.operator == '/':
         # check for division by 0:
         if right_value == 0:
@@ -81,6 +88,9 @@ def _fold_constants(ast):
   elif isinstance(ast, ast_expression.ASTUnary):
     right_value = ast.expr.const_value
     if right_value is not None:
+      right_type = ast.expr.expr_type
+      if right_type == ast_type.ASTType.ASTChar:
+        right_value = ord(right_value)
       value = unary_ops[ast.operator](right_value)
       if value == -INT_MIN:
         # -(INT_MIN) is a special case, because |INT_MIN| = |INT_MAX| + 1,
