@@ -97,7 +97,6 @@ def _get_helper_function_names():
     name = 'code_gen.asm.{0}'.format(part)
     top_lvl_pkg = __import__(name)
     pkg = sys.modules[name]
-    #names.extend(pkg.NAMES)
     names = dict(names.items() + pkg.NAMES.items())
 
   return names
