@@ -77,7 +77,7 @@ def generate_common_code(output_dir='output'):
 
   # generate the code body (code from all the assembly helper functions)
   body_asm = [func()+['\n'] for func in globals_dict.values()]
-  body_asm = '\n'.join(flatten_asm(body_asm)) 
+  body_asm = '\n'.join(flatten_asm(body_asm))
 
   # write out to a file:
   filename = '_common.s'
@@ -87,8 +87,11 @@ def generate_common_code(output_dir='output'):
   asm_file.close()
 
 def _get_helper_function_names():
-  ''' Returns a list of the names of all the assembly helper functions, EXCEPT
-  those in runtime.py '''
+  ''' Returns a dict of all assembly helper functions, EXCEPT those in
+  runtime.py. The keys are (assembly) function names, and the values are
+  (python) functions. The python functions return the body code for their
+  associated assembly function. '''
+
   # Get all files in the asm folder and get the NAMES.
   names = {}
   asm_dir = os.path.dirname(asm.__file__)
