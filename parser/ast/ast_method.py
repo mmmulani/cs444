@@ -24,6 +24,10 @@ class ASTMethod(ast_node.ASTNode):
     # This is set in the c_defn_label property.
     self._c_defn_label = None
 
+    # The total number of local variables declared in this method's body.
+    # This is set by handle_local_vars().
+    self.c_num_local_vars = 0
+
     # In some cases, we want to create ASTMethod's synthetically. For example,
     # we want to add abstract methods to interfaces if they do not extend
     # anything.
