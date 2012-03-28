@@ -215,6 +215,8 @@ class ASTLiteral(ASTExpression):
         'call _create_null',
         '; _create_null stores the address in eax'
       ]
+    else:
+      return []
 
 
 class ASTUnary(ASTExpression):
