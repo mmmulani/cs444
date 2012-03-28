@@ -334,6 +334,11 @@ class ASTMethodInvocation(ASTExpression):
         arg_list = ASTUtils.get_arg_list(tree.children[4])
 
       self.children = [prefix_exprs, arg_list]
+
+
+    # The ASTMethod for the method invocation.  This will be set during type
+    # checking.
+    self.method_definition = None
     super(ASTMethodInvocation, self).__init__()
 
   def show(self, depth = 0, types = False):
