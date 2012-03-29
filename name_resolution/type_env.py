@@ -115,7 +115,7 @@ class TypeEnvironment(env.Environment):
       inherited_methods.extend(inherited.get_all_methods())
 
     # Create a new list with all of methods we've defined.
-    my_methods = [(sig, ast) for sig, ast in self.methods]
+    my_methods = list(self.methods)
     new_methods = []
     for sig, ast in inherited_methods:
       new_methods = self._maybe_add_inherited(my_methods, new_methods, sig, ast)
@@ -244,8 +244,9 @@ class TypeEnvironment(env.Environment):
     # Next, we filter the results based on the logic in _maybe_add_inherited.
     new_results = []
     if len(results) > 0:
+      my_methods = list(self.methods)
       for res, defn in results:
-        new_results = self._maybe_add_inherited([], new_results, sig, res)
+        new_results = self._maybe_add_inherited(my_methods, new_results, sig, res)
 
     # If there's a matching result, find the AST node and source of that result
     # (which is stored only in the results list) and return the tuple.
