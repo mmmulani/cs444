@@ -177,7 +177,7 @@ class ASTInterface(ast_node.ASTNode):
         # Type linking has not been done so we must check the return types
         # manually.
         m_ret = str(m.return_type)
-        m_extend_ret = str(m.return_type)
+        m_extend_ret = str(m_extend.return_type)
         if m_ret != m_extend_ret and \
             'java.lang.{0}'.format(m_ret) != m_extend_ret:
           continue
