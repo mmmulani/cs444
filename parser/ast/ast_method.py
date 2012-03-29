@@ -61,6 +61,9 @@ class ASTMethod(ast_node.ASTNode):
     else:
       raise ASTMethodError('Invalid node passed to ASTMethod')
 
+    # The offset location for the method in the class instance table.
+    self.c_offset = None
+
   @staticmethod
   def create_dummy_method(name):
     dummy_tree = Dummy()
