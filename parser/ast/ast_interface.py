@@ -138,11 +138,11 @@ class ASTInterface(ast_node.ASTNode):
     equals.is_abstract = True
     equals.params = [
         ASTParam.create_dummy_param(
-            ast_type.ASTType.from_str('Object'),
+            ast_type.ASTType.from_str('java.lang.Object'),
             ASTIdentifiers('other'))]
 
     to_string = ASTMethod.create_dummy_method('toString')
-    to_string.return_type = ast_type.ASTType.from_str('String')
+    to_string.return_type = ast_type.ASTType.from_str('java.lang.String')
     to_string.modifiers = ['public']
     to_string.is_abstract = True
 
@@ -152,16 +152,40 @@ class ASTInterface(ast_node.ASTNode):
     hash_code.is_abstract = True
 
     clone = ASTMethod.create_dummy_method('clone')
-    clone.return_type = ast_type.ASTType.from_str('Object')
+    clone.return_type = ast_type.ASTType.from_str('java.lang.Object')
     clone.modifiers = ['protected']
     clone.is_abstract = True
 
     get_class = ASTMethod.create_dummy_method('getClass')
-    get_class.return_type = ast_type.ASTType.from_str('Class')
+    get_class.return_type = ast_type.ASTType.from_str('java.lang.Class')
     get_class.modifiers = ['final']
     get_class.is_abstract = True
 
-    self.methods.extend([equals, to_string, hash_code, clone, get_class])
+    methods_to_extend = [equals, to_string, hash_code, clone, get_class]
+    # The method might already be declared on the interface and it is a compile
+    # time error to double declare a method. So we only add it to the interface
+    # if it is not already there.
+    for m_extend in methods_to_extend:
+      found_same = False
+      for m in self.methods:
+        if str(m.name) != str(m_extend.name):
+          continue
+
+        if m.params != m_extend.params:
+          continue
+
+        # Type linking has not been done so we must check the return types
+        # manually.
+        m_ret = str(m.return_type)
+        m_extend_ret = str(m.return_type)
+        if m_ret != m_extend_ret and \
+            'java.lang.{0}'.format(m_ret) != m_extend_ret:
+          continue
+
+        found_same = True
+
+      if not found_same:
+        self.methods.append(m_extend)
 
   # ------ CODE GEN METHODS --------
 
