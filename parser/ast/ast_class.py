@@ -34,6 +34,21 @@ class ASTClass(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # The current maximum offset for any method or field of this type.  This
+    # starts at 8 because the CIT is layed out as:
+    #
+    # --------
+    # Pointer to SIT
+    # --------
+    # Pointer to subtype table
+    # --------
+    # Methods and Fields
+    # . . .
+    self.c_max_offset = 8
+
+    # Whether offset calculation has finished on this type.
+    self.c_has_offset = False
+
     # Set by the Selector Index Table script in the code gen stage.
     self.c_sit_column = []
     # Set by the c_sit_column_label property. It is an assembly label for the
@@ -83,6 +98,10 @@ class ASTClass(ast_node.ASTNode):
   @property
   def is_abstract(self):
     return ('abstract' in self._modifiers)
+
+  @property
+  def has_super(self):
+    return len(self.super) > 0
 
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''
