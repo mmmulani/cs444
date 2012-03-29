@@ -215,9 +215,9 @@ class TypeEnvironment(env.Environment):
 
   def lookup_method(self, sig, constructor=False):
     '''Look up a method based on its signature
-    Returns an (ASTMethod, ASTClass/Instance) tuple, where:
+    Returns an (ASTMethod, ASTClass/Interface) tuple, where:
       - ASTMethod is the definition of the method, and
-      - ASTClass/Instance is the containing type of the method'''
+      - ASTClass/Interface is the containing type of the method'''
     ret = [ast for method_sig, ast in self.methods if method_sig == sig and
         ast.is_constructor == constructor]
     if len(ret) > 1:
@@ -227,7 +227,13 @@ class TypeEnvironment(env.Environment):
       return ret[0], self.definition
 
     # We didn't find the method locally, so check inherited environments:
+    return self.lookup_method_inherited(sig, constructor)
 
+  def lookup_method_inherited(self, sig, constructor=False):
+    '''Look up a method from inherited types based on its signature
+    Returns an (ASTMethod, ASTClass/Interface) tuple, where:
+      - ASTMethod is the definition of the method, and
+      - ASTClass/Interface is the containing type of the method'''
     # First, we aggregate any methods that match the signature.
     results = []
     for inherited in self.inherited:
