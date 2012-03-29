@@ -1,10 +1,30 @@
 import os
 
 import asm
-import asm.runtime as runtime
 import asm.common as common
+import asm.runtime as runtime
+import handle_local_vars as handle_local_vars
+import make_tags
 import manager
 import parser.ast.ast_type as ast_type
+import sit.selector_index_table
+import subtype_table
+
+def code_gen(asts, dir):
+  '''Top level function for code generation'''
+  # Preprocessing before we do any code generation.
+  sit.selector_index_table.make_sit(asts)
+  subtype_table.make_subtype_table(asts)
+  make_tags.make_tags(asts)
+  handle_local_vars.handle_local_vars(asts)
+
+  # Begin code generation.
+  for ast in asts:
+    generate_ast_code(ast, dir)
+  generate_common_code(dir)
+
+  if not manager.CodeGenManager.found_start_method:
+    raise CodeGenerationError('No start method found')
 
 def generate_ast_code(ast, output_dir='output'):
   ''' Generates assembly for the given AST, and saves it to a .s file in

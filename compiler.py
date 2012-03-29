@@ -5,11 +5,6 @@ import shelve
 from optparse import OptionParser
 
 import code_gen.code_gen as code_gen
-import code_gen.handle_local_vars as handle_local_vars
-import code_gen.make_tags as make_tags
-import code_gen.manager as code_gen_manager
-import code_gen.sit.selector_index_table as selector_index_table
-import code_gen.subtype_table as subtype_table
 import name_resolution.env as env
 import name_resolution.name_linker as name_linker
 import name_resolution.name_resolution as name_resolution
@@ -168,19 +163,9 @@ def static_analysis(asts):
 
 def gen_code(asts):
   try:
-    selector_index_table.make_sit(asts)
-    subtype_table.make_subtype_table(asts)
-    make_tags.make_tags(asts)
-    handle_local_vars.handle_local_vars(asts)
-
-    for ast in asts:
-      code_gen.generate_ast_code(ast, options.output_dir)
-    code_gen.generate_common_code(options.output_dir)
+    code_gen.code_gen(asts, options.output_dir)
   except code_gen.CodeGenerationError as err:
     exit_with_failure('code generation', err.msg)
-
-  if not code_gen_manager.CodeGenManager.found_start_method:
-    exit_with_failure('code generation', 'No start method found')
 
 def exit_with_pass():
   if options.verbose:
