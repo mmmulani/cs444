@@ -221,14 +221,13 @@ class ASTInterface(ast_node.ASTNode):
     Class Info Table:
       - Pointer to SIT column (Nothing for interfaces)
       - Pointer to Subtype column
-      - Static fields and methods (remembering inheritance order)
+      - Static fields and methods (None, since this is an interface)
     '''
     return [
       '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
       '{0}:'.format(self.c_class_info_table_label),
       'dw 0xdeadbeef', # Dummy value for no SIT
       'dw {0}'.format(self.c_subtype_column_label)
-      # TODO: add static fields and methods.
     ]
 
 class ASTInterfaceError(Exception):

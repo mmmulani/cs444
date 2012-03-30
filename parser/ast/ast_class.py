@@ -3,6 +3,7 @@ import ast_method
 import ast_node
 import ast_type
 import ast_variable_declaration
+import code_gen.cit.cit as cit
 
 from code_gen.manager import CodeGenManager
 
@@ -104,6 +105,7 @@ class ASTClass(ast_node.ASTNode):
     return len(self.super) > 0
 
   def get_all_methods(self):
+    '''Returns all the methods defined on this class'''
     return self.environment.get_all_methods()
 
   def _get_children(self, tree):
@@ -230,7 +232,7 @@ class ASTClass(ast_node.ASTNode):
       '', '',  # Padding between tables.
       self.c_gen_code_subtype_column(),
       '', '',
-      self.c_gen_class_info_table()
+      cit.generate_cit(self),
     ]
 
   def c_gen_code_sit_column(self):
@@ -264,22 +266,6 @@ class ASTClass(ast_node.ASTNode):
     # the same way.
     return ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
-
-  def c_gen_class_info_table(self):
-    '''Generats the class info table for the containing type
-
-    Class Info Table:
-      - Pointer to SIT column
-      - Pointer to Subtype column
-      - Static fields and methods (remembering inheritance order)
-    '''
-    return [
-      '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
-      '{0}:'.format(self.c_class_info_table_label),
-      'dw {0}'.format(self.c_sit_column_label),
-      'dw {0}'.format(self.c_subtype_column_label)
-      # TODO: add static fields and methods.
-    ]
 
   @staticmethod
   def c_gen_code_subtype_column_helper(label, subtype_column):
