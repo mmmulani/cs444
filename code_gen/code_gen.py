@@ -4,7 +4,7 @@ import asm
 import asm.common as common
 import asm.runtime as runtime
 import handle_local_vars as handle_local_vars
-import make_tags
+import tags
 import cit.offset
 import manager
 import parser.ast.ast_type as ast_type
@@ -16,7 +16,7 @@ def code_gen(asts, dir):
   # Preprocessing before we do any code generation.
   sit.selector_index_table.make_sit(asts)
   subtype_table.make_subtype_table(asts)
-  make_tags.make_tags(asts)
+  tags.make_tags(asts)
   handle_local_vars.handle_local_vars(asts)
 
   for ast in asts:
