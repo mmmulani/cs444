@@ -54,41 +54,36 @@ def generate_ast_code(ast, output_dir='output'):
   #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
 
 def _generate_body_code(ast):
-  body_asm = ''
+  body_asm = []
+
+  # check whether this AST contains the start method
   start_method = _get_start_method(ast)
   if start_method is not None:
-    # since this is the start method, we need to add extra code
-    # (like the _start label and the sys_exit code)
-
     # make sure there's only one start method:
     if manager.CodeGenManager.found_start_method:
       raise CodeGenerationError('Multiple start methods found')
     manager.CodeGenManager.found_start_method = True
 
+    # add the start label:
+    start_asm = '; PROGRAM START -------------------\n'
+    start_asm += 'global _start\n_start:\n'
+
     # TODO (gnleece) initialize static variables here
-    # TODO (gnleece) make a proper function call to the start method
 
-    # add the start label
-    start_asm = 'global _start\n_start:\n'
+    # call the start method:
+    call_asm = 'call {0}\n'.format(start_method.c_defn_label)
 
-    # print the code for the start method body:
-    method_asm = start_method.c_gen_code()
-
-    # now call it:
-
-    call_asm = 'call {0}'.format(start_method.c_defn_label)
-
-    # add the exit code
+    # add the exit code:
     exit_asm = common.sys_exit('eax')
+    exit_asm.append('\n; END OF PROGRAM START -------------\n')
 
-    body_asm = '\n'.join(flatten_asm(
-      [start_asm, call_asm, exit_asm, method_asm]))
+    body_asm.extend([start_asm, call_asm, exit_asm])
 
-  else:
-    # generate the regular body code:
-    body_asm = ast.c_gen_code()
-    body_asm = '\n'.join(flatten_asm(body_asm))
+  # generate the regular body code for the AST:
+  body_asm.append(ast.c_gen_code())
 
+  # return the flattened & joined asm code:
+  body_asm = '\n'.join(flatten_asm(body_asm))
   return body_asm
 
 def generate_common_code(output_dir='output'):

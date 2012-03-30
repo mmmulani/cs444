@@ -1,4 +1,5 @@
 import ast_statement
+import code_gen.asm.common as asm_common
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 
@@ -25,11 +26,12 @@ class ASTReturn(ast_statement.ASTStatement):
 
   # Code generation functions ----------------
   def c_gen_code(self):
-    #TODO (gnleece) need to add function epilogue stuff here
-    # THIS IS A TEMP HACK!
+    asm = []
+    # Generate code for the return expression, if there is one
     if self.children[0] is not None:
-      return self.children[0].c_gen_code()
-    return []
+      asm.append(self.children[0].c_gen_code())
+    asm.append(asm_common.function_epilogue())
+    return code
 
   @property
   def expressions(self):
