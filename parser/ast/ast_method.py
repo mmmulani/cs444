@@ -188,15 +188,16 @@ class ASTMethod(ast_node.ASTNode):
 
   def c_gen_code(self):
     import code_gen.asm.common as common
+    '''
+    body_code = []
     if self.body:
       body_code = self.body.c_gen_code()
-    else:
-      body_code = []
+    '''
 
     return [
       '{0}:'.format(self.c_defn_label),
       common.function_prologue(self.c_num_local_vars * 4),
-      body_code,
+      # body_code,
       common.function_epilogue(),
     ]
 

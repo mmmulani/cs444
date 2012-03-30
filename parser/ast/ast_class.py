@@ -226,7 +226,13 @@ class ASTClass(ast_node.ASTNode):
 
   def c_gen_code(self):
     '''Code generation for types'''
+    # Generate code for all the methods.
+    methods = []
+    for m in self.methods:
+      methods.extend([m.c_gen_code(), '', ''])
+
     return [
+      methods,
       '', '',  # Padding before the SIT/Subtype columns.
       self.c_gen_code_sit_column(),
       '', '',  # Padding between tables.
