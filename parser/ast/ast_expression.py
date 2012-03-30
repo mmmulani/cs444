@@ -550,12 +550,15 @@ class ASTIdentifiers(ASTExpression):
 
   def c_gen_code(self):
     # XXX: Hack to test local variables.
+    '''
     defn = self.first_definition[1]
     import code_gen.asm.common as common
     if isinstance(defn, ASTVariableDeclaration):
       return common.get_local_var('eax', defn)
     else:
       return ''
+    '''
+    return ''
 
 class ASTArrayCreation(ASTExpression):
   # Children is of length 2:

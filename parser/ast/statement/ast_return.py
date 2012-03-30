@@ -31,7 +31,7 @@ class ASTReturn(ast_statement.ASTStatement):
     if self.children[0] is not None:
       asm.append(self.children[0].c_gen_code())
     asm.append(asm_common.function_epilogue())
-    return code
+    return asm
 
   @property
   def expressions(self):
