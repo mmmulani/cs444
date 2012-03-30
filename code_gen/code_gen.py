@@ -3,13 +3,14 @@ import os
 import asm
 import asm.common as common
 import asm.runtime as runtime
-import handle_local_vars as handle_local_vars
-import tags
 import cit.offset
+import global_labels
+import handle_local_vars as handle_local_vars
 import manager
 import parser.ast.ast_type as ast_type
 import sit.selector_index_table
 import subtype_table
+import tags
 
 def code_gen(asts, dir):
   '''Top level function for code generation'''
@@ -21,6 +22,7 @@ def code_gen(asts, dir):
 
   for ast in asts:
     cit.offset.calc_offset(ast)
+  global_labels.set_global_labels(asts)
 
   # Begin code generation.
   for ast in asts:

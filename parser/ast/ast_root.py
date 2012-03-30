@@ -90,11 +90,19 @@ class ASTRoot(ast_node.ASTNode):
   # ------ CODE GEN METHODS -------
 
   def c_gen_code(self):
-    # TODO: We don't really need this here, but should we get rid of it?
-    ret = [
-      '; PACKAGE: {0}'.format(self.package)
-    ]
-    if self.class_or_interface:
-      ret.extend(self.class_or_interface.c_gen_code())
+    import code_gen.global_labels
+    # List of labels that need to be externed.
+    externs_list = ['extern {0}'.format(x) for x in \
+        code_gen.global_labels.get_global_labels(self)]
+    externs_list.sort()  # Just to make the debug output easier.
 
-    return ret
+    class_defn = []
+    if self.class_or_interface:
+      class_defn = self.class_or_interface.c_gen_code()
+
+    return [
+      externs_list,
+      '',
+      '; PACKAGE: {0}'.format(self.package),
+      class_defn
+    ]
