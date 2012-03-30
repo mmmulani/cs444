@@ -229,7 +229,7 @@ class ASTClass(ast_node.ASTNode):
     # Generate code for all the methods.
     methods = []
     for m in self.methods:
-      methods.extend([m.c_gen_code(), '', ''])
+      methods.extend([m.c_gen_code(), ''])
 
     return [
       methods,

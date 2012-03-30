@@ -195,6 +195,7 @@ class ASTMethod(ast_node.ASTNode):
     '''
 
     return [
+      'global {0}'.format(self.c_defn_label),
       '{0}:'.format(self.c_defn_label),
       common.function_prologue(self.c_num_local_vars * 4),
       # body_code,
