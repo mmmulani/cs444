@@ -244,9 +244,8 @@ class TypeEnvironment(env.Environment):
     # Next, we filter the results based on the logic in _maybe_add_inherited.
     new_results = []
     if len(results) > 0:
-      my_methods = list(self.methods)
       for res, defn in results:
-        new_results = self._maybe_add_inherited(my_methods, new_results, sig, res)
+        new_results = self._maybe_add_inherited([], new_results, sig, res)
 
     # If there's a matching result, find the AST node and source of that result
     # (which is stored only in the results list) and return the tuple.
