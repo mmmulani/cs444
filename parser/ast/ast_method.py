@@ -4,6 +4,7 @@ import ast_type
 import statement.ast_block as ast_block
 
 from ast_expression import ASTIdentifiers
+from code_gen.manager import CodeGenManager
 
 class ASTMethod(ast_node.ASTNode):
   def __init__(self, tree):
@@ -19,10 +20,6 @@ class ASTMethod(ast_node.ASTNode):
 
     # This is set by the Environment module when the tree is complete.
     self.environment = None
-
-    # A label corresponding to where the method is defined in assembly.
-    # This is set in the c_defn_label property.
-    self._c_defn_label = None
 
     # The total number of local variables declared in this method's body.
     # This is set by handle_local_vars().
@@ -184,19 +181,10 @@ class ASTMethod(ast_node.ASTNode):
       return
     self.children = [ast_block.ASTBlock(body)]
 
-  # The label looks like 'method_defn_<method name>' followed by a suffix to
-  # guarantee uniqueness.
-  # TODO: Work the class name in the label and use
-  # CodeGenManager.memoize_label()
   @property
   def c_defn_label(self):
-    if self._c_defn_label is None:
-      import code_gen.manager as manager
-      label = 'method_defn_{0}'.format(str(self.name))
-      uniq_label = manager.CodeGenManager.get_label(label)
-      self._c_defn_label = uniq_label
-
-    return self._c_defn_label
+    label = 'method_defn_{0}'.format(str(self.name))
+    return CodeGenManager.memoize_label(self, label)
 
   def c_gen_code(self):
     import code_gen.asm.common as common
