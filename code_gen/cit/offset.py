@@ -30,18 +30,31 @@ def calc_offset_from_defn(t):
 
   env = t.environment
   for m in t.methods:
-    method, defn = env.lookup_method_inherited(m.signature, m.is_constructor)
-    if method:
-      # Method came from a parent.  If it's not from an interface (which is
-      # handled by the SIT table), then use the offset on the overriden method.
-      if not isinstance(defn, ast_interface.ASTInterface):
-        # TODO: assert that method.c_offset is not None, maybe?
-        m.c_offset = method.c_offset
+    offset = _get_inherited_offset(t, m)
+    if offset is not None:
+      # Method is overriding something from the parent. Use the offset given.
+      m.c_offset = offset
     else:
-      # Method is new, so create an offset for it.
+      # The method is new, so create an offset for it.
       m.c_offset = t.c_max_offset
       t.c_max_offset += 4
 
   # Set the has_offset flag so we don't need to recalculate.
   t.c_has_offset = True
   return
+
+def _get_inherited_offset(t, m):
+  '''Returns an offset for an overridden method m defined in type t
+
+  If no such method is found, return None.'''
+  if not t.has_super:
+    return None
+
+  supertype = t.super[0].definition
+
+  for sig, super_m in supertype.get_all_methods():
+    if super_m.signature == m.signature:
+      # If the super method was from an interface, it's offset will be
+      # None, which is what we'll want to return anyway.
+      return super_m.c_offset
+  return None

@@ -103,6 +103,9 @@ class ASTClass(ast_node.ASTNode):
   def has_super(self):
     return len(self.super) > 0
 
+  def get_all_methods(self):
+    return self.environment.get_all_methods()
+
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''
     node = tree.children[-1]
