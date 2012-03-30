@@ -255,9 +255,9 @@ class ASTClass(ast_node.ASTNode):
 
       entry = ''
       if m is None:
-        entry = 'dw 0x0'
+        entry = 'dd 0x0'
       else:
-        entry = 'dw {0}'.format(m.c_defn_label)
+        entry = 'dd {0}'.format(m.c_defn_label)
 
       table_entries.append(entry)
 
@@ -286,14 +286,14 @@ class ASTClass(ast_node.ASTNode):
       subtype_cells.append('; subtype = {0}'.format(str(type_)))
 
       if val:
-        subtype_cells.append('dw 1')
+        subtype_cells.append('dd 1')
       else:
-        subtype_cells.append('dw 0')
+        subtype_cells.append('dd 0')
 
     return [
       '; EXAMPLE',
       '; subtype = X',
-      '; dw 1',
+      '; dd 1',
       '; X is a subtype of the contained type',
       '{0}:'.format(label),
       subtype_cells

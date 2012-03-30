@@ -13,8 +13,8 @@ def generate_cit(t):
   return [
     '; CLASS INFO TABLE: {0}'.format(t.canonical_name),
     '{0}:'.format(t.c_class_info_table_label),
-    'dw {0}'.format(t.c_sit_column_label),
-    'dw {0}'.format(t.c_subtype_column_label),
+    'dd {0}'.format(t.c_sit_column_label),
+    'dd {0}'.format(t.c_subtype_column_label),
     method_impls
   ]
 
@@ -31,7 +31,7 @@ def _get_method_offsets(t):
     if m.c_offset % 4 != 0:
       raise Exception('Offset for {0} is not a multiple of 4'.format(m.name))
 
-    row = 'dw {0}'.format(m.c_defn_label)
+    row = 'dd {0}'.format(m.c_defn_label)
     offset_impl_list.append((m.c_offset, row))
 
   # Sort the list in offset order.

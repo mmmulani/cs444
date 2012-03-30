@@ -226,8 +226,8 @@ class ASTInterface(ast_node.ASTNode):
     return [
       '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
       '{0}:'.format(self.c_class_info_table_label),
-      'dw 0xdeadbeef', # Dummy value for no SIT
-      'dw {0}'.format(self.c_subtype_column_label)
+      'dd 0xdeadbeef', # Dummy value for no SIT
+      'dd {0}'.format(self.c_subtype_column_label)
     ]
 
 class ASTInterfaceError(Exception):
