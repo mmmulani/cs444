@@ -59,6 +59,17 @@ class CodeGenManager(object):
 
     return CodeGenManager._memoized_labels[index]
 
+  # A mapping from canonical names -> names that need to be externed
+  # in other files.
+  global_labels_map = {}
+
+  @staticmethod
+  def add_global_label(k, v):
+    if k in CodeGenManager.global_labels_map.keys():
+      CodeGenManager.global_labels_map[k].append(v)
+    else:
+      CodeGenManager.global_labels_map[k] = [v]
+
   # ------ SIT METHODS -------
 
   _sit_column_guide = []
