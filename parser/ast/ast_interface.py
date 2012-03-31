@@ -1,11 +1,11 @@
-import ast_node
+import ast_class
 import ast_method
+import ast_node
 import ast_type
 
 from ast_expression import ASTIdentifiers
 from ast_method import ASTMethod
 from ast_param import ASTParam
-
 from code_gen.manager import CodeGenManager
 
 class ASTInterface(ast_node.ASTNode):
@@ -213,7 +213,6 @@ class ASTInterface(ast_node.ASTNode):
     ]
 
   def c_gen_code_subtype_column(self):
-    import ast_class
     # We use a helper as subtype columns for classes and interfaces are created
     # the same way.
     return ast_class.ASTClass.c_gen_code_subtype_column_helper(

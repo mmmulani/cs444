@@ -6,8 +6,10 @@ def generate_cit(t):
       - Pointer to Subtype column
       - Static fields and methods (remembering inheritance order)
   '''
+  if not t.c_has_cit_offset:
+    raise Exception(
+        'Trying to generate CIT from {0} with no offsets set.'.format(t.name))
 
-  # TODO: assert t.c_has_cit_offset == True here, maybe?
   method_and_field_impls = _get_offsets(t)
 
   return [
