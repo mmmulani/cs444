@@ -7,7 +7,7 @@ def generate_cit(t):
       - Static fields and methods (remembering inheritance order)
   '''
 
-  # TODO: assert t.c_has_offset == True here, maybe?
+  # TODO: assert t.c_has_cit_offset == True here, maybe?
   method_and_field_impls = _get_offsets(t)
 
   return [

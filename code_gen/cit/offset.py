@@ -15,7 +15,7 @@ def calc_offset_from_defn(t):
   '''Calculate the offsets for all the methods in a class t'''
 
   # If our offsets have been calculated before, don't bother recalculating.
-  if t.c_has_offset:
+  if t.c_has_cit_offset:
     return
 
   # Calculate the offsets in any super class first, and update the offset
@@ -25,15 +25,15 @@ def calc_offset_from_defn(t):
     # extend one type.
     supertype = t.super[0].definition
     calc_offset_from_defn(supertype)
-    t.c_max_offset = supertype.c_max_offset
+    t.c_cit_offset = supertype.c_cit_offset
 
   # CONVENTION: Fields before methods.
   for f in t.fields:
     # Fields don't hide each other, so we don't need to check inheritance.
     if f.is_static:
       # Only calculate offsets for static fields.
-      f.c_offset = t.c_max_offset
-      t.c_max_offset += 4
+      f.c_offset = t.c_cit_offset
+      t.c_cit_offset += 4
 
   env = t.environment
   for m in t.methods:
@@ -43,11 +43,11 @@ def calc_offset_from_defn(t):
       m.c_offset = offset
     else:
       # The method is new, so create an offset for it.
-      m.c_offset = t.c_max_offset
-      t.c_max_offset += 4
+      m.c_offset = t.c_cit_offset
+      t.c_cit_offset += 4
 
   # Set the has_offset flag so we don't need to recalculate.
-  t.c_has_offset = True
+  t.c_has_cit_offset = True
   return
 
 def _get_inherited_offset(t, m):

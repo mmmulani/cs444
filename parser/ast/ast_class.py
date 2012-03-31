@@ -40,8 +40,8 @@ class ASTClass(ast_node.ASTNode):
     # code generation stage.
     self.c_object_size = 4
 
-    # The current maximum offset for any method or field of this type.  This
-    # starts at 8 because the CIT is layed out as:
+    # The current maximum offset for any method or static field of this type in
+    # its CIT. This starts at 8 because the CIT is layed out as:
     #
     # --------
     # Pointer to SIT
@@ -50,10 +50,10 @@ class ASTClass(ast_node.ASTNode):
     # --------
     # Methods and Static Fields
     # . . .
-    self.c_max_offset = 8
+    self.c_cit_offset = 8
 
     # Whether offset calculation has finished on this type.
-    self.c_has_offset = False
+    self.c_has_cit_offset = False
 
     # Set by the Selector Index Table script in the code gen stage.
     self.c_sit_column = []
