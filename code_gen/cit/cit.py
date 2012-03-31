@@ -1,3 +1,5 @@
+from code_gen.manager import CodeGenManager
+
 def generate_cit(t):
   '''Generates the Class Info Table (CIT) column from an ASTClass
 
@@ -32,7 +34,8 @@ def _get_offsets(t):
 
       _offset_check(offset)
 
-      row = 'dd 0x0 ; Temporary storage for static field {0}'.format(str(f.identifier))
+      row = 'dd 0x0 ; Temporary storage for static field {0}'.format(
+          str(f.identifier))
       offset_impl_list.append((offset, row))
 
   for sig, m in t.get_all_methods():

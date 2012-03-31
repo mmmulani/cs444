@@ -244,5 +244,11 @@ class ASTInterface(ast_node.ASTNode):
     # Since interfaces has no fields, this should always be 4.
     return 4
 
+  def c_add_static_to_init(self):
+    '''Add static fields to the initialization list in CodeGenManager
+
+    Since interfaces have no fields, this does nothing.'''
+    return
+
 class ASTInterfaceError(Exception):
   pass

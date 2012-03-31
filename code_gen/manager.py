@@ -150,3 +150,14 @@ class CodeGenManager(object):
       raise Exception('Lookup for index in subtype table failed.')
 
     return matched_types[0]
+
+  # ------- STATIC FIELD INIT METHODS ------
+  # A list of (ASTClass, ASTVariableDeclaration) pairs of static fields
+  # that need to be initialized.
+  #   - ASTClass will be the type defining the static field
+  #   - ASTVariableDeclaration will be the declaration of the static field
+  static_inits = []
+
+  @staticmethod
+  def add_static_var_to_init(t, f):
+    CodeGenManager.static_inits.append((t, f))

@@ -322,6 +322,13 @@ class ASTClass(ast_node.ASTNode):
 
     self.c_object_size = size
 
+  def c_add_static_to_init(self):
+    '''Add static fields to the initializtion list in CodeGenManager'''
+    for f in self.fields:
+      if f.is_static:
+        CodeGenManager.add_static_var_to_init(self, f)
+    return
+
   @staticmethod
   def c_gen_code_subtype_column_helper(label, subtype_column):
     '''Generates the subtype column given the label and the values for the type
