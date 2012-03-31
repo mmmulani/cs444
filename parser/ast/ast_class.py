@@ -35,6 +35,11 @@ class ASTClass(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # The size of the object.  This is 4 + (# of instance fields), with 4 bytes
+    # needed for the pointer to the CIT.  This will be modified during the
+    # code generation stage.
+    self.c_object_size = 4
+
     # The current maximum offset for any method or field of this type.  This
     # starts at 8 because the CIT is layed out as:
     #
@@ -43,7 +48,7 @@ class ASTClass(ast_node.ASTNode):
     # --------
     # Pointer to subtype table
     # --------
-    # Methods and Fields
+    # Methods and Static Fields
     # . . .
     self.c_max_offset = 8
 

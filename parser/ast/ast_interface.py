@@ -68,6 +68,10 @@ class ASTInterface(ast_node.ASTNode):
   def is_abstract(self):
     return True   # interfaces are implicitly abstract
 
+  @property
+  def c_object_size(self):
+    raise Exception('Should never be getting object size of an interface')
+
   def _get_modifiers(self, tree):
     '''Get a set of modifiers for an interface declaration'''
     if tree.children[0].value != 'Modifiers':
