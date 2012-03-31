@@ -199,7 +199,7 @@ class ASTInterface(ast_node.ASTNode):
     return CodeGenManager.memoize_label(self, label)
 
   @property
-  def c_class_info_table_label(self):
+  def c_cit_label(self):
     label = 'class_info_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
@@ -228,7 +228,7 @@ class ASTInterface(ast_node.ASTNode):
     '''
     return [
       '; CLASS INFO TABLE: {0}'.format(self.canonical_name),
-      '{0}:'.format(self.c_class_info_table_label),
+      '{0}:'.format(self.c_cit_label),
       'dd 0xdeadbeef', # Dummy value for no SIT
       'dd {0}'.format(self.c_subtype_column_label)
     ]

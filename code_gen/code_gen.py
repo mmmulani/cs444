@@ -9,6 +9,7 @@ import handle_local_vars as handle_local_vars
 import manager
 import parser.ast.ast_type as ast_type
 import sit.selector_index_table
+import static_init
 import subtype_table
 
 def code_gen(asts, dir):
@@ -61,11 +62,14 @@ def _generate_body_code(ast):
       raise CodeGenerationError('Multiple start methods found')
     manager.CodeGenManager.found_start_method = True
 
-    # add the start label:
-    start_asm = '; PROGRAM START -------------------\n'
-    start_asm += 'global _start\n_start:\n'
+    # Add the start label.
+    start_asm = [
+      '; PROGRAM START -------------------',
+      'global _start',
+      '_start:',
+    ]
 
-    # TODO (gnleece) initialize static variables here
+    static_init_code = static_init.initialize_static_fields()
 
     # call the start method:
     call_asm = 'call {0}\n'.format(start_method.c_defn_label)
@@ -77,7 +81,7 @@ def _generate_body_code(ast):
       '; END OF PROGRAM START -------------'
     ]
 
-    body_asm.extend([start_asm, call_asm, exit_asm])
+    body_asm.extend([start_asm, static_init_code, call_asm, exit_asm])
 
   # generate the regular body code for the AST:
   body_asm.append(ast.c_gen_code())

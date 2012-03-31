@@ -235,7 +235,7 @@ class ASTClass(ast_node.ASTNode):
     return CodeGenManager.memoize_label(self, label)
 
   @property
-  def c_class_info_table_label(self):
+  def c_cit_label(self):
     label = 'class_info_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 

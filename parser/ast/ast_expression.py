@@ -528,7 +528,7 @@ class ASTClassInstanceCreation(ASTExpression):
     return [
       common.malloc(class_defn.c_object_size),
       # Class info table
-      'mov dword [eax], {0}'.format(class_defn.c_class_info_table_label),
+      'mov dword [eax], {0}'.format(class_defn.c_cit_label),
       'push eax ; push instance object',
       param_code,
       'call {0}'.format(constructor.c_defn_label),
