@@ -111,6 +111,22 @@ class TypeEnvironment(env.Environment):
         raise TypeEnvironmentError('Circular hierarchy detected')
       self._check_hierarchy_helper(t, set(list(path_set) + [t]))
 
+  def get_all_fields(self):
+    '''Returns a list of all the fields visible to this class.'''
+    ret = []
+
+    # Only classes have fields.  If we have a superclass, grab the fields
+    # from those first.
+    for t_env in self.extends:
+      ret.extend(t_env.get_all_fields())
+
+    # Add our own fields to the list in sorted order.
+    it = iter(sorted(self.fields.items()))
+    for name, field in it:
+      ret.append(field)
+
+    return ret
+
   def get_all_methods(self):
     '''Return all the methods visible to this class.
     This returns a list of (signature, ASTMethod) tuples, similar to

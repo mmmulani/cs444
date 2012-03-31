@@ -110,8 +110,12 @@ class ASTClass(ast_node.ASTNode):
     return len(self.super) > 0
 
   def get_all_methods(self):
-    '''Returns all the methods defined on this class'''
+    '''Returns all the methods in the contains set of this class'''
     return self.environment.get_all_methods()
+
+  def get_all_fields(self):
+    '''Returns all fields in the contains set of this type'''
+    return self.environment.get_all_fields()
 
   def _get_children(self, tree):
     '''Get a list of fields from a class declaration'''
