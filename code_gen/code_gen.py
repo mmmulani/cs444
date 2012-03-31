@@ -14,13 +14,11 @@ import subtype_table
 def code_gen(asts, dir):
   '''Top level function for code generation'''
   # Preprocessing before we do any code generation.
-  calculate_sizes(asts)
+  type_calculations(asts)
   sit.selector_index_table.make_sit(asts)
   subtype_table.make_subtype_table(asts)
   handle_local_vars.handle_local_vars(asts)
 
-  for ast in asts:
-    cit.offset.calc_offset(ast)
   global_labels.set_global_labels(asts)
 
   # Begin code generation.
@@ -109,11 +107,13 @@ def generate_common_code(output_dir='output'):
   asm_file.write('\n'.join([header_asm, body_asm]))
   asm_file.close()
 
-def calculate_sizes(asts):
-  '''Calculates the size for all the types definied'''
+def type_calculations(asts):
+  '''Runs per-type calculations'''
   for ast in asts:
     if ast.class_or_interface is not None:
+      ast.class_or_interface.c_calculate_field_offsets()
       ast.class_or_interface.c_calculate_size()
+      cit.offset.calc_offset(ast)
 
 def _get_helper_function_names():
   ''' Returns a dict of all assembly helper functions, EXCEPT those in

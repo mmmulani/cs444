@@ -40,6 +40,12 @@ class ASTClass(ast_node.ASTNode):
     # code generation stage.
     self.c_object_size = 4
 
+    # The current maximum offset for any instance field in the object.  This
+    # starts at 4 because the first dword of an object is a pointer to the
+    # CIT.
+    self.c_obj_offset = 4
+    self.c_has_obj_offset = False
+
     # The current maximum offset for any method or static field of this type in
     # its CIT. This starts at 8 because the CIT is layed out as:
     #
@@ -281,6 +287,30 @@ class ASTClass(ast_node.ASTNode):
     # the same way.
     return ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
+
+  def c_calculate_field_offsets(self):
+    '''Calculate the offsets for field instances'''
+    # Don't bother if we've already done the calculations.
+    if self.c_has_obj_offset:
+      return
+
+    # Calculate offests for the super type first, if any.
+    if self.has_super:
+      t_super = self.super[0].definition
+      t_super.c_calculate_field_offsets()
+      self.c_obj_offset = t_super.c_obj_offset
+
+    # Order the fields so it's deterministic.
+    fields = list(self.fields)
+    fields.sort(key=lambda x: str(x.identifier))
+    for f in fields:
+      # Only assign field offsets to instance (i.e. non-static) fields.
+      if not f.is_static:
+        f.c_offset = self.c_obj_offset
+        self.c_obj_offset += 4
+
+    self.c_has_obj_offset = True
+    return
 
   def c_calculate_size(self):
     '''Calculates the size for the object in bytes'''

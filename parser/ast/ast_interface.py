@@ -234,6 +234,12 @@ class ASTInterface(ast_node.ASTNode):
       'dd {0}'.format(self.c_subtype_column_label)
     ]
 
+  def c_calculate_field_offsets(self):
+    '''Calculate instance field offsets for this type.
+
+    Since interfaces have no fields, do nothing'''
+    return
+
   def c_calculate_size(self):
     '''Calculates the size of the interface in bytes'''
     # Since interfaces has no fields, this should always be 4.
