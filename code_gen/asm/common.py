@@ -134,6 +134,8 @@ def sys_exit(src):
   '''Code used to exit the program (by making a system call). src should
   contain the program's exit code.'''
   return [
+    '; Get the int value retunred',
+    unwrap_primitive('eax', 'eax'),
     '; Put the program return value in ebx',
     'mov ebx, {0}'.format(src),
     '; Load 1 into eax to indicate sys_exit',

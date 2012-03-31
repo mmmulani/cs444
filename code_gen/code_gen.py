@@ -74,8 +74,11 @@ def _generate_body_code(ast):
     call_asm = 'call {0}\n'.format(start_method.c_defn_label)
 
     # add the exit code:
-    exit_asm = common.sys_exit('eax')
-    exit_asm.append('\n; END OF PROGRAM START -------------\n')
+    exit_asm = [
+      common.sys_exit('eax'),
+      '',
+      '; END OF PROGRAM START -------------'
+    ]
 
     body_asm.extend([start_asm, call_asm, exit_asm])
 
