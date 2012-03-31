@@ -282,6 +282,16 @@ class ASTClass(ast_node.ASTNode):
     return ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
 
+  def c_calculate_size(self):
+    '''Calculates the size for the object in bytes'''
+    size = 4  # starts at 4 because of the pointer to the CIT.
+    for f in self.get_all_fields():
+      # Add 4 for all instance (i.e. non-static) fields.
+      if not f.is_static:
+        size += 4
+
+    self.c_object_size = size
+
   @staticmethod
   def c_gen_code_subtype_column_helper(label, subtype_column):
     '''Generates the subtype column given the label and the values for the type
