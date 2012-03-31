@@ -22,10 +22,15 @@ class TypeEnvironment(env.Environment):
     # A list of (method signature, ASTMethod) tuples.
     self.methods = []
 
-    # A list of environments inherited (either extends or implements)
-    self.inherited = []
+    # A list of environments inherited.
+    self.extends = []
+    self.implements = []
 
     self.handle_ast(ast)
+
+  @property
+  def inherited(self):
+    return self.extends + self.implements
 
   def handle_ast(self, ast):
     # Add fields into the environment.
@@ -81,14 +86,19 @@ class TypeEnvironment(env.Environment):
     self.fields[name] = ast
 
   def handle_inherited(self):
-    inherited_types = self.definition.super + self.definition.interfaces
-    for t in inherited_types:
+    # Do classes and interfaces separately here.
+    self._handle_inherited(self.definition.super, self.extends)
+    self._handle_inherited(self.definition.interfaces, self.implements)
+
+  def _handle_inherited(self, types, envs):
+    '''Add the inherited envs of types to envs.'''
+    for t in types:
       if t.definition is None:
         raise TypeEnvironmentError(
           'Inherited type {0} has no definition set'.format(t))
 
       # Add the inherited environment to the list.
-      self.inherited.append(t.definition.environment)
+      envs.append(t.definition.environment)
 
   def check_hierarchy(self):
     '''Check the inheritance hierarchy to make sure there are no cycles'''
