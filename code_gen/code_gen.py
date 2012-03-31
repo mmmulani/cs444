@@ -113,6 +113,7 @@ def type_calculations(asts):
     if ast.class_or_interface is not None:
       ast.class_or_interface.c_calculate_field_offsets()
       ast.class_or_interface.c_calculate_size()
+      ast.class_or_interface.c_add_static_to_init()
       cit.offset.calc_offset(ast)
 
 def _get_helper_function_names():
