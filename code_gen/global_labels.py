@@ -16,6 +16,10 @@ def set_global_labels(asts):
       for m in t.methods:
         CodeGenManager.add_global_label(canonical_name, m.c_defn_label)
 
+      # Add the CIT label to the list to be externed.
+      CodeGenManager.add_global_label(
+          canonical_name, t.c_class_info_table_label)
+
 def get_global_labels(ast):
   '''Returns a list of the global labels this ASTRoot needs to extern'''
   if ast.class_or_interface is None:

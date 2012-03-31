@@ -14,6 +14,7 @@ def generate_cit(t):
 
   return [
     '; CLASS INFO TABLE: {0}'.format(t.canonical_name),
+    'global {0}'.format(t.c_class_info_table_label),
     '{0}:'.format(t.c_class_info_table_label),
     'dd {0}'.format(t.c_sit_column_label),
     'dd {0}'.format(t.c_subtype_column_label),
