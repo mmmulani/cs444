@@ -17,7 +17,6 @@ def code_gen(asts, dir):
   # Preprocessing before we do any code generation.
   sit.selector_index_table.make_sit(asts)
   subtype_table.make_subtype_table(asts)
-  tags.make_tags(asts)
   handle_local_vars.handle_local_vars(asts)
 
   for ast in asts:
