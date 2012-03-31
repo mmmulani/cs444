@@ -136,7 +136,9 @@ if ('test-asm') in sys.argv:
 
     # Run the resulting binary:
     ret = subprocess.call('./{0}'.format(exec_path))
-    if ret != 123:
+    test_name = dir_.split('/')[1]
+    if (ret != 123 and not test_name.startswith('J1e')) or \
+       (ret != 13 and test_name.startswith('J1e')):
       failing_tests.append(dir_)
       _show_fail(dir_, 'ret value: {0}'.format(str(ret)))
     else:
@@ -144,7 +146,7 @@ if ('test-asm') in sys.argv:
       out = '.'
       sys.stderr.write(color + out + END_COLOR)
       passing_tests.append(dir_)
-  
+
   if len(failing_tests) > 0:
     print
     print 'The following tests have failed:'
