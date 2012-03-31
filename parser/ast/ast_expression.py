@@ -1,8 +1,8 @@
 import code_gen.asm.common as common
 import code_gen.manager as manager
 
-from ast_node import ASTNode, ASTUtils
 from ast_cast import ASTCast
+from ast_node import ASTNode, ASTUtils
 from ast_type import ASTType
 from ast_variable_declaration import ASTVariableDeclaration
 
@@ -571,14 +571,18 @@ class ASTIdentifiers(ASTExpression):
     return []
 
   def c_gen_code(self):
-    # XXX: Hack to test local variables.
-    '''
-    defn = self.first_definition[1]
-    if isinstance(defn, ASTVariableDeclaration):
-      return common.get_local_var('eax', defn)
-    else:
-      return ''
-    '''
+    from ast_param import ASTParam
+
+    # Handle the case of a simple name.
+    if self.first_definition[0] == str(self):
+      var_decl = self.first_definition[1]
+
+      # Local variables.
+      if isinstance(var_decl, ASTParam):
+        return ''
+      elif var_decl.c_parent_method is not None:
+        return common.get_local_var('eax', var_decl)
+
     return ''
 
 class ASTArrayCreation(ASTExpression):
