@@ -149,7 +149,7 @@ class ASTClass(ast_node.ASTNode):
     '''Handle a single class declaration'''
     decl = tree
     if decl.value == 'ConstructorDeclaration':
-      self.methods.append(ast_method.ASTMethod(decl))
+      self.methods.append(ast_method.ASTMethod(decl, self))
       return
 
     # Field/member declarations are one level deeper
@@ -157,7 +157,7 @@ class ASTClass(ast_node.ASTNode):
       self.fields.append(ast_variable_declaration.ASTVariableDeclaration(
           decl.children[0]))
     elif decl.children[0].value == 'MethodDeclaration':
-      self.methods.append(ast_method.ASTMethod(decl.children[0]))
+      self.methods.append(ast_method.ASTMethod(decl.children[0], self))
     elif decl.children[0].value == ';':
       pass
 
@@ -239,6 +239,11 @@ class ASTClass(ast_node.ASTNode):
     label = 'class_info_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_create_object_function_label(self):
+    label = 'create_object_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
   def c_gen_code(self):
     '''Code generation for types'''
     # Generate code for all the methods.
@@ -254,6 +259,8 @@ class ASTClass(ast_node.ASTNode):
       self.c_gen_code_subtype_column(),
       '', '',
       cit.generate_cit(self),
+      '', '',
+      self.c_gen_code_create_instance(),
     ]
 
   def c_gen_code_sit_column(self):
@@ -353,6 +360,30 @@ class ASTClass(ast_node.ASTNode):
       '; X is a subtype of the contained type',
       '{0}:'.format(label),
       subtype_cells
+    ]
+
+  def c_gen_code_create_instance(self):
+    '''Creates an instance of this class in memory and does all prep work so
+    that the constructor can be called. Precisely, does the following:
+
+    1. Allocate memory for the object.
+    2. Sets a pointer to the CIT on the instance.
+
+    The following should be done by the ClassInstanceCreation:
+    1. Call the parent constructor.
+    2. Initialize fields declared on the class.
+    3. Run constructor body.'''
+
+    import code_gen.asm.common as common
+    CodeGenManager.add_global_label(self.canonical_name,
+        self.c_create_object_function_label)
+    return [
+      'global {0}'.format(self.c_create_object_function_label),
+      '{0}:'.format(self.c_create_object_function_label),
+      common.malloc(self.c_object_size),
+      # Class info table
+      'mov dword [eax], {0}'.format(self.c_class_info_table_label),
+      'ret',
     ]
 
 class ASTClassError(Exception):

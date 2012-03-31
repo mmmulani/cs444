@@ -526,9 +526,7 @@ class ASTClassInstanceCreation(ASTExpression):
           'Could not match instance creation expression with constructor')
 
     return [
-      common.malloc(class_defn.c_object_size),
-      # Class info table
-      'mov dword [eax], {0}'.format(class_defn.c_cit_label),
+      'call {0}'.format(class_defn.c_create_object_function_label),
       'push eax ; push instance object',
       param_code,
       'call {0}'.format(constructor.c_defn_label),

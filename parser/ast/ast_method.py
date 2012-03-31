@@ -7,13 +7,14 @@ from ast_expression import ASTIdentifiers
 from code_gen.manager import CodeGenManager
 
 class ASTMethod(ast_node.ASTNode):
-  def __init__(self, tree):
+  def __init__(self, tree, parent_type):
     self.modifiers = None
     self.return_type = None
     self.name = None
     self.params = []
     self.is_constructor = False
     self.is_abstract = False
+    self.parent_type = parent_type
     # One child
     #   1. The body of the method.
     self.children = [None]
@@ -66,7 +67,7 @@ class ASTMethod(ast_node.ASTNode):
     dummy_tree = Dummy()
     dummy_tree.value = 'DummyValue'
 
-    method = ASTMethod(dummy_tree)
+    method = ASTMethod(dummy_tree, None)
     method.name = ASTIdentifiers(name)
 
     return method
@@ -192,10 +193,78 @@ class ASTMethod(ast_node.ASTNode):
     if self.body:
       body_code = self.body.c_gen_code()
 
+    # We add 1 for the |this| parameter.
+    N_PARAMS = 1 + len(self.params)
+
+    # TODO(mehdi): Oh god, refactor this.
+    constructor_code = []
+    # Each constructor does the three tasks:
+    # 1. Call parent constructor (if one exists).
+    # 2. Set field values.
+    # 3. Run constructor body.
+    if self.is_constructor:
+      parent_code = []
+      if self.parent_type.canonical_name != 'java.lang.Object':
+        super_class = self.parent_type.super[0].definition
+        super_sig = (str(super_class.name), [])
+        super_constructor, _ = super_class.environment.lookup_method(super_sig,
+            constructor=True)
+
+        parent_code = [
+          common.get_param('eax', 0, N_PARAMS),
+          'push eax',
+          'call {0}'.format(super_constructor.c_defn_label),
+          'pop ebx ; pop to garbage',
+        ]
+
+      field_init_code = []
+      for f in self.parent_type.fields:
+        if f.is_static:
+          continue
+
+        init_code = []
+        if f.expression is None:
+          # Set the field to a default value.
+          # For primitive types, the default value is a primitive with value 0.
+          # For reference types, the default value is a null pointer.
+          if f.type_node.is_primitive and not f.type_node.is_array:
+            init_code = [
+              '; setting default value for field {0}'.format(str(f.identifier)),
+              'push eax ; save instance',
+              'push 0',
+              'call _create_int',
+              'pop ebx ; pop to garbage',
+              'mov ebx, eax ; ebx is pointer to 0 int',
+              'pop eax ; eax is pointer to instance',
+              common.save_instance_field('eax', f, 'ebx'),
+            ]
+          else:
+            init_code = [
+              '; setting default value for field {0}'.format(str(f.identifier)),
+              'mov ebx, 0 ; null pointer',
+              common.save_instance_field('eax', f, 'ebx'),
+            ]
+        else:
+          init_code = [
+            'push eax ; save |this| pointer',
+            f.expression.c_gen_code(),
+            'mov ebx, eax ; store result in ebx',
+            'pop eax ; restore |this| pointer',
+            common.save_instance_field('eax', f, 'ebx'),
+          ]
+
+        field_init_code.append(init_code)
+
+      constructor_code = [
+        parent_code,
+        field_init_code,
+      ]
+
     return [
       'global {0}'.format(self.c_defn_label),
       '{0}:'.format(self.c_defn_label),
       common.function_prologue(self.c_num_local_vars * 4),
+      constructor_code,
       body_code,
       common.function_epilogue(),
     ]
