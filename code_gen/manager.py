@@ -101,46 +101,22 @@ class CodeGenManager(object):
     'int': 4,
     'null': 5,
     'short': 6,
-    '_array': 7,  # _ is added to make sure there are no conflicts.
   }
-  _tag_count = 7
-
-  @staticmethod
-  def add_tag(ast_type):
-    '''Adds a tag to the tag_map given an AST type
-
-    Returns the tag value.'''
-    # If it's an array tag, just return the array tag value.
-    if ast_type.is_array:
-      return CodeGenManager.tab_map['_array']
-
-    k = CodeGenManager._type_to_str(ast_type)
-    if CodeGenManager._has_tag(k):
-      raise Exception('Trying to insert duplicate type tag {0}.'.format(k))
-
-    CodeGenManager._tag_count += 1
-    tag = CodeGenManager._tag_count
-    CodeGenManager.tag_map[k] = tag
-
-    return tag
 
   @staticmethod
   def has_tag(ast_type):
     '''Checks whether a tag exists for an AST type in the map'''
-    # Array types are added in by default.
-    if ast_type.is_array:
-      return True
-
-    return CodeGenManager._has_tag(CodeGenManager._type_to_str(ast_type))
+    return CodeGenManager._has_tag(str(ast_type))
 
   @staticmethod
   def get_tag(ast_type):
-    '''Gets the tag of an AST type'''
-    # Arrays get special treatment, as usual.
-    if ast_type.is_array:
-      return CodeGenManager.tag_map['_array']
+    '''Gets the tag of an AST type (primitives only - classes/interfaces don't
+    have tags!)'''
 
-    k = CodeGenManager._type_to_str(ast_type)
+    if not ast_type.is_primitive:
+      raise Exception('Tags are not used for non-primitve types!')
+
+    k = str(ast_type)
     if not CodeGenManager._has_tag(k):
       raise Exception(
           'Trying to get a tag for type {0} that does not exist.'.format(k))
@@ -151,17 +127,6 @@ class CodeGenManager(object):
   def _has_tag(type_str):
     '''Checks whether a tag exists for a type string (i.e. key) in the map'''
     return CodeGenManager.tag_map.has_key(type_str)
-
-  @staticmethod
-  def _type_to_str(ast_type):
-    '''Convert the AST type to a string to use as a key for tag_map'''
-    ret = ''
-    if ast_type.is_primitive:
-      ret = str(ast_type)
-    else:
-      ret = ast_type.definition.canonical_name
-
-    return ret
 
   # ------ SUBTYPE TABLE METHODS ------
   _subtype_column_guide = []

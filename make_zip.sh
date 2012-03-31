@@ -1,6 +1,7 @@
 #!/bin/bash
 files_to_zip=(\
   ax-test \
+  code_gen \
   compiler.py \
   joosc \
   Makefile \
