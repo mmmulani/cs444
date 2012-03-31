@@ -8,28 +8,38 @@ def generate_cit(t):
   '''
 
   # TODO: assert t.c_has_offset == True here, maybe?
-  method_impls = _get_method_offsets(t)
+  method_and_field_impls = _get_offsets(t)
 
   return [
     '; CLASS INFO TABLE: {0}'.format(t.canonical_name),
     '{0}:'.format(t.c_class_info_table_label),
     'dd {0}'.format(t.c_sit_column_label),
     'dd {0}'.format(t.c_subtype_column_label),
-    method_impls
+    method_and_field_impls
   ]
 
-def _get_method_offsets(t):
+def _get_offsets(t):
   '''Returns a list of pointers to the method implementations for the type'''
   offset_impl_list = []
+  for f in t.get_all_fields():
+    if f.is_static:
+      offset = f.c_offset
+      # Check that an offset exists.
+      if offset is None:
+        raise Exception('Static field has no offset')
+
+      _offset_check(offset)
+
+      row = 'dd 0x0 ; Temporary storage for static field {0}'.format(str(f.identifier))
+      offset_impl_list.append((offset, row))
+
   for sig, m in t.get_all_methods():
     # If no offset has been set for the method, then this method was defined
     # on an interface and we will resolve it later using the SIT.
     if m.c_offset is None:
       continue
 
-    # Offsets should be dword aligned.
-    if m.c_offset % 4 != 0:
-      raise Exception('Offset for {0} is not a multiple of 4'.format(m.name))
+    _offset_check(m.c_offset)
 
     row = 'dd {0}'.format(m.c_defn_label)
     offset_impl_list.append((m.c_offset, row))
@@ -45,3 +55,10 @@ def _get_method_offsets(t):
     k += 4
 
   return [row for offset, row in offset_impl_list]
+
+def _offset_check(offset):
+  '''Run all checks for an offset on the CIT'''
+
+  # Offets should be dword aligned.
+  if offset % 4 != 0:
+    raise Exception('Offset for {0} is not a multiple of 4'.format(m.name))
