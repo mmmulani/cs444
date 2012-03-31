@@ -14,11 +14,9 @@ def create_int():
   return [
       '_create_int:',
       common.function_prologue(),
-      common.malloc(8),
-      'mov dword [eax], {0} ; int tag'.format(
-          CodeGenManager.get_tag(ASTType.ASTInt)),
+      common.malloc(4),
       common.get_param('ebx', 0, N_PARAMS),
-      'mov dword [eax + 4], ebx',
+      'mov dword [eax], ebx',
       common.function_epilogue()
   ]
 
@@ -36,37 +34,18 @@ def create_boolean():
   return [
       '_create_boolean:',
       common.function_prologue(),
-      common.malloc(8),
-      'mov dword [eax], {0} ; boolean tag'.format(
-          CodeGenManager.get_tag(ASTType.ASTBoolean)),
+      common.malloc(4),
       common.get_param('ebx', 0, N_PARAMS),
       'mov ecx, 0',
       'cmp ebx, ecx',
       'je _create_boolean_done_compare',
       'mov ebx, 1',
       '_create_boolean_done_compare:',
-      'mov dword [eax + 4], ebx',
+      'mov dword [eax], ebx',
       common.function_epilogue()
-  ]
-
-def create_null():
-  '''Allocates space in memory for a null object.
-  It uses 32-bits, and only stores its tag there.
-
-  0 Params.'''
-  N_PARAMS = 0
-
-  return [
-    '_create_null:',
-    common.function_prologue(),
-    common.malloc(4),
-    'mov dword [eax], {0} ; null tag'.format(
-      CodeGenManager.get_tag(ASTType.ASTNull)),
-    common.function_epilogue()
   ]
 
 NAMES = {
     '_create_int': create_int,
-    '_create_boolean': create_boolean,
-    '_create_null': create_null
+    '_create_boolean': create_boolean
 }

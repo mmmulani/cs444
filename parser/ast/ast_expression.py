@@ -211,9 +211,7 @@ class ASTLiteral(ASTExpression):
       ]
     elif self.literal_type == ASTLiteral.NULL:
       return [
-        '; no params',
-        'call _create_null',
-        '; _create_null stores the address in eax'
+        'mov eax, 0',
       ]
     else:
       return []

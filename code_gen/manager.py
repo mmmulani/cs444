@@ -93,41 +93,6 @@ class CodeGenManager(object):
 
     return matched_sels[0]
 
-  # ------ TYPE TAGGING -------
-  tag_map = {
-    'boolean': 1,
-    'byte': 2,
-    'char': 3,
-    'int': 4,
-    'null': 5,
-    'short': 6,
-  }
-
-  @staticmethod
-  def has_tag(ast_type):
-    '''Checks whether a tag exists for an AST type in the map'''
-    return CodeGenManager._has_tag(str(ast_type))
-
-  @staticmethod
-  def get_tag(ast_type):
-    '''Gets the tag of an AST type (primitives only - classes/interfaces don't
-    have tags!)'''
-
-    if not ast_type.is_primitive:
-      raise Exception('Tags are not used for non-primitve types!')
-
-    k = str(ast_type)
-    if not CodeGenManager._has_tag(k):
-      raise Exception(
-          'Trying to get a tag for type {0} that does not exist.'.format(k))
-
-    return CodeGenManager.tag_map[k]
-
-  @staticmethod
-  def _has_tag(type_str):
-    '''Checks whether a tag exists for a type string (i.e. key) in the map'''
-    return CodeGenManager.tag_map.has_key(type_str)
-
   # ------ SUBTYPE TABLE METHODS ------
   _subtype_column_guide = []
 
