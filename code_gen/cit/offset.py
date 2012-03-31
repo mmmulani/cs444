@@ -3,8 +3,8 @@ import parser.ast.ast_interface as ast_interface
 def calc_offset(ast):
   '''Calculates the offsets for the enclosing class in the ASTRoot, if any'''
   if ast.class_or_interface:
-    # We don't need to do any offset calculations for interfaces.
-    # TODO: Is this always true?
+    # We don't need to do any offset calculations for interfaces as all the
+    # methods are abstract and they have no fields.
     if isinstance(ast.class_or_interface, ast_interface.ASTInterface):
       return
     calc_offset_from_defn(ast.class_or_interface)
