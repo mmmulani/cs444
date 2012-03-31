@@ -22,63 +22,6 @@ def create_int():
       common.function_epilogue()
   ]
 
-def create_short():
-  '''Allocates space in memory for a short (32-bits).
-  The value at the memory address will be set to the parameter passed in.
-
-  1 Param:
-    The value of the short'''
-  N_PARAMS = 1
-
-  return [
-      '_create_short:',
-      common.function_prologue(),
-      common.malloc(8),
-      'mov dword [eax], {0} ; short tag'.format(
-          CodeGenManager.get_tag(ASTType.ASTShort)),
-      common.get_param('ebx', 0, N_PARAMS),
-      'mov dword [eax + 4], ebx',
-      common.function_epilogue()
-  ]
-
-def create_byte():
-  '''Allocates space in memory for a byte (32-bits).
-  The value at the memory address will be set to the parameter passed in.
-
-  1 Param:
-    The value of the byte'''
-  N_PARAMS = 1
-
-  return [
-      '_create_byte:',
-      common.function_prologue(),
-      common.malloc(8),
-      'mov dword [eax], {0} ; byte tag'.format(
-          CodeGenManager.get_tag(ASTType.ASTByte)),
-      common.get_param('ebx', 0, N_PARAMS),
-      'mov dword [eax + 4], ebx',
-      common.function_epilogue()
-  ]
-
-def create_char():
-  '''Allocates space in memory for a char (32-bits).
-  The value at the memory address will be set to the parameter passed in.
-
-  1 Param:
-    The value of the integer'''
-  N_PARAMS = 1
-
-  return [
-      '_create_char:',
-      common.function_prologue(),
-      common.malloc(8),
-      'mov dword [eax], {0} ; char tag'.format(
-          CodeGenManager.get_tag(ASTType.ASTChar)),
-      common.get_param('ebx', 0, N_PARAMS),
-      'mov dword [eax + 4], ebx',
-      common.function_epilogue()
-  ]
-
 def create_boolean():
   '''Allocates space in memory for a boolean (stores it in 32-bits).
   The value at the memory address will be set to 0 or 1 based on the parameter
@@ -124,9 +67,6 @@ def create_null():
 
 NAMES = {
     '_create_int': create_int,
-    '_create_short': create_short,
-    '_create_byte': create_byte,
-    '_create_char': create_char,
     '_create_boolean': create_boolean,
     '_create_null': create_null
 }
