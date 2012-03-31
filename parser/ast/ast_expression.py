@@ -1,4 +1,4 @@
-import code_gen.asm.common
+import code_gen.asm.common as common
 import code_gen.manager as manager
 
 from ast_node import ASTNode, ASTUtils
@@ -436,8 +436,8 @@ class ASTBinary(ASTExpression):
   def c_gen_code(self):
     # We provide the code to generate the value of each operand separately as
     # some operators (e.g. &&) will not necessarily evaluate both.
-    left_operand = code_gen.asm.common.store_param(self.left_expr)
-    right_operand = code_gen.asm.common.store_param(self.right_expr)
+    left_operand = common.store_param(self.left_expr)
+    right_operand = common.store_param(self.right_expr)
 
     lazy_ops = {
         '+': '_add_int',
@@ -463,7 +463,7 @@ class ASTBinary(ASTExpression):
       done_eval = manager.CodeGenManager.get_label('done_and_and_operator')
       return [
           '; start &&',
-          code_gen.asm.common.if_false(self.left_expr, done_eval),
+          common.if_false(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',
@@ -473,7 +473,7 @@ class ASTBinary(ASTExpression):
       done_eval = manager.CodeGenManager.get_label('done_or_or_operator')
       return [
           '; start ||',
-          code_gen.asm.common.if_true(self.left_expr, done_eval),
+          common.if_true(self.left_expr, done_eval),
           self.right_expr.c_gen_code(),
           '{0}:'.format(done_eval),
           '; eax contains a pointer to the result',
@@ -516,6 +516,28 @@ class ASTClassInstanceCreation(ASTExpression):
     '''Returns a list of all ASTExpression children.'''
     return self.children[1]
 
+  def c_gen_code(self):
+    class_defn = self.type_node.definition
+    param_code = [common.store_param(x) for x in self.arguments]
+    pop_params = ['pop ebx ; pop param to garbage' for x in self.arguments]
+    sig = (str(class_defn.name), [x.expr_type for x in self.arguments])
+    constructor, _ = class_defn.environment.lookup_method(sig, constructor=True)
+
+    if constructor is None:
+      raise Exception(
+          'Could not match instance creation expression with constructor')
+
+    return [
+      common.malloc(class_defn.c_object_size),
+      # Class info table
+      'mov dword [eax], {0}'.format(class_defn.c_class_info_table_label),
+      'push eax ; push instance object',
+      param_code,
+      'call {0}'.format(constructor.c_defn_label),
+      pop_params,
+      'pop eax ; restore the instance to eax',
+    ]
+
 class ASTIdentifiers(ASTExpression):
   def __init__(self, tree):
     if isinstance(tree, str):
@@ -552,7 +574,6 @@ class ASTIdentifiers(ASTExpression):
     # XXX: Hack to test local variables.
     '''
     defn = self.first_definition[1]
-    import code_gen.asm.common as common
     if isinstance(defn, ASTVariableDeclaration):
       return common.get_local_var('eax', defn)
     else:
