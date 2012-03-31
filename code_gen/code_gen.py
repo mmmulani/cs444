@@ -10,7 +10,6 @@ import manager
 import parser.ast.ast_type as ast_type
 import sit.selector_index_table
 import subtype_table
-import tags
 
 def code_gen(asts, dir):
   '''Top level function for code generation'''
