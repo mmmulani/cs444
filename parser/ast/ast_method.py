@@ -21,6 +21,9 @@ class ASTMethod(ast_node.ASTNode):
     # This is set by the Environment module when the tree is complete.
     self.environment = None
 
+    # The offset location for the method in the class instance table.
+    self.c_offset = None
+
     # The total number of local variables declared in this method's body.
     # This is set by handle_local_vars().
     self.c_num_local_vars = 0
@@ -57,9 +60,6 @@ class ASTMethod(ast_node.ASTNode):
       self._handle_declarator(tree.children[-2])
     else:
       raise ASTMethodError('Invalid node passed to ASTMethod')
-
-    # The offset location for the method in the class instance table.
-    self.c_offset = None
 
   @staticmethod
   def create_dummy_method(name):

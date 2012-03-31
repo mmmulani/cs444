@@ -36,9 +36,14 @@ class ASTVariableDeclaration(ast_node.ASTNode):
     # A tuple for (In, Out) for the reachability of this node.
     self.reachability = (None, None)
 
-    # If this is a local variable declaration, this is set to the method that
-    # it is defined in. c_method_frame_index is the index to find this variable
-    # in the stack frame.
+    # If this is a field, c_offset is the offset at which the value can be
+    # found. If the field is static, this offset is into the CIT.  If the field
+    # is non-static, this is an offset into the object itself.
+    self.c_offset = None
+
+    # If this is a local variable declaration, parent_method is set to the
+    # method that it is defined in. c_method_frame_index is the index to find
+    # this variable in the stack frame.
     self.c_parent_method = None
     self.c_method_frame_index = -1
 
