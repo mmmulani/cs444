@@ -152,11 +152,13 @@ def invoke_instance_method(this_reg, m, args_asm):
 
   return [
     '; Invoke instance method: {0}'.format(m.name),
-    'push {0} ; push "this"'.format(this_reg),
+    'push ebx  ; Use ebx as scratch for "this"',
+    'push {0}  ; push "this" as the first param'.format(this_reg),
     args_asm,
-    'mov dword eax, [{0}]  ; Get to CIT'.format(this_reg),
+    'mov dword eax, [ebx]  ; Get to CIT',
     'mov dword eax, [eax + {0}]  ; Get the method'.format(m.c_offset),
-    'call eax ; Call the method'
+    'call eax  ; Call the method',
+    'pop ebx  ; Done ussing ebx as scratch'
   ]
 
 def unwrap_primitive(dest, src):
