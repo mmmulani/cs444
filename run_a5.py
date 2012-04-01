@@ -99,7 +99,7 @@ def _show_fail(path, reason):
   print 'FAILING TEST: {0} [{1}]'.format(path.split('/')[1], reason)
   sys.stderr.write(color + out + END_COLOR)
 
-if ('test-asm') in sys.argv:
+if not ('not-test-asm') in sys.argv:
   # Test the assembly produced for each test.
   print
   print 'Testing generated code...'
