@@ -13,6 +13,7 @@ def generate_cit(t):
         'Trying to generate CIT from {0} with no offsets set.'.format(t.name))
 
   method_and_field_impls = _get_offsets(t)
+  field_defn = _get_field_defns(t)
 
   return [
     '; CLASS INFO TABLE: {0}'.format(t.canonical_name),
@@ -20,7 +21,9 @@ def generate_cit(t):
     '{0}:'.format(t.c_cit_label),
     'dd {0}'.format(t.c_sit_column_label),
     'dd {0}'.format(t.c_subtype_column_label),
-    method_and_field_impls
+    method_and_field_impls,
+    '', '',
+    field_defn
   ]
 
 def _get_offsets(t):
@@ -35,8 +38,8 @@ def _get_offsets(t):
 
       _offset_check(offset)
 
-      row = 'dd 0x0 ; Temporary storage for static field {0}'.format(
-          str(f.identifier))
+      row = 'dd {0} ; Storage for static field {1}'.format(
+          f.c_defn_label, f.identifier)
       offset_impl_list.append((offset, row))
 
   for sig, m in t.get_all_methods():
@@ -68,3 +71,17 @@ def _offset_check(offset):
   # Offets should be dword aligned.
   if offset % 4 != 0:
     raise Exception('Offset for {0} is not a multiple of 4'.format(m.name))
+
+def _get_field_defns(t):
+  '''Return stoarge locations for each of the static fields.
+  Static fields are stored in the data segment with code.'''
+  ret = []
+  for f in t.fields:
+    if f.is_static:
+      CodeGenManager.add_global_label(t.canonical_name, f.c_defn_label)
+      ret.append([
+        'global {0}'.format(f.c_defn_label),
+        '{0}: ; Static field {1}'.format(f.c_defn_label, f.identifier),
+        'dd 0x0',
+      ])
+  return ret

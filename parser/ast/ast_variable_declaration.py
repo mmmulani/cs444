@@ -2,6 +2,8 @@ import ast_expression
 import ast_node
 import ast_type
 
+from code_gen.manager import CodeGenManager
+
 class ASTVariableDeclaration(ast_node.ASTNode):
   def __init__(self, tree):
     '''Creates an AST Variable Declaration node from a 'FieldDeclaration'
@@ -86,6 +88,12 @@ class ASTVariableDeclaration(ast_node.ASTNode):
   @property
   def type_node(self):
     return self.children[1]
+
+  @property
+  def c_defn_label(self):
+    '''The label pointing to the field definition'''
+    label = 'field_defn_{0}'.format(str(self.identifier))
+    return CodeGenManager.memoize_label(self, label)
 
   def c_gen_code(self):
     if self.c_parent_method is None:
