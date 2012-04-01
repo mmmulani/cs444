@@ -133,3 +133,4 @@ class CodeGenManager(object):
 
   # The current # of params the current ASTMethod takes.
   N_PARAMS = 0
+  cur_method = None

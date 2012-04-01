@@ -201,6 +201,7 @@ class ASTMethod(ast_node.ASTNode):
   def c_gen_code(self):
     import code_gen.asm.common as common
     CodeGenManager.N_PARAMS = self.c_num_params
+    CodeGenManager.cur_method = self
 
     body_code = []
     if self.body:
@@ -255,6 +256,7 @@ class ASTMethod(ast_node.ASTNode):
     ]
 
     CodeGenManager.N_PARAMS = 0
+    CodeGenManager.cur_method = None
     return ret
 
 class ASTMethodError(Exception):
