@@ -363,8 +363,6 @@ def method_invocation(node):
   if not isinstance(method, ast_method.ASTMethod):
     return None
 
-  # Save the invoked method on ASTMethodInvocation.
-  node.method_definition = method
   return method.return_type
 
 # _resolve_identifier takes an ASTIdentifiers node and returns either an ASTType
