@@ -46,29 +46,57 @@ def get_field_access_from_annotation(ids, annotation):
   '''Returns code to get a instance field given ids and their annotations'''
   ret = ['; Getting (field) value of {0}'.format(ids)]
 
-  # Figure out where the field accesses start.
-  #   - If it's off of a static variable, e.g. ClassName.static_var.f,
-  #     the annotation will start with static_var
-  #   - If it's off a local variable or field, e.g. v.f, the annotation
-  #     will start with v
-  name, decl = annotation[0]
-  t = decl.type_node.definition
+  # Resolve all parts of the ID before the final field access.
+  t, code = _get_to_final(ids, annotation)
   env = t.environment
-  if str(ids).startswith(name):
-    # The first part matches the ID, which means we're going off a local var
-    ret.append(get_simple_var(decl))
-  else:
-    # The first part is a static variable access.
-    ret.append(common.get_static_field(decl))
+  ret.append(code)
 
-  for name, decl in annotation[1:]:
-    f, encl_type = env.lookup_field(name)
-    t = f.type_node.definition
-    env = t.environment
-    ret.extend(common.get_instance_field('eax', f))
-
+  # The final part should be an instance field acccess.
   final_part = str(ids.parts[-1])
   f, encl_type = env.lookup_field(final_part)
   ret.extend(common.get_instance_field('eax', f))
 
   return ret
+
+def _get_to_final(ids, annotation):
+  '''Resolve to the final part of the identifier
+
+  Returns (ASTType, asm_code)'''
+
+  # Figure out where the field accesses or method invocations start.
+  #   - If it's off of a static variable, e.g. ClassName.static_var.f,
+  #     the annotation will start with static_var
+  #   - If it's off a local variable or field, e.g. v.f, the annotation
+  #     will start with v
+  name, decl = annotation[0]
+  t = _get_type_from_decl(decl).definition
+  env = t.environment
+  code = []
+  if str(ids).startswith(name):
+    # The first part matches the ID, which means we're going off a local var
+    code = get_simple_var(decl)
+  else:
+    # The first part is a static variable access.
+    code = common.get_static_field(decl)
+
+  # After the start, keep doing instance field accesses off the previous
+  # result.
+  for name, decl in annotation[1:]:
+    f, encl_type = env.lookup_field(name)
+    t = f.type_node.definition
+    env = t.environment
+    code.extend(common.get_instance_field('eax', f))
+
+  return t, code
+
+def _get_type_from_decl(decl):
+  '''Gets the ASTType from a declaration node
+
+  A declaration node can be an ASTParam (method param) or an
+  ASTVariableDeclaration (local or field)'''
+  if isinstance(decl, ast_param.ASTParam):
+    return decl.type
+  elif isinstance(decl, ast_variable_declaration.ASTVariableDeclaration):
+    return decl.type_node
+
+  raise Exception('Invalid declaration type')

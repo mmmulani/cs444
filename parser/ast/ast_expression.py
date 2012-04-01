@@ -374,6 +374,10 @@ class ASTMethodInvocation(ASTExpression):
     return self.children[1]
 
   @property
+  def arg_types(self):
+    return [x.expr_type for x in self.children[1]]
+
+  @property
   def left(self):
     return self.children[0][0]
 
@@ -388,6 +392,26 @@ class ASTMethodInvocation(ASTExpression):
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return self.children[0] + self.children[1]
+
+  def c_gen_code(self):
+    '''Generate method invocation code'''
+    import code_gen.invoke as invoke
+    import code_gen.annotate_ids as annotate_ids
+
+    # Get the ASM to push the arguments on the stack left to right.
+    args_asm = invoke.get_arg_list(self.arguments)
+
+    # Simple case: The method invocation is just off an ASTIdentifiers.
+    if self.right is None:
+      ids = self.left
+      annotation = annotate_ids.annotate_identifier(ids)
+      if len(annotation) == 0:
+        # Method invocation off implcit "this".  Joos does not allow static
+        # methods to be called with an implcit type.
+        return ''
+      return invoke.call_simple_method(ids, self.arg_types, args_asm)
+
+    return ''
 
 class ASTInstanceOf(ASTExpression):
   def __init__(self, tree):

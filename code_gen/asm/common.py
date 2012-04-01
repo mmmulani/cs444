@@ -129,6 +129,20 @@ def get_static_field(field_decl, dest='eax'):
     'mov dword {0}, [{1}]'.format(dest, field_decl.c_defn_label)
   ]
 
+def invoke_instance_method(this_reg, m, args_asm):
+  '''Invokes an instance method m off this_reg'''
+  if m.c_offset is None:
+    raise Exception('Instance method has no offset')
+
+  return [
+    '; Invoke instance method: {0}'.format(m.name),
+    'push {0} ; push "this"'.format(this_reg),
+    args_asm,
+    'mov dword eax, [{0}]  ; Get to CIT'.format(this_reg),
+    'mov dword eax, [eax + {0}]  ; Get the method'.format(m.c_offset),
+    'call eax ; Call the method'
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)
