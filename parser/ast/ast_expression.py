@@ -335,6 +335,21 @@ class ASTArrayAccess(ASTExpression):
                      ASTExpression.get_expr_node(tree.children[2])]
     super(ASTArrayAccess, self).__init__()
 
+  def c_gen_code(self):
+    # Assume that we're doing an array read.
+    return [
+      self.array_expression.c_gen_code(),
+      'push eax',
+      self.index.c_gen_code(),
+      #TODO (gnleece) runtime check for array-out-of-bounds
+      'pop ebx   ; restore the pointer to the array',
+      '; calculate the offset into the array:',
+      common.unwrap_primitive('eax', 'eax'),
+      'imul eax, 4',
+      'add eax, 12',
+      'mov eax, [ebx + eax]'
+    ]
+
   @property
   def array_expression(self):
     return self.children[0]
