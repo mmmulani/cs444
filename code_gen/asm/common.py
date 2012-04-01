@@ -112,6 +112,16 @@ def save_instance_field(this_reg, field_decl, src):
     'mov [{0} + {1}], {2}'.format(this_reg, offset, src),
   ]
 
+def get_instance_field(this_reg, field_decl, dest='eax'):
+  '''Gets the instance field out of this_reg'''
+  offset = field_decl.c_offset
+  if offset is None:
+    raise Exception('Instance field does not have an offset')
+
+  return [
+    'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)

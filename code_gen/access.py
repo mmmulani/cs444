@@ -22,8 +22,11 @@ def get_simple_var(decl):
     raise Exception('Invalid instance var value retrieval.')
 
   # "this" is always the first param from an implicit "this".
-  # TODO: get the field off "this"
-  return common.get_param('eax', 0, CodeGenManager.N_PARAMS)
+  return [
+    '; Field access of implicit "this"',
+    common.get_param('eax', 0, CodeGenManager.N_PARAMS),
+    common.get_instance_field('eax', decl)
+  ]
 
 def get_simple_static_field(ids):
   '''Resolve a simple static field access directly off the type.
