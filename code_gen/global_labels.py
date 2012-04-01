@@ -16,6 +16,11 @@ def set_global_labels(asts):
       for m in t.methods:
         CodeGenManager.add_global_label(canonical_name, m.c_defn_label)
 
+      # Add static field labels to the CodeGenManager.
+      for f in t.fields:
+        if f.is_static:
+          CodeGenManager.add_global_label(canonical_name, f.c_defn_label)
+
       # Add the CIT labels to the list to be externed.
       CodeGenManager.add_global_label(
           canonical_name, t.c_cit_label)
