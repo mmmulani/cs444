@@ -14,7 +14,7 @@ def call_simple_method(ids, arg_types, args_asm):
   env = t.definition.environment
   ret.append(code)
 
-  if isinstance(t, ast_interface.ASTInterface):
+  if isinstance(t.definition, ast_interface.ASTInterface):
     # Use the SIT table for interface methods.
     return ''
 
