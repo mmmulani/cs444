@@ -47,7 +47,7 @@ def generate_ast_code(ast, output_dir='output'):
   externs.extend(runtime.NAMES.keys())
   extern_asm = ['extern {0}'.format(x) for x in externs]
   header_asm = [
-    'section .data',
+    'section .text',
     '',
     extern_asm,
     '', '',

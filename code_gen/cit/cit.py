@@ -23,6 +23,7 @@ def generate_cit(t):
     'dd {0}'.format(t.c_subtype_column_label),
     method_and_field_impls,
     '', '',
+    'section .data',
     field_defn
   ]
 

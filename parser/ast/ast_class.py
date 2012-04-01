@@ -282,12 +282,13 @@ class ASTClass(ast_node.ASTNode):
       '', '',  # Padding between tables.
       self.c_gen_code_subtype_columns(),
       '', '',
-      cit.generate_cit(self),
-      cit.generate_array_cit(self),
-      '', '',
       self.c_gen_code_create_instance(),
       '', '',
       self.c_gen_code_create_array(),
+      '', '',
+      cit.generate_array_cit(self),
+      '', '',
+      cit.generate_cit(self),  # THIS MUST BE LAST.
     ]
 
   def c_gen_code_sit_column(self):
