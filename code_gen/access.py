@@ -89,8 +89,7 @@ def get_field_access_from_annotation(ids, annotation):
   ret.append(code)
   if t.is_array:
     # Crazy hack for arrays!
-    return ''
-    # return get_array_field(ids, annotation, ret)
+    return get_array_field(ids, annotation, ret)
 
   env = t.definition.environment
 
@@ -102,7 +101,7 @@ def get_field_access_from_annotation(ids, annotation):
   return ret
 
 def get_array_field(ids, annotation, code):
-  '''Get an array field
+  '''Get an array field.
 
   The "code" param should have the asm code that places the array object
   in eax.'''
