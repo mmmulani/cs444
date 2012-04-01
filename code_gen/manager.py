@@ -109,6 +109,7 @@ class CodeGenManager(object):
 
   # ------ SUBTYPE TABLE METHODS ------
   _subtype_column_guide = []
+  prim_array_subtype_cols = {}
 
   @staticmethod
   def get_subtype_table_index(type_):

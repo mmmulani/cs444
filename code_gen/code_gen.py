@@ -8,6 +8,7 @@ import global_labels
 import handle_local_vars as handle_local_vars
 import manager
 import parser.ast.ast_type as ast_type
+import primitive_array
 import sit.selector_index_table
 import static_init
 import subtype_table
@@ -31,6 +32,7 @@ def code_gen(asts, dir):
     raise Exception('Could not find definition of java.lang.Object')
 
   # Begin code generation.
+  generate_primitive_array_code(dir) # this needs to run BEFORE the ASTs
   for ast in asts:
     generate_ast_code(ast, dir)
   generate_common_code(dir)
@@ -106,6 +108,15 @@ def _generate_body_code(ast):
   body_asm.append(ast.c_gen_code())
 
   return body_asm
+
+def generate_primitive_array_code(output_dir='output'):
+  asm = primitive_array.generate_prim_array_code()
+  asm = asm_to_string(asm)
+  filename = '_primitive_arrays.s'
+  filepath = os.path.join(output_dir, filename)
+  asm_file = open(filepath, 'w')
+  asm_file.write(asm)
+  asm_file.close()
 
 def generate_common_code(output_dir='output'):
   ''' Saves the code for the assembly helper functions to a file '''
