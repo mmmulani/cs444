@@ -35,13 +35,17 @@ def generate_array_cit(t):
       - Pointer to Subtype column
       - Methods (which all come directly from java.lang.Object)
   '''
+
+  # the only methods defined on arrays are those from java.lang.Object:
+  method_impls = _get_offsets(CodeGenManager.java_lang_object_defn)
+
   return [
     '; ARRAY CLASS INFO TABLE: {0}'.format(t.canonical_name),
     'global {0}'.format(t.c_array_cit_label),
     '{0}:'.format(t.c_array_cit_label),
     'dd {0}'.format(t.c_array_sit_column_label),
     'dd {0}'.format(t.c_array_subtype_column_label),
-    # TODO (gnleece) methods from java.lang.Object go here
+    method_impls
   ]
 
 def _get_offsets(t):
