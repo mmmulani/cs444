@@ -10,7 +10,10 @@ def call_simple_method(ids, arg_types, args_asm):
 
   t, code = access._get_to_final(ids, annotation)
   if t.is_array:
-    return ''
+    # Joos does not allow invoking java.lang.Object's methods directly
+    # off of an array -- you must cast to java.lang.Object first.
+    raise Exception('Method invocation off array disallowed')
+
   env = t.definition.environment
   ret.append(code)
 
