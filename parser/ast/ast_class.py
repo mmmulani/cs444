@@ -382,7 +382,7 @@ class ASTClass(ast_node.ASTNode):
       '{0}:'.format(self.c_create_object_function_label),
       common.malloc(self.c_object_size),
       # Class info table
-      'mov dword [eax], {0}'.format(self.c_class_info_table_label),
+      'mov dword [eax], {0}'.format(self.c_cit_label),
       'ret',
     ]
 
