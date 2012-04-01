@@ -110,8 +110,24 @@ def _generate_body_code(ast):
   return body_asm
 
 def generate_primitive_array_code(output_dir='output'):
-  asm = primitive_array.generate_prim_array_code()
-  asm = asm_to_string(asm)
+  # generate the code header (externs, globals)
+  externs = _get_helper_function_names().keys()
+  externs.extend(runtime.NAMES.keys())
+  file_externs = global_labels.get_global_labels_from_key('__primitives')
+  file_externs.sort()  # To make debugging easier.
+
+  header_asm = [
+    'section .text',
+    '',
+    ['extern {0}'.format(x) for x in externs],
+    '',
+    ['extern {0}'.format(x) for x in file_externs],
+    '', '',
+  ]
+
+  body_asm = primitive_array.generate_prim_array_code()
+  
+  asm = asm_to_string([header_asm, body_asm])
   filename = '_primitive_arrays.s'
   filepath = os.path.join(output_dir, filename)
   asm_file = open(filepath, 'w')

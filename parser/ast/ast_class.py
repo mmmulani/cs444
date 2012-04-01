@@ -288,7 +288,8 @@ class ASTClass(ast_node.ASTNode):
       '', '',
       self.c_gen_code_create_array(),
       '', '',
-      cit.generate_array_cit(self),
+      cit.generate_array_cit(self.canonical_name, self.c_array_cit_label,
+          self.c_array_sit_column_label, self.c_array_subtype_column_label),
       '', '',
       cit.generate_cit(self),  # THIS MUST BE LAST.
     ]
@@ -411,7 +412,7 @@ class ASTClass(ast_node.ASTNode):
     return [
       'global {0}'.format(self.c_create_array_function_label),
       '{0}:'.format(self.c_create_array_function_label),
-      array.create_array(False, self.c_cit_label, self.c_array_cit_label)     
+      array.create_array(False, self.c_array_cit_label, self.c_cit_label)     
     ]
 
 class ASTClassError(Exception):

@@ -27,7 +27,8 @@ def generate_cit(t):
     field_defn
   ]
 
-def generate_array_cit(t):
+def generate_array_cit(name, array_cit_label, array_sit_column_label,
+    array_subtype_column_label):
   '''Generates the array version of the Class Info Table (CIT) column from an
   ASTClass.
 
@@ -41,11 +42,11 @@ def generate_array_cit(t):
   method_impls = _get_offsets(CodeGenManager.java_lang_object_defn)
 
   return [
-    '; ARRAY CLASS INFO TABLE: {0}'.format(t.canonical_name),
-    'global {0}'.format(t.c_array_cit_label),
-    '{0}:'.format(t.c_array_cit_label),
-    'dd {0}'.format(t.c_array_sit_column_label),
-    'dd {0}'.format(t.c_array_subtype_column_label),
+    '; ARRAY CLASS INFO TABLE: {0}'.format(name),
+    'global {0}'.format(array_cit_label),
+    '{0}:'.format(array_cit_label),
+    'dd {0}'.format(array_sit_column_label),
+    'dd {0}'.format(array_subtype_column_label),
     method_impls
   ]
 

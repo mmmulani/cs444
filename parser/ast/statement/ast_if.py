@@ -1,6 +1,9 @@
 import ast_statement
+import code_gen.asm.common as common
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
+
+from code_gen.manager import CodeGenManager
 
 class ASTIf(ast_statement.ASTStatement):
   def __init__(self, tree):
@@ -56,6 +59,27 @@ class ASTIf(ast_statement.ASTStatement):
     if self.children[2]:
       ast_node.ASTUtils.println('Else:', depth)
       self.children[2].show(depth+1, types)
+
+  def c_gen_code(self):
+    if_body_code = []
+    if self.if_statement is not None:
+      if_body_code = self.if_statement.c_gen_code()
+
+    else_body_code = []
+    if self.else_statement is not None:
+      else_body_code = self.else_statement.c_gen_code()
+
+    false_label = CodeGenManager.get_label('if_block_false')
+    if_end_label = CodeGenManager.get_label('if_block_end')
+    return [
+      '; if condition',
+      common.if_false(self.expression, false_label),
+      if_body_code,
+      'jmp {0}'.format(if_end_label),
+      '{0}:'.format(false_label),
+      else_body_code,
+      '{0}:'.format(if_end_label),
+    ]
 
 class ASTIfError(Exception):
   pass
