@@ -3,6 +3,7 @@ import ast_method
 import ast_node
 import ast_type
 import ast_variable_declaration
+import code_gen.asm.common as common
 import code_gen.cit.cit as cit
 
 from code_gen.manager import CodeGenManager
@@ -262,6 +263,11 @@ class ASTClass(ast_node.ASTNode):
     label = 'create_object_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_create_array_function_label(self):
+    label = 'create_array_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
   def c_gen_code(self):
     '''Code generation for types'''
     # Generate code for all the methods.
@@ -280,6 +286,8 @@ class ASTClass(ast_node.ASTNode):
       cit.generate_array_cit(self),
       '', '',
       self.c_gen_code_create_instance(),
+      '', '',
+      self.c_gen_code_create_array(),
     ]
 
   def c_gen_code_sit_column(self):
@@ -407,6 +415,48 @@ class ASTClass(ast_node.ASTNode):
       # Class info table
       'mov dword [eax], {0}'.format(self.c_cit_label),
       'ret',
+    ]
+
+  def c_gen_code_create_array(self):
+    '''Create an array of this type in memory
+
+    Structure of the created array object is as follows:
+      1. Pointer to Array CIT
+      2. Pointer to (regular) CIT
+      3. Length (reference to a integer)
+      4. Array elements
+
+    1 Param:
+      The length of the array'''
+    N_PARAMS = 1
+
+    CodeGenManager.add_global_label(self.canonical_name,
+        self.c_create_array_function_label)
+
+    # The first 12 bytes are for the pointer to the Array CIT, the regular CIT,
+    # and the length. Remaining bytes are for the array elements (4 bytes each) 
+
+    return [
+      'global {0}'.format(self.c_create_array_function_label),
+      '{0}:'.format(self.c_create_array_function_label),
+      common.function_prologue(),
+      common.get_param('ebx', 0, N_PARAMS),
+      '; ebx now contains the length of the array',
+      '; calculate how much memory to allocate, based on length of array:',
+      'imul ebx, 4  ; 4 bytes for every element',
+      'add ebx, 12  ; add an extra 12 bytes for pointers/length field',
+      common.malloc_reg('ebx'),
+      'push eax',
+      '; create an int to store the length of the array:',
+      'push ebx;',
+      'call _create_int',
+      'pop ecx; pop param to garbage',
+      'mov ebx, eax  ; ebx has pointer to integer representing array length',
+      'pop eax  ; eax now has pointer to memory from malloc call',
+      'mov dword [eax], {0}'.format(self.c_array_cit_label),
+      'mov dword [eax + 4], {0}'.format(self.c_cit_label),
+      'mov dword [eax + 8], ebx',
+      common.function_epilogue()
     ]
 
 class ASTClassError(Exception):
