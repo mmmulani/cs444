@@ -78,7 +78,7 @@ class CodeGenManager(object):
   def get_sit_offset(m):
     '''Gets the SIT offset given an ASTMethod m'''
     selector = (m.return_type, m.signature)
-    return CodeGenManager.get_selector_id(selector)
+    return (CodeGenManager.get_selector_id(selector) * 4)
 
   @staticmethod
   def get_selector_id(selector):
