@@ -176,9 +176,9 @@ def find_first_definition(ast_idens, env, is_static):
     if ret is None:
       raise NameLinkingError('No definition found for simple name {0}'.format(
         full_name))
-    # We need to make sure that it is static if we are
-    # accessing it from a static method or field.
-    if is_static and not ret.is_static:
+    # There is no implicit this for static fields so the first definition can
+    # not be static.
+    if ret.is_static:
       raise NameLinkingError('Static lookup in non-static context')
     return ret, full_name
 
