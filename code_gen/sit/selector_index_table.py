@@ -23,12 +23,12 @@ def make_sit(asts):
   # Store the column guide on the CodeGenManager so it can do lookups.
   CodeGenManager._sit_column_guide = indexed_selectors
 
-'''get_selectors() returns a list of unique method selectors from all the
-interfaces provided.
-A selector is a 2-tuple where:
-  1. Method return type.
-  2. Method signature, a 2-tuple of (name, tuple of parameter types).'''
 def get_selectors(interfaces):
+  '''get_selectors() returns a list of unique method selectors from all the
+  interfaces provided.
+  A selector is a 2-tuple where:
+    1. Method return type.
+    2. Method signature, a 2-tuple of (name, tuple of parameter types).'''
   method_selectors = []
   for interface in interfaces:
     methods = interface.methods
@@ -40,10 +40,10 @@ def get_selectors(interfaces):
 
   return method_selectors
 
-'''create_sit_column() returns a list representing the SIT column for class_.
-Each item in the list is an ASTMethod or None (if the selector was not found on
-any of the class' methods).'''
 def create_sit_column(indexed_selectors, class_):
+  '''create_sit_column() returns a list representing the SIT column for class_.
+  Each item in the list is an ASTMethod or None (if the selector was not found on
+  any of the class' methods).'''
   methods = class_.methods
   column = map(lambda(x): None, indexed_selectors)
   class_env = class_.environment
@@ -81,5 +81,3 @@ def gen_code_sit_column(sit_column, label):
       '{0}:'.format(label),
       table_entries
   ]
-
-
