@@ -638,7 +638,10 @@ class ASTArrayCreation(ASTExpression):
       return [] # TODO (gnleece) handle arrays of primitives
 
     return [
+      self.children[1].c_gen_code(),
+      'push eax  ; array length',
       'call {0}'.format(class_defn.c_create_array_function_label),
+      'pop ebx  ; pop to garbage',
     ]
 
   @property
