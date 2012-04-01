@@ -3,6 +3,8 @@ import parser.ast.ast_class as ast_class
 import parser.ast.ast_param as ast_param
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 
+from manager import CodeGenManager
+
 NAMES = []
 
 def get_simple_var(decl):
@@ -18,7 +20,8 @@ def get_simple_var(decl):
   if not isinstance(decl, ast_variable_declaration.ASTVariableDeclaration):
     raise Exception('Invalid instance var value retrieval.')
 
-  return ''
+  # "this" is always the first param from an implicit "this".
+  return common.get_param('eax', 0, CodeGenManager.N_PARAMS)
 
 def get_simple_static_field(ids):
   '''Resolve a simple static field access directly off the type.
