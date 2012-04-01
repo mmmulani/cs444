@@ -3,7 +3,7 @@ import code_gen.asm.common as common
 
 from code_gen.manager import CodeGenManager
 
-def create_array(is_primitive, cit_label, array_cit_label = 0):
+def create_array(is_primitive, array_cit_label, cit_label = 0):
   ''' Returns code for a function that creates an array in memory.
   This function does NOT include a label, because each reference/primitive
   type will need their own version of this function. You should put your
