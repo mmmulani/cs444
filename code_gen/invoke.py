@@ -32,8 +32,8 @@ def call_simple_method(ids, arg_types, args_asm):
     # static methods.
     ret.append(common.invoke_interface_method('eax', m, args_asm))
   elif m.is_static:
-    # Call a static method
-    return ''
+    # Call a static method m.
+    ret.append(common.invoke_static_method(t.definition, m, args_asm))
   else:
     ret.append(common.invoke_instance_method('eax', m, args_asm))
 

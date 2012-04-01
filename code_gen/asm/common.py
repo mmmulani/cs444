@@ -185,6 +185,25 @@ def invoke_interface_method(this_reg, m, args_asm):
     'pop ebx  ; Done using ebx as scratch'
   ]
 
+def invoke_static_method(t, m, args_asm):
+  '''Invokes a static method m on type t'''
+  if t is None:
+    raise Exception('Calling static method with no type')
+
+  if m.c_offset is None:
+    raise Exception('Calling static method with no offset')
+
+  return [
+    '; Invoke static method: {0}'.format(m.name),
+    'push ebx  ; Use ebx as a scratch for "this"',
+    'mov ebx, eax',
+    args_asm,
+    'mov dword eax, {0}  ; Get to the CIT'.format(t.c_cit_label),
+    'mov dword eax, [eax + {0}]  ; Get method defn'.format(m.c_offset),
+    'call eax  ; Call the method',
+    'pop ebx  ; Done using ebx as scratch'
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)
