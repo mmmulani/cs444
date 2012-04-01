@@ -336,15 +336,29 @@ class ASTArrayAccess(ASTExpression):
     super(ASTArrayAccess, self).__init__()
 
   def c_gen_code(self):
+    array_check_pass = manager.CodeGenManager.get_label('array_check_pass')
+    array_check_fail = manager.CodeGenManager.get_label('array_check_fail')
+
     # Assume that we're doing an array read.
     return [
       self.array_expression.c_gen_code(),
       'push eax',
       self.index.c_gen_code(),
-      #TODO (gnleece) runtime check for array-out-of-bounds
       'pop ebx   ; restore the pointer to the array',
-      '; calculate the offset into the array:',
       common.unwrap_primitive('eax', 'eax'),
+      '; check whether the index is out of bounds:',
+      common.get_array_length('ecx', 'ebx'),
+      common.unwrap_primitive('ecx', 'ecx'),
+      'cmp eax, ecx',
+      'jge {0}'.format(array_check_fail),
+      'cmp eax, 0',
+      'jl {0}'.format(array_check_fail),
+      'jmp {0}'.format(array_check_pass),
+      '{0}:'.format(array_check_fail),
+      'call __exception',
+      
+      '{0}:'.format(array_check_pass),
+      '; calculate the offset into the array:',
       'imul eax, 4',
       'add eax, 12',
       'mov eax, [ebx + eax]'
