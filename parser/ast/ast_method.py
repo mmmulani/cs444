@@ -1,6 +1,7 @@
 import ast_node
 import ast_param
 import ast_type
+import code_gen.asm.object
 import statement.ast_block as ast_block
 
 from ast_expression import ASTIdentifiers
@@ -196,7 +197,6 @@ class ASTMethod(ast_node.ASTNode):
     # We add 1 for the |this| parameter.
     N_PARAMS = 1 + len(self.params)
 
-    # TODO(mehdi): Oh god, refactor this.
     constructor_code = []
     # Each constructor does the three tasks:
     # 1. Call parent constructor (if one exists).
@@ -222,38 +222,14 @@ class ASTMethod(ast_node.ASTNode):
         if f.is_static:
           continue
 
-        init_code = []
-        if f.expression is None:
-          # Set the field to a default value.
-          # For primitive types, the default value is a primitive with value 0.
-          # For reference types, the default value is a null pointer.
-          if f.type_node.is_primitive and not f.type_node.is_array:
-            init_code = [
-              '; setting default value for field {0}'.format(str(f.identifier)),
-              'push eax ; save instance',
-              'push 0',
-              'call _create_int',
-              'pop ebx ; pop to garbage',
-              'mov ebx, eax ; ebx is pointer to 0 int',
-              'pop eax ; eax is pointer to instance',
-              common.save_instance_field('eax', f, 'ebx'),
-            ]
-          else:
-            init_code = [
-              '; setting default value for field {0}'.format(str(f.identifier)),
-              'mov ebx, 0 ; null pointer',
-              common.save_instance_field('eax', f, 'ebx'),
-            ]
-        else:
-          init_code = [
-            'push eax ; save |this| pointer',
-            f.expression.c_gen_code(),
-            'mov ebx, eax ; store result in ebx',
-            'pop eax ; restore |this| pointer',
-            common.save_instance_field('eax', f, 'ebx'),
-          ]
-
-        field_init_code.append(init_code)
+        field_init_code.append([
+          '; setting value for field {0}'.format(str(f.identifier)),
+          'push eax ; save |this|',
+          code_gen.asm.object.create_starting_value(f),
+          'mov ebx, eax ; move result to ebx',
+          'pop eax ; restore |this|',
+          common.save_instance_field('eax', f, 'ebx'),
+        ])
 
       constructor_code = [
         parent_code,
