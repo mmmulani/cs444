@@ -122,7 +122,7 @@ def save_instance_field(this_reg, field_decl, src):
     'mov [{0} + {1}], {2}'.format(this_reg, offset, src),
   ]
 
-def get_instance_field(this_reg, field_decl, dest='eax'):
+def get_instance_field(this_reg, dest, field_decl):
   '''Gets the instance field out of this_reg'''
   offset = field_decl.c_offset
   if offset is None:
@@ -132,7 +132,7 @@ def get_instance_field(this_reg, field_decl, dest='eax'):
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
   ]
 
-def get_static_field(field_decl, dest='eax'):
+def get_static_field(dest, field_decl):
   '''Gets the static field in field_decl and puts it in dest'''
   return [
     '; Get static var {0}'.format(field_decl.identifier),

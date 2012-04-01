@@ -53,7 +53,7 @@ def get_simple_var(decl):
   return [
     '; Field access of implicit "this"',
     common.get_param('eax', 0, CodeGenManager.N_PARAMS),
-    common.get_instance_field('eax', decl)
+    common.get_instance_field('eax', 'eax', decl)
   ]
 
 def get_simple_static_field(ids):
@@ -68,7 +68,7 @@ def get_simple_static_field(ids):
   if f is None or not f.is_static:
     raise Exception('Invalid static field access')
 
-  return common.get_static_field(f)
+  return common.get_static_field('eax', f)
 
 def get_field_access_from_annotation(ids, annotation):
   '''Returns code to get a instance field given ids and their annotations'''
@@ -82,7 +82,7 @@ def get_field_access_from_annotation(ids, annotation):
   # The final part should be an instance field acccess.
   final_part = str(ids.parts[-1])
   f, encl_type = env.lookup_field(final_part)
-  ret.extend(common.get_instance_field('eax', f))
+  ret.extend(common.get_instance_field('eax', 'eax', f))
 
   return ret
 
@@ -105,7 +105,7 @@ def _get_to_final(ids, annotation):
     code = get_simple_var(decl)
   else:
     # The first part is a static variable access.
-    code = common.get_static_field(decl)
+    code = common.get_static_field('eax', decl)
 
   # After the start, keep doing instance field accesses off the previous
   # result.
@@ -113,7 +113,7 @@ def _get_to_final(ids, annotation):
     f, encl_type = env.lookup_field(name)
     t = f.type_node.definition
     env = t.environment
-    code.extend(common.get_instance_field('eax', f))
+    code.extend(common.get_instance_field('eax', 'eax', f))
 
   return t, code
 
