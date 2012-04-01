@@ -3,6 +3,7 @@ import ast_method
 import ast_node
 import ast_type
 import ast_variable_declaration
+import code_gen.asm.array as array
 import code_gen.asm.common as common
 import code_gen.cit.cit as cit
 
@@ -435,25 +436,7 @@ class ASTClass(ast_node.ASTNode):
     return [
       'global {0}'.format(self.c_create_array_function_label),
       '{0}:'.format(self.c_create_array_function_label),
-      common.function_prologue(),
-      common.get_param('ebx', 0, N_PARAMS),
-      '; ebx now contains the length of the array',
-      '; calculate how much memory to allocate, based on length of array:',
-      'imul ebx, 4  ; 4 bytes for every element',
-      'add ebx, 12  ; add an extra 12 bytes for pointers/length field',
-      common.malloc_reg('ebx'),
-      'push eax',
-      #TODO (gnleece) format memory (set to default values?)
-      '; create an int to store the length of the array:',
-      'push ebx;',
-      'call _create_int',
-      'pop ecx; pop param to garbage',
-      'mov ebx, eax  ; ebx has pointer to integer representing array length',
-      'pop eax  ; eax now has pointer to memory from malloc call',
-      'mov dword [eax], {0}'.format(self.c_array_cit_label),
-      'mov dword [eax + 4], {0}'.format(self.c_cit_label),
-      'mov dword [eax + 8], ebx',
-      common.function_epilogue()
+      array.create_array(False, self.c_cit_label, self.c_array_cit_label)     
     ]
 
 class ASTClassError(Exception):

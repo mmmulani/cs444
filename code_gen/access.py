@@ -7,6 +7,34 @@ from manager import CodeGenManager
 
 NAMES = []
 
+def set_simple_var(decl, src):
+  '''Given a variable declaration (ASTParam or ASTVariableDeclaration), stores
+  the value of src in it.'''
+  store_code = []
+  if isinstance(decl, ast_param.ASTParam):
+    # Method parameter.
+    index = CodeGenManager.cur_method.c_get_param_index(decl)
+    store_code = common.set_param(index, src, CodeGenManager.N_PARAMS)
+  elif decl.c_parent_method is not None:
+    # Local variable.
+    store_code = common.save_local_var(decl, src)
+  else:
+    # Last remaining case is a instance field access on the enclosing type.
+    if not isinstance(decl, ast_variable_declaration.ASTVariableDeclaration):
+      raise Exception('Simple variable is not an instance field')
+
+    scratch_reg = [reg for reg in ['eax', 'ebx'] if reg != src][0]
+
+    store_code = [
+      '; using {0} as scratch'.format(scratch_reg),
+      'push {0} ; saving scratch'.format(scratch_reg),
+      common.get_param(scratch_reg, 0, CodeGenManager.N_PARAMS),
+      common.save_instance_field(scratch_reg, decl, src),
+      'pop {0} ; restoring scratch'.format(scratch_reg)
+    ]
+
+  return store_code
+
 def get_simple_var(decl):
   '''Given a declaration, return code to get the variable'''
   if isinstance(decl, ast_param.ASTParam):
