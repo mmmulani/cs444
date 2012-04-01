@@ -79,7 +79,7 @@ def get_local_var(dest, local_var):
 
   offset = (index + 1) * 4
 
-  return 'mov {0}, [ebp - {1}]'.format(dest, offset)
+  return ['mov {0}, [ebp - {1}]'.format(dest, offset)]
 
 def save_local_var(local_var, src):
   '''Takes an ASTVariableDeclaration and a register and replaces the value on
