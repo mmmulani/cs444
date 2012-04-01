@@ -43,6 +43,14 @@ def malloc(n_bytes):
     'call __malloc'
   ]
 
+def malloc_reg(src):
+  ''' Calls malloc, using the value in the src register as the number of
+  bytes to allocate '''
+  return [
+    'mov eax, {0}'.format(src),
+    'call __malloc'
+  ]
+
 def get_param(dest, index, num_params):
   ''' Gets the (index)th parameter and stores it in dest. '''
   if index < 0 or index >= num_params:
