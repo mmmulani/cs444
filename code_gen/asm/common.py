@@ -87,6 +87,23 @@ def save_local_var(local_var, src):
     '; phew. no longer using {0} as scratch'.format(scratch_reg),
   ]
 
+def save_instance_field(this_reg, field_decl, src):
+  '''Stores a value into the field of a class instance.
+  this_reg is a register that points to the class instance.
+  field_decl is the ASTVariableDeclaration for instance field.
+  src is a register whose value will be stored in the field.'''
+
+  offset = field_decl.c_offset
+  if offset is None:
+    raise Exception('Instance field does not have an offset')
+
+  if src == this_reg:
+    raise Exception('Warning: saving |this| as instance field on object')
+
+  return [
+    'mov [{0} + {1}], {2}'.format(this_reg, offset, src),
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)

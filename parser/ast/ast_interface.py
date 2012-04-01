@@ -126,11 +126,11 @@ class ASTInterface(ast_node.ASTNode):
       n = node.children[1]  # InterfaceMemberDeclaration
       if n.children[0].value == 'AbstractMethodDeclaration':
         # An abstract interface declaration.
-        self.methods.append(ast_method.ASTMethod(n.children[0]))
+        self.methods.append(ast_method.ASTMethod(n.children[0], self))
       node = node.children[0]
 
     if node.children[0].children[0].value == 'AbstractMethodDeclaration':
-      self.methods.append(ast_method.ASTMethod(node.children[0].children[0]))
+      self.methods.append(ast_method.ASTMethod(node.children[0].children[0], self))
 
     # Put the method list in declaration order.
     self.methods.reverse()
