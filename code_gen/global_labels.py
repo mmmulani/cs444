@@ -25,6 +25,14 @@ def set_global_labels(asts):
       # Add the SIT column label to the list to be externed.
       CodeGenManager.add_global_label(canonical_name, t.c_sit_column_label)
 
+      # Add the code instance creation label to the externs list.
+      CodeGenManager.add_global_label(
+          canonical_name, t.c_create_object_function_label)
+
+      # Add the array creation label.
+      CodeGenManager.add_global_label(
+          canonical_name, t.c_create_array_function_label)
+
 def get_global_labels(ast):
   '''Returns a list of the global labels this ASTRoot needs to extern'''
   if ast.class_or_interface is None:

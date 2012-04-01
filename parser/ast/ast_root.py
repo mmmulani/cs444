@@ -90,19 +90,11 @@ class ASTRoot(ast_node.ASTNode):
   # ------ CODE GEN METHODS -------
 
   def c_gen_code(self):
-    import code_gen.global_labels
-    # List of labels that need to be externed.
-    externs_list = ['extern {0}'.format(x) for x in \
-        code_gen.global_labels.get_global_labels(self)]
-    externs_list.sort()  # Just to make the debug output easier.
-
     class_defn = []
     if self.class_or_interface:
       class_defn = self.class_or_interface.c_gen_code()
 
     return [
-      externs_list,
-      '',
       '; PACKAGE: {0}'.format(self.package),
       class_defn
     ]

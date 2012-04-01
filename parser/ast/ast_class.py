@@ -407,8 +407,6 @@ class ASTClass(ast_node.ASTNode):
     3. Run constructor body.'''
 
     import code_gen.asm.common as common
-    CodeGenManager.add_global_label(self.canonical_name,
-        self.c_create_object_function_label)
     return [
       'global {0}'.format(self.c_create_object_function_label),
       '{0}:'.format(self.c_create_object_function_label),
@@ -430,9 +428,6 @@ class ASTClass(ast_node.ASTNode):
     1 Param:
       The length of the array'''
     N_PARAMS = 1
-
-    CodeGenManager.add_global_label(self.canonical_name,
-        self.c_create_array_function_label)
 
     # The first 12 bytes are for the pointer to the Array CIT, the regular CIT,
     # and the length. Remaining bytes are for the array elements (4 bytes each)

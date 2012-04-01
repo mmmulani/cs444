@@ -45,16 +45,20 @@ def generate_ast_code(ast, output_dir='output'):
   # generate the code header (externs, globals)
   externs = _get_helper_function_names().keys()
   externs.extend(runtime.NAMES.keys())
-  extern_asm = ['extern {0}'.format(x) for x in externs]
+  file_externs = global_labels.get_global_labels(ast)
+  file_externs.sort()  # To make debugging easier.
+
   header_asm = [
     'section .text',
     '',
-    extern_asm,
+    ['extern {0}'.format(x) for x in externs],
+    '',
+    ['extern {0}'.format(x) for x in file_externs],
     '', '',
   ]
 
   body_asm = _generate_body_code(ast)
-  asm = '\n'.join(flatten_asm([header_asm, body_asm]))
+  asm = asm_to_string([header_asm, body_asm])
 
   # write out to a file:
   filename = os.path.basename(ast.filename).split('.')[0] + '.s'
@@ -172,6 +176,9 @@ def flatten_asm(lst):
     else:
       strs.extend(flatten_asm(x))
   return strs
+
+def asm_to_string(asm):
+  return '\n'.join(flatten_asm(asm))
 
 
 class CodeGenerationError(Exception):
