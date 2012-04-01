@@ -120,11 +120,8 @@ class TypeEnvironment(env.Environment):
     for t_env in self.extends:
       ret.extend(t_env.get_all_fields())
 
-    # Add our own fields to the list in sorted order.
-    it = iter(sorted(self.fields.items()))
-    for name, field in it:
-      ret.append(field)
-
+    # Add our own fields to the list in defined order.
+    ret.extend(self.definition.fields)
     return ret
 
   def get_all_methods(self):
