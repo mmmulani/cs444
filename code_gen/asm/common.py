@@ -132,6 +132,12 @@ def get_instance_field(this_reg, dest, field_decl):
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
   ]
 
+def set_static_field(field_decl, src):
+  return [
+    '; Set static var {0}'.format(field_decl.identifier),
+    'mov dword [{0}], {1}'.format(field_decl.c_defn_label, src)
+  ]
+
 def get_static_field(dest, field_decl):
   '''Gets the static field in field_decl and puts it in dest'''
   return [

@@ -57,6 +57,16 @@ def get_simple_var(decl):
   ]
 
 def get_simple_static_field(ids):
+  '''Store the static field from an ASTIdentifier in $eax.'''
+  f = _resolve_simple_static_fields(ids)
+  return common.get_static_field('eax', f)
+
+def set_simple_static_field(ids, src):
+  '''Saves the value of src into the static field from an ASTIdentifier.'''
+  f = _resolve_simple_static_fields(ids)
+  return common.set_static_field(f, src)
+
+def _resolve_simple_static_fields(ids):
   '''Resolve a simple static field access directly off the type.
   Example: ClassName.f'''
   name, defn = ids.first_definition
@@ -68,7 +78,7 @@ def get_simple_static_field(ids):
   if f is None or not f.is_static:
     raise Exception('Invalid static field access')
 
-  return common.get_static_field('eax', f)
+  return f
 
 def get_field_access_from_annotation(ids, annotation):
   '''Returns code to get a instance field given ids and their annotations'''

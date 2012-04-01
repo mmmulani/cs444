@@ -299,6 +299,17 @@ class ASTAssignment(ASTExpression):
       if self.left.is_simple:
         import code_gen.access as access
         store_code = access.set_simple_var(self.left.simple_decl, 'eax')
+      else:
+        import code_gen.annotate_ids as annotate_ids
+        import code_gen.access as access
+
+        annotations = annotate_ids.annotate_identifier(self.left)
+        # If we do not have any annotations then the left hand side is a static
+        # field.
+        if len(annotations) == 0:
+          store_code = access.set_simple_static_field(self.left, 'eax')
+        else:
+          store_code = []
 
     return [
       result,
