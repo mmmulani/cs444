@@ -1,15 +1,15 @@
 import parser.ast.ast_class as ast_class
-import parser.ast.ast_variable_declaration as ast_variable_declaration 
-import parser.ast.ast_param as ast_param 
+import parser.ast.ast_variable_declaration as ast_variable_declaration
+import parser.ast.ast_param as ast_param
 
 def annotate_identifier(node):
-  '''Annotate an ASTIdentifiers node with definitions for each part''' 
+  '''Annotate an ASTIdentifiers node with definitions for each part'''
   # No annotation required for a simple name.
   if len(node.parts) == 1:
     return []
 
   name, defn = node.first_definition
-  remaining_idens = node.parts[name.count('.') + 1:] 
+  remaining_idens = node.parts[name.count('.') + 1:]
 
   # Single static field/method accesses off of a class does not require
   # any annotations.
