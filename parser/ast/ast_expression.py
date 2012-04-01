@@ -605,6 +605,15 @@ class ASTArrayCreation(ASTExpression):
                      ASTExpression.get_expr_node(tree.children[3])]
     super(ASTArrayCreation, self).__init__()
 
+  def c_gen_code(self):
+    class_defn = self.type_node.definition
+    if class_defn is None:
+      return [] # TODO (gnleece) handle arrays of primitives
+
+    return [
+      'call {0}'.format(class_defn.c_create_array_function_label),
+    ]
+
   @property
   def type_node(self):
     return self.children[0]

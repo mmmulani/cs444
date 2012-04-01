@@ -435,7 +435,7 @@ class ASTClass(ast_node.ASTNode):
         self.c_create_array_function_label)
 
     # The first 12 bytes are for the pointer to the Array CIT, the regular CIT,
-    # and the length. Remaining bytes are for the array elements (4 bytes each) 
+    # and the length. Remaining bytes are for the array elements (4 bytes each)
 
     return [
       'global {0}'.format(self.c_create_array_function_label),
@@ -448,6 +448,7 @@ class ASTClass(ast_node.ASTNode):
       'add ebx, 12  ; add an extra 12 bytes for pointers/length field',
       common.malloc_reg('ebx'),
       'push eax',
+      #TODO (gnleece) format memory (set to default values?)
       '; create an int to store the length of the array:',
       'push ebx;',
       'call _create_int',
