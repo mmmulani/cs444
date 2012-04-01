@@ -1,5 +1,5 @@
-import asm.common as common 
-import parser.ast.ast_class as ast_class 
+import asm.common as common
+import parser.ast.ast_class as ast_class
 import parser.ast.ast_param as ast_param
 import parser.ast.ast_variable_declaration as ast_variable_declaration
 
@@ -22,6 +22,7 @@ def get_simple_var(decl):
     raise Exception('Invalid instance var value retrieval.')
 
   # "this" is always the first param from an implicit "this".
+  # TODO: get the field off "this"
   return common.get_param('eax', 0, CodeGenManager.N_PARAMS)
 
 def get_simple_static_field(ids):
@@ -29,7 +30,7 @@ def get_simple_static_field(ids):
   Example: ClassName.f'''
   name, defn = ids.first_definition
   if not isinstance(defn, ast_class.ASTClass):
-    raise Exception('Trying to do a static field access off non-Class')
+    raise Exception('Trying to do a static field access off non-class')
 
   # Find the field using the last part of the id.
   f, encl_type = defn.environment.lookup_field(ids.parts[-1])
@@ -55,7 +56,6 @@ def get_field_access_from_annotation(ids, annotation):
     ret.append(get_simple_var(decl))
   else:
     # The first part is a static variable access.
-    # TODO: use get_simple_static_field?
     ret.append(_get_static_field(decl))
 
   for name, decl in annotation[1:]:
