@@ -127,3 +127,9 @@ class CodeGenManager(object):
   @staticmethod
   def add_static_var_to_init(t, f):
     CodeGenManager.static_inits.append((t, f))
+
+  # ------ CODE GEN STATE ------
+  # General variables for use within code_gen
+
+  # The current # of params the current ASTMethod takes.
+  N_PARAMS = 0

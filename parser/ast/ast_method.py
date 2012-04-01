@@ -188,14 +188,23 @@ class ASTMethod(ast_node.ASTNode):
     label = 'method_defn_{0}'.format(str(self.name))
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_num_params(self):
+    '''Returns the number of params on the stack during code gen'''
+    param_count = len(self.params)
+    if not self.is_static:
+      # 'this' is also on the stack.
+      param_count += 1
+    return param_count
+
+
   def c_gen_code(self):
     import code_gen.asm.common as common
+    CodeGenManager.N_PARAMS = self.c_num_params
+
     body_code = []
     if self.body:
       body_code = self.body.c_gen_code()
-
-    # We add 1 for the |this| parameter.
-    N_PARAMS = 1 + len(self.params)
 
     constructor_code = []
     # Each constructor does the three tasks:
@@ -211,7 +220,7 @@ class ASTMethod(ast_node.ASTNode):
             constructor=True)
 
         parent_code = [
-          common.get_param('eax', 0, N_PARAMS),
+          common.get_param('eax', 0, self.c_num_params),
           'push eax',
           'call {0}'.format(super_constructor.c_defn_label),
           'pop ebx ; pop to garbage',
@@ -236,7 +245,7 @@ class ASTMethod(ast_node.ASTNode):
         field_init_code,
       ]
 
-    return [
+    ret = [
       'global {0}'.format(self.c_defn_label),
       '{0}:'.format(self.c_defn_label),
       common.function_prologue(self.c_num_local_vars * 4),
@@ -244,6 +253,9 @@ class ASTMethod(ast_node.ASTNode):
       body_code,
       common.function_epilogue(),
     ]
+
+    CodeGenManager.N_PARAMS = 0
+    return ret
 
 class ASTMethodError(Exception):
   pass
