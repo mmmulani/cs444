@@ -40,6 +40,10 @@ def get_global_labels(ast):
 
   t = ast.class_or_interface
   key = t.canonical_name
+  return get_global_labels_from_key(key)
+
+def get_global_labels_from_key(key):
+  '''Returns a list of the global labes given the key of global_labels_map'''
   ret = []
   for k in CodeGenManager.global_labels_map.keys():
     # Don't global anything you've defined.

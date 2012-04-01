@@ -67,7 +67,9 @@ class CodeGenManager(object):
   @staticmethod
   def add_global_label(k, v):
     if k in CodeGenManager.global_labels_map.keys():
-      CodeGenManager.global_labels_map[k].append(v)
+      # Avoid adding duplicate labels.
+      if v not in CodeGenManager.global_labels_map[k]:
+        CodeGenManager.global_labels_map[k].append(v)
     else:
       CodeGenManager.global_labels_map[k] = [v]
 
