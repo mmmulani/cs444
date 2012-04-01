@@ -159,12 +159,30 @@ def invoke_instance_method(this_reg, m, args_asm):
   return [
     '; Invoke instance method: {0}'.format(m.name),
     'push ebx  ; Use ebx as scratch for "this"',
+    'mov ebx, eax',
     'push {0}  ; push "this" as the first param'.format(this_reg),
     args_asm,
     'mov dword eax, [ebx]  ; Get to CIT',
     'mov dword eax, [eax + {0}]  ; Get the method'.format(m.c_offset),
     'call eax  ; Call the method',
     'pop ebx  ; Done ussing ebx as scratch'
+  ]
+
+def invoke_interface_method(this_reg, m, args_asm):
+  '''Invokes an interface method m off this_reg using the SIT'''
+  from code_gen.manager import CodeGenManager
+  offset = CodeGenManager.get_sit_offset(m)
+  return [
+    '; Invoke interface method: {0}'.format(m.name),
+    'push ebx  ; Use ebx for scratch for "this"',
+    'mov ebx, eax',
+    'push eax  ; Push "this" as the first param',
+    args_asm,
+    'mov dword eax, [ebx]  ; Get to CIT for T[]',
+    'mov eax, [eax]  ; Get to SIT for T[]',
+    'mov eax, [eax + {0}]  ; Get the method loc in the SIT'.format(offset),
+    'call eax  ; Call the method',
+    'pop ebx  ; Done using ebx as scratch'
   ]
 
 def unwrap_primitive(dest, src):

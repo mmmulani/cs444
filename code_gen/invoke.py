@@ -3,6 +3,8 @@ import annotate_ids
 import asm.common as common
 import parser.ast.ast_interface as ast_interface
 
+from manager import CodeGenManager
+
 def call_simple_method(ids, arg_types, args_asm):
   '''Invoke a simple method name from an identifier.'''
   ret = ['; Simple method invocation: {0}()'.format(ids)]
@@ -17,17 +19,19 @@ def call_simple_method(ids, arg_types, args_asm):
   env = t.definition.environment
   ret.append(code)
 
-  if isinstance(t.definition, ast_interface.ASTInterface):
-    # Use the SIT table for interface methods.
-    return ''
+  # Invoke a method using the final part.
+  final_part = str(ids.parts[-1])
 
   # Invoke class instance or static method.
-  final_part = str(ids.parts[-1])
   m, encl_type = env.lookup_method((final_part, arg_types))
   if m is None:
     raise Exception('Trying to invoke non-existant method')
 
-  if m.is_static:
+  if isinstance(t.definition, ast_interface.ASTInterface):
+    # Use the SIT table for interface methods.  Interfaces can not have
+    # static methods.
+    ret.append(common.invoke_interface_method('eax', m, args_asm))
+  elif m.is_static:
     # Call a static method
     return ''
   else:

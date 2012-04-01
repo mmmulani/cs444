@@ -75,7 +75,20 @@ class CodeGenManager(object):
 
   _sit_column_guide = []
   @staticmethod
+  def get_sit_offset(m):
+    '''Gets the SIT offset given an ASTMethod m'''
+    selector = (m.return_type, m.signature)
+    return CodeGenManager.get_selector_id(selector)
+
+  @staticmethod
   def get_selector_id(selector):
+    '''Given a (Return Type ASTType, Method Sig), returns the index into SIT
+    sit_label_x:
+    dd method_defn_1
+    dd method_defn_2
+
+    index 0 <=> method_defn_1 <=> [sit_label_x + 0]
+    index 1 <=> method_defn_2 <=> [sit_label_x + 4]'''
     matched_ids = [i for (i, sel) in CodeGenManager._sit_column_guide if
       sel == selector]
 
