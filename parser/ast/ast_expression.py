@@ -580,17 +580,18 @@ class ASTIdentifiers(ASTExpression):
     return []
 
   def c_gen_code(self):
-    from ast_param import ASTParam
-
+    import code_gen.annotate_ids as annotate_ids
+    import code_gen.access as access
     # Handle the case of a simple name.
     if self.first_definition[0] == str(self):
       var_decl = self.first_definition[1]
+      return access.get_simple_var(var_decl)
 
-      # Local variables.
-      if isinstance(var_decl, ASTParam):
-        return ''
-      elif var_decl.c_parent_method is not None:
-        return common.get_local_var('eax', var_decl)
+    annotation = annotate_ids.annotate_identifier(self)
+    if len(annotation) == 0:
+      # We should only reach this point if we're trying to resolve
+      # ClassName.f, ie. a static field access directly off the type.
+      return access.get_simple_static_field(self)
 
     return ''
 

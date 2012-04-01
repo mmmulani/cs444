@@ -92,6 +92,8 @@ class ASTVariableDeclaration(ast_node.ASTNode):
   @property
   def c_defn_label(self):
     '''The label pointing to the field definition'''
+    # NOTE: This is only for static fields!  Instance fields can be obtained
+    # by using the offset on the object.
     label = 'field_defn_{0}'.format(str(self.identifier))
     return CodeGenManager.memoize_label(self, label)
 
