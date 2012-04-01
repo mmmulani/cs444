@@ -242,6 +242,19 @@ class ASTUnary(ASTExpression):
     # Copy this array so the caller can modify it.
     return [self.children[0]]
 
+  def c_gen_code(self):
+    op_map = {
+        '!': '_negate_bool',
+        '-': '_negate_int',
+    }
+
+    return [
+      common.store_param(self.expr),
+      'call {0}'.format(op_map[self.operator]),
+      'pop ebx ; pop to garbage',
+      '; eax contains a pointer to the result',
+    ]
+
 class ASTAssignment(ASTExpression):
   def __init__(self, tree):
     # Two children:
