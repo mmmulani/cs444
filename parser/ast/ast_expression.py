@@ -522,6 +522,10 @@ class ASTBinary(ASTExpression):
         '%': '_mod_int',
         '&': '_eager_and',
         '|': '_eager_or',
+        '>': '_greater_than',
+        '>=': '_greater_than_eq',
+        '<': '_less_than',
+        '<=': '_less_than_eq',
     }
 
     if self.operator in lazy_ops.keys():

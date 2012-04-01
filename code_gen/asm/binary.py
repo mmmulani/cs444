@@ -289,6 +289,55 @@ def not_equals_ref():
     common.function_epilogue(),
   ]
 
+def _comparison_factory(op):
+  '''A factory function for all non-equality comparison operators.
+  Each operator has the same signature:
+  Returns a pointer boolean based on if the comparison succeeds.
+
+  2 Params:
+    1. Address of a primitive (left operand)
+    2. Address of a primitive (right operand)
+  '''
+  x86_op_map = {
+    '>': 'jg',
+    '>=': 'jge',
+    '<': 'jl',
+    '<=': 'jle',
+  }
+
+  name_map = {
+    '>': 'greater_than',
+    '>=': 'greater_than_eq',
+    '<': 'less_than',
+    '<=': 'less_than_eq',
+  }
+
+  x86_op = x86_op_map[op]
+  name = name_map[op]
+
+  N_PARAMS = 2
+  def asm_op():
+    return [
+      '_{0}:'.format(name),
+      common.function_prologue(),
+      common.get_param('eax', 0, N_PARAMS),
+      common.unwrap_primitive('eax', 'eax'),
+      common.get_param('ebx', 1, N_PARAMS),
+      common.unwrap_primitive('ebx', 'ebx'),
+      'cmp eax, ebx',
+      '{0} _{1}_true'.format(x86_op, name),
+      'push 1 ; only run if fail comparison',
+      'jmp _{0}_done'.format(name),
+      '_{0}_true:'.format(name),
+      'push 0 ; only run if pass comparison',
+      '_{0}_done:'.format(name),
+      'call _create_boolean',
+      'pop ebx ; pop to garbage',
+      common.function_epilogue(),
+    ]
+
+  return asm_op
+
 NAMES = {
     '_add_int': add_int,
     '_sub_int': sub_int,
@@ -301,4 +350,8 @@ NAMES = {
     '_equals_ref': equals_ref,
     '_not_equals_prim': not_equals_prim,
     '_not_equals_ref': not_equals_ref,
+    '_greater_than': _comparison_factory('>'),
+    '_greater_than_eq': _comparison_factory('>='),
+    '_less_than': _comparison_factory('<'),
+    '_less_than_eq': _comparison_factory('<='),
 }
