@@ -213,6 +213,17 @@ def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)
 
+def unwrap_cit(dest, src):
+  '''Given an object in src, stores a pointer to the CIT in dest.'''
+  return 'mov {0}, [{1}]'.format(dest, src)
+
+def unwrap_subtype_col_from_object(dest, src):
+  '''Given an object in src, stores a pointer to the subtype column in dest.'''
+  return [
+    unwrap_cit(dest, src),
+    'mov {0}, [{0} + 4]'.format(dest, dest),
+  ]
+
 def store_param(ast_node):
   '''Pushes the value of the ast node on to the stack to be used as a param'''
   return [

@@ -501,9 +501,35 @@ class ASTInstanceOf(ASTExpression):
     self.children[0].show(depth + 1, types)
 
   @property
+  def left(self):
+    return self.children[0]
+
+  @property
   def expressions(self):
     '''Returns a list of all ASTExpression children.'''
     return [self.children[0]]
+
+  def c_gen_code(self):
+    subtype_offset = 4 * manager.CodeGenManager.get_subtype_table_index(
+        self.type_node)
+    not_null_label = manager.CodeGenManager.get_label('instanceof_not_null')
+    done_label = manager.CodeGenManager.get_label('instanceof_done')
+    return [
+      self.left.c_gen_code(),
+      # Null check.
+      'mov ebx, 0',
+      'cmp eax, ebx',
+      'jne {0}'.format(not_null_label),
+      'push 0',
+      'jmp {0}'.format(done_label),
+      '{0}:'.format(not_null_label),
+      common.unwrap_subtype_col_from_object('eax', 'eax'),
+      'mov eax, [eax + {0}]'.format(subtype_offset),
+      'push eax',
+      '{0}:'.format(done_label),
+      'call _create_boolean',
+      'pop ebx ; pop param',
+    ]
 
 class ASTBinary(ASTExpression):
   def __init__(self, tree):

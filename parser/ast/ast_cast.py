@@ -1,6 +1,9 @@
 import ast_expression
 import ast_node
 import ast_type
+import code_gen.asm.common as common
+
+from code_gen.manager import CodeGenManager
 
 class ASTCast(ast_node.ASTNode):
   def __init__(self, tree):
@@ -53,6 +56,32 @@ class ASTCast(ast_node.ASTNode):
   @property
   def expressions(self):
     return [self.children[1]]
+
+  def c_gen_code(self):
+    if self.type_node.is_primitive and not self.type_node.is_array:
+      return [
+        self.expressions[0].c_gen_code(),
+      ]
+    else:
+      subtype_offset = 4 * CodeGenManager.get_subtype_table_index(
+          self.type_node)
+
+      finished_label = CodeGenManager.get_label('cast_exp_finished')
+      return [
+        self.expressions[0].c_gen_code(),
+        # Null check.
+        'mov ebx, 0',
+        'cmp eax, ebx',
+        'je {0}'.format(finished_label),
+        common.unwrap_subtype_col_from_object('ebx', 'eax'),
+        'mov ebx, [ebx + {0}]'.format(subtype_offset),
+        'mov ecx, 1',
+        'cmp ebx, ecx',
+        'je {0}'.format(finished_label),
+        '; OH NO! CastException!',
+        'call __exception',
+        '{0}:'.format(finished_label),
+      ]
 
 
 class ASTCastError(Exception):

@@ -110,6 +110,10 @@ class CodeGenManager(object):
     return matched_sels[0]
 
   # ------ SUBTYPE TABLE METHODS ------
+  # The subtype column for a type Foo tells you if an instance of Foo is
+  # castable to another type.
+  # Therefore, the subtype column for Object is False in every row except
+  # for the Object row.
   _subtype_column_guide = []
   prim_array_subtype_cols = {}
 

@@ -54,7 +54,7 @@ def calculate_subtype_column(subtype, indexed_types):
   column = map(lambda(x): None, indexed_types)
   from name_resolution.type_checker.rules import _is_assignable
   for ix, supertype in indexed_types:
-    column[ix] = _is_assignable(subtype, supertype)
+    column[ix] = _is_assignable(supertype, subtype)
 
   return column
 
