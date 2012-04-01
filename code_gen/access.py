@@ -40,7 +40,7 @@ def get_simple_static_field(ids):
   if f is None or not f.is_static:
     raise Exception('Invalid static field access')
 
-  return _get_static_field(f)
+  return common.get_static_field(f)
 
 def get_field_access_from_annotation(ids, annotation):
   '''Returns code to get a instance field given ids and their annotations'''
@@ -59,29 +59,16 @@ def get_field_access_from_annotation(ids, annotation):
     ret.append(get_simple_var(decl))
   else:
     # The first part is a static variable access.
-    ret.append(_get_static_field(decl))
+    ret.append(common.get_static_field(decl))
 
   for name, decl in annotation[1:]:
     f, encl_type = env.lookup_field(name)
     t = f.type_node.definition
     env = t.environment
-    ret.extend(_get_instance_field(f))
+    ret.extend(common.get_instance_field('eax', f))
 
   final_part = str(ids.parts[-1])
   f, encl_type = env.lookup_field(final_part)
-  ret.extend(_get_instance_field(f))
+  ret.extend(common.get_instance_field('eax', f))
 
   return ret
-
-def _get_static_field(f):
-  '''Returns code to get a static field f'''
-  return [
-    '; Get static var {0}'.format(f.identifier),
-    'mov dword eax, [{0}]'.format(f.c_defn_label)
-  ]
-
-def _get_instance_field(f, reg='eax'):
-  '''Gets the instance field off the object at reg into eax'''
-  return [
-    'mov eax, [{0} + {1}]'.format(reg, f.c_offset)
-  ]

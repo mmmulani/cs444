@@ -122,6 +122,13 @@ def get_instance_field(this_reg, field_decl, dest='eax'):
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
   ]
 
+def get_static_field(field_decl, dest='eax'):
+  '''Gets the static field in field_decl and puts it in dest'''
+  return [
+    '; Get static var {0}'.format(field_decl.identifier),
+    'mov dword {0}, [{1}]'.format(dest, field_decl.c_defn_label)
+  ]
+
 def unwrap_primitive(dest, src):
   '''Unwraps the primitive at *src and stores it in the register dest.'''
   return 'mov {0}, [{1}]'.format(dest, src)
