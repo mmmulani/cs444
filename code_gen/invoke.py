@@ -8,10 +8,15 @@ from manager import CodeGenManager
 
 def call_simple_method(ids, arg_types, args_asm):
   '''Invoke a simple method name from an identifier.'''
-  ret = ['; Simple method invocation: {0}()'.format(ids)]
   annotation = annotate_ids.annotate_identifier(ids)
 
   t, code = access._get_to_final(ids, annotation)
+  return call_method_with_final(t, ids, code, arg_types, args_asm)
+
+def call_method_with_final(t, ids, code, arg_types, args_asm):
+  '''Calls the method off t using the final part of the identifier'''
+
+  ret = ['; Simple method invocation: {0}()'.format(ids)]
   if t.is_array:
     # Joos does not allow invoking java.lang.Object's methods directly
     # off of an array -- you must cast to java.lang.Object first.
@@ -36,6 +41,17 @@ def call_simple_method(ids, arg_types, args_asm):
     ret.append(common.invoke_instance_method('eax', m, args_asm))
 
   return ret 
+
+def call_method_parts(t, ids, arg_types, arg_asm):
+  '''Calls a method starting from a type followed by a list of IDs
+
+  ex. (Foo.static_field.field).field.method()
+  t <= typeof(Foo.static_field.field)
+  ids <= field, method'''
+  annotation = annotate_ids.annotate_from_type(t, ids.parts)
+  t, code = access._get_to_final_from_type(t, annotation)
+
+  return call_method_with_final(t, ids, code, arg_types, arg_asm)
 
 def call_static_method(ids, arg_types, args_asm):
   '''Call a static method Type.m off the identifiers'''

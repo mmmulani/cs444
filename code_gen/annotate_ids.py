@@ -22,11 +22,15 @@ def annotate_identifier(node):
     annotation.append((name, defn))
     t = _get_defn_type(defn).definition
 
-  # Annotate all the "middle" identifiers (which is all remaining idens
+  return annotate_from_type(t, remaining_idens, annotation)
+
+def annotate_from_type(t, idens, annotation=[]):
+  '''Annotate a list of idens starting from a type'''
+  # Annotate all the identifiers (which is all remaining idens
   # except the last one).
   # The last part will be resolved depending on context (e.g. method vs.
   # field)
-  for iden in remaining_idens[:-1]:
+  for iden in idens[:-1]:
     env = t.environment
     f, encl_type = env.lookup_field(iden)
 

@@ -452,7 +452,12 @@ class ASTMethodInvocation(ASTExpression):
         return invoke.call_static_method(ids, self.arg_types, args_asm)
       return invoke.call_simple_method(ids, self.arg_types, args_asm)
 
-    return ''
+    # If we have a right side, then the left side should be evaluated and
+    # the method should be taken off that side.
+    left_asm = self.left.c_gen_code()
+    left_t = self.left.expr_type
+    return invoke.call_method_parts(
+        left_t, self.right, self.arg_types, args_asm)
 
 class ASTInstanceOf(ASTExpression):
   def __init__(self, tree):

@@ -139,6 +139,12 @@ def _get_to_final(ids, annotation):
     # next part will be .length or one of J.L.O's methods.
     return t, code
 
+  return _get_to_final_from_type(t, annotation, code)
+
+def _get_to_final_from_type(t, annotation, code=[]):
+  '''Resolve to the final part of the identifier starting at a type
+  Returns (ASTType, asm_code)'''
+
   env = t.definition.environment
   # After the start, keep doing instance field accesses off the previous
   # result.
