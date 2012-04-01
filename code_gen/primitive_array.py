@@ -65,6 +65,7 @@ def _generate_prim_array_create(prim_name, array_cit_label):
   create_fn_label = CodeGenManager.get_label(
       'create_array_{0}'.format(prim_name))
   CodeGenManager.add_global_label('__primitives', create_fn_label)
+  CodeGenManager.primitive_array_create_labels[prim_name] = create_fn_label
   create_fn_asm = [
     'global {0}'.format(create_fn_label),
     '{0}:'.format(create_fn_label),
