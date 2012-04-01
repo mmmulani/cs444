@@ -458,7 +458,13 @@ class ASTMethodInvocation(ASTExpression):
       if len(ids.parts) == 1:
         # Method invocation off implcit "this".  Joos does not allow static
         # methods to be called with an implcit type.
-        return ''
+        code = [
+          '; Put "this" in eax before calling implicit this method',
+          common.get_param('eax', 0, manager.CodeGenManager.N_PARAMS)
+        ]
+        this_type = manager.CodeGenManager.cur_method.parent_type
+        return invoke.call_method_with_final(
+            this_type, ids, code, self.arg_types, args_asm)
 
       annotation = annotate_ids.annotate_identifier(ids)
       if len(annotation) == 0:

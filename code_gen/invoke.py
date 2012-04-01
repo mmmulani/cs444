@@ -11,18 +11,13 @@ def call_simple_method(ids, arg_types, args_asm):
   annotation = annotate_ids.annotate_identifier(ids)
 
   t, code = access._get_to_final(ids, annotation)
-  return call_method_with_final(t, ids, code, arg_types, args_asm)
+  return call_method_with_final(t.definition, ids, code, arg_types, args_asm)
 
 def call_method_with_final(t, ids, code, arg_types, args_asm):
   '''Calls the method off t using the final part of the identifier'''
 
   ret = ['; Simple method invocation: {0}()'.format(ids)]
-  if t.is_array:
-    # Joos does not allow invoking java.lang.Object's methods directly
-    # off of an array -- you must cast to java.lang.Object first.
-    raise Exception('Method invocation off array disallowed')
-
-  env = t.definition.environment
+  env = t.environment
   ret.append(code)
 
   # Invoke a method using the final part.
@@ -33,7 +28,7 @@ def call_method_with_final(t, ids, code, arg_types, args_asm):
   if m is None:
     raise Exception('Trying to invoke non-existant method')
 
-  if isinstance(t.definition, ast_interface.ASTInterface):
+  if isinstance(t, ast_interface.ASTInterface):
     # Use the SIT table for interface methods.  Interfaces can not have
     # static methods.
     ret.append(common.invoke_interface_method('eax', m, args_asm))
@@ -51,7 +46,7 @@ def call_method_parts(t, ids, arg_types, arg_asm):
   annotation = annotate_ids.annotate_from_type(t, ids.parts)
   t, code = access._get_to_final_from_type(t, annotation)
 
-  return call_method_with_final(t, ids, code, arg_types, arg_asm)
+  return call_method_with_final(t.definition, ids, code, arg_types, arg_asm)
 
 def call_static_method(ids, arg_types, args_asm):
   '''Call a static method Type.m off the identifiers'''
