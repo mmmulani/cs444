@@ -231,6 +231,13 @@ class ASTClass(ast_node.ASTNode):
     return CodeGenManager.memoize_label(self, label)
 
   @property
+  def c_array_sit_column_label(self):
+    label = 'sit_column_{0}'.format(
+        CodeGenManager.java_lang_object_defn.canonical_name)
+    return CodeGenManager.memoize_label(CodeGenManager.java_lang_object_defn,
+        label)
+
+  @property
   def c_subtype_column_label(self):
     label = 'subtype_column_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
@@ -270,7 +277,6 @@ class ASTClass(ast_node.ASTNode):
       self.c_gen_code_subtype_columns(),
       '', '',
       cit.generate_cit(self),
-      '', '',
       cit.generate_array_cit(self),
       '', '',
       self.c_gen_code_create_instance(),
@@ -297,6 +303,7 @@ class ASTClass(ast_node.ASTNode):
       table_entries.append(entry)
 
     return [
+        'global {0}'.format(self.c_sit_column_label),
         '{0}:'.format(self.c_sit_column_label),
         table_entries
     ]

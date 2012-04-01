@@ -22,6 +22,14 @@ def code_gen(asts, dir):
 
   global_labels.set_global_labels(asts)
 
+  # Find the definition of java.lang.Object and save it:
+  for ast in asts:
+    if str(ast.children[2].canonical_name) == 'java.lang.Object':
+      manager.CodeGenManager.java_lang_object_defn = ast.children[2]
+      break
+  if not manager.CodeGenManager.java_lang_object_defn:
+    raise Exception('Could not find definition of java.lang.Object')
+
   # Begin code generation.
   for ast in asts:
     generate_ast_code(ast, dir)

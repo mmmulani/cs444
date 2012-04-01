@@ -5,6 +5,7 @@ class CodeGenManager(object):
     raise Exception('Code generation manager is a static global singleton.')
 
   found_start_method = False
+  java_lang_object_defn = None
 
   # ------ LABEL METHODS -------
   _label_count = 0

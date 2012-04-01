@@ -39,7 +39,7 @@ def generate_array_cit(t):
     '; ARRAY CLASS INFO TABLE: {0}'.format(t.canonical_name),
     'global {0}'.format(t.c_array_cit_label),
     '{0}:'.format(t.c_array_cit_label),
-    'dd 0', # TODO (gnleece) label for java.lang.Object SIT column goes here
+    'dd {0}'.format(t.c_array_sit_column_label),
     'dd {0}'.format(t.c_array_subtype_column_label),
     # TODO (gnleece) methods from java.lang.Object go here
   ]
