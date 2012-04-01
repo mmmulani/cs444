@@ -655,8 +655,7 @@ class ASTIdentifiers(ASTExpression):
       # ClassName.f, ie. a static field access directly off the type.
       return access.get_simple_static_field(self)
 
-    # return access.get_field_access_from_annotation(self, annotation)
-    return ''
+    return access.get_field_access_from_annotation(self, annotation)
 
 class ASTArrayCreation(ASTExpression):
   # Children is of length 2:

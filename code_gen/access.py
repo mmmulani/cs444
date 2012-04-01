@@ -86,8 +86,13 @@ def get_field_access_from_annotation(ids, annotation):
 
   # Resolve all parts of the ID before the final field access.
   t, code = _get_to_final(ids, annotation)
-  env = t.environment
   ret.append(code)
+  if t.is_array:
+    # Crazy hack for arrays!
+    return ''
+    # return get_array_field(ids, annotation, ret)
+
+  env = t.definition.environment
 
   # The final part should be an instance field acccess.
   final_part = str(ids.parts[-1])
@@ -95,6 +100,19 @@ def get_field_access_from_annotation(ids, annotation):
   ret.extend(common.get_instance_field('eax', 'eax', f))
 
   return ret
+
+def get_array_field(ids, annotation, code):
+  '''Get an array field
+
+  The "code" param should have the asm code that places the array object
+  in eax.'''
+  # Thankfully, the only field on an array is its length.
+  final_part = str(ids.parts[-1])
+  if final_part != 'length':
+    raise Exception('Tried to do non-length array-field access')
+
+  code.append(common.get_array_length(dest='eax', src='eax'))
+  return code
 
 def _get_to_final(ids, annotation):
   '''Resolve to the final part of the identifier
@@ -107,8 +125,7 @@ def _get_to_final(ids, annotation):
   #   - If it's off a local variable or field, e.g. v.f, the annotation
   #     will start with v
   name, decl = annotation[0]
-  t = _get_type_from_decl(decl).definition
-  env = t.environment
+  t = _get_type_from_decl(decl)
   code = []
   if str(ids).startswith(name):
     # The first part matches the ID, which means we're going off a local var
@@ -117,13 +134,27 @@ def _get_to_final(ids, annotation):
     # The first part is a static variable access.
     code = common.get_static_field('eax', decl)
 
+  if t.is_array:
+    # Crazy hack for arrays!
+    # If the type is an array, it's going to be the last part (because the
+    # next part will be .length or one of J.L.O's methods.
+    return t, code
+
+  env = t.definition.environment
   # After the start, keep doing instance field accesses off the previous
   # result.
   for name, decl in annotation[1:]:
     f, encl_type = env.lookup_field(name)
-    t = f.type_node.definition
-    env = t.environment
+    t = f.type_node
     code.extend(common.get_instance_field('eax', 'eax', f))
+
+    if t.is_array:
+      # Crazy hack for arrays!
+      # If the type is an array, it's going to be the last part (because the
+      # next part will be .length or one of J.L.O's methods.
+      return t, code
+
+    env = t.definition.environment
 
   return t, code
 

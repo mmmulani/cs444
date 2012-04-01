@@ -145,6 +145,12 @@ def get_static_field(dest, field_decl):
     'mov dword {0}, [{1}]'.format(dest, field_decl.c_defn_label)
   ]
 
+def get_array_length(dest, src):
+  '''Gets the array length of the array object in src and puts it in dest'''
+  return [
+    'mov {0}, [{1} + 8]  ; Get array length'.format(dest, src)
+  ]
+
 def invoke_instance_method(this_reg, m, args_asm):
   '''Invokes an instance method m off this_reg'''
   if m.c_offset is None:

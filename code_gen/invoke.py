@@ -9,7 +9,9 @@ def call_simple_method(ids, arg_types, args_asm):
   annotation = annotate_ids.annotate_identifier(ids)
 
   t, code = access._get_to_final(ids, annotation)
-  env = t.environment
+  if t.is_array:
+    return ''
+  env = t.definition.environment
   ret.append(code)
 
   if isinstance(t, ast_interface.ASTInterface):
