@@ -42,6 +42,9 @@ def generate_ast_code(ast, output_dir='output'):
   ''' Generates assembly for the given AST, and saves it to a .s file in
   the output directory. '''
 
+  if ast.class_or_interface is None:
+    return    # generate nothing for files that don't define a type
+
   # generate the code header (externs, globals)
   externs = _get_helper_function_names().keys()
   externs.extend(runtime.NAMES.keys())
@@ -57,13 +60,11 @@ def generate_ast_code(ast, output_dir='output'):
   asm = '\n'.join(flatten_asm([header_asm, body_asm]))
 
   # write out to a file:
-  filename = os.path.basename(ast.filename).split('.')[0] + '.s'
+  filename = ast.class_or_interface.canonical_name + '.s'
   filepath = os.path.join(output_dir, filename)
   asm_file = open(filepath, 'w')
   asm_file.write(asm)
   asm_file.close()
-
-  #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
 
 def _generate_body_code(ast):
   body_asm = []
