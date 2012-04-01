@@ -440,11 +440,16 @@ class ASTMethodInvocation(ASTExpression):
     # Simple case: The method invocation is just off an ASTIdentifiers.
     if self.right is None:
       ids = self.left
-      annotation = annotate_ids.annotate_identifier(ids)
-      if len(annotation) == 0:
+      if len(ids.parts) == 1:
         # Method invocation off implcit "this".  Joos does not allow static
         # methods to be called with an implcit type.
         return ''
+
+      annotation = annotate_ids.annotate_identifier(ids)
+      if len(annotation) == 0:
+        # Call a static method m, since we have handled the implcit "this"
+        # case above.
+        return invoke.call_static_method(ids, self.arg_types, args_asm)
       return invoke.call_simple_method(ids, self.arg_types, args_asm)
 
     return ''

@@ -156,33 +156,38 @@ def invoke_instance_method(this_reg, m, args_asm):
   if m.c_offset is None:
     raise Exception('Instance method has no offset')
 
+  n_params = len(m.params)
+  pop_asm = ['pop ebx ; Pop param to garbage' for x in range(m.c_num_params)]
+
   return [
     '; Invoke instance method: {0}'.format(m.name),
-    'push ebx  ; Use ebx as scratch for "this"',
-    'mov ebx, eax',
     'push {0}  ; push "this" as the first param'.format(this_reg),
     args_asm,
-    'mov dword eax, [ebx]  ; Get to CIT',
+    'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
+    'mov dword eax, [eax]  ; Get to CIT',
     'mov dword eax, [eax + {0}]  ; Get the method'.format(m.c_offset),
     'call eax  ; Call the method',
-    'pop ebx  ; Done ussing ebx as scratch'
+    pop_asm,
   ]
 
 def invoke_interface_method(this_reg, m, args_asm):
   '''Invokes an interface method m off this_reg using the SIT'''
   from code_gen.manager import CodeGenManager
+
   offset = CodeGenManager.get_sit_offset(m)
+  n_params = len(m.params)
+  pop_asm = ['pop ebx ; Pop param to garbage' for x in range(m.c_num_params)]
+
   return [
     '; Invoke interface method: {0}'.format(m.name),
-    'push ebx  ; Use ebx for scratch for "this"',
-    'mov ebx, eax',
     'push eax  ; Push "this" as the first param',
     args_asm,
-    'mov dword eax, [ebx]  ; Get to CIT for T[]',
+    'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
+    'mov dword eax, [eax]  ; Get to CIT for T[]',
     'mov eax, [eax]  ; Get to SIT for T[]',
     'mov eax, [eax + {0}]  ; Get the method loc in the SIT'.format(offset),
     'call eax  ; Call the method',
-    'pop ebx  ; Done using ebx as scratch'
+    pop_asm,
   ]
 
 def invoke_static_method(t, m, args_asm):
@@ -193,15 +198,15 @@ def invoke_static_method(t, m, args_asm):
   if m.c_offset is None:
     raise Exception('Calling static method with no offset')
 
+  pop_asm = ['pop ebx ; Pop param to garbage' for x in range(m.c_num_params)]
+
   return [
     '; Invoke static method: {0}'.format(m.name),
-    'push ebx  ; Use ebx as a scratch for "this"',
-    'mov ebx, eax',
     args_asm,
     'mov dword eax, {0}  ; Get to the CIT'.format(t.c_cit_label),
     'mov dword eax, [eax + {0}]  ; Get method defn'.format(m.c_offset),
     'call eax  ; Call the method',
-    'pop ebx  ; Done using ebx as scratch'
+    pop_asm,
   ]
 
 def unwrap_primitive(dest, src):

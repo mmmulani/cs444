@@ -2,6 +2,7 @@ import access
 import annotate_ids
 import asm.common as common
 import parser.ast.ast_interface as ast_interface
+import parser.ast.ast_class as ast_class
 
 from manager import CodeGenManager
 
@@ -31,13 +32,22 @@ def call_simple_method(ids, arg_types, args_asm):
     # Use the SIT table for interface methods.  Interfaces can not have
     # static methods.
     ret.append(common.invoke_interface_method('eax', m, args_asm))
-  elif m.is_static:
-    # Call a static method m.
-    ret.append(common.invoke_static_method(t.definition, m, args_asm))
   else:
     ret.append(common.invoke_instance_method('eax', m, args_asm))
 
   return ret 
+
+def call_static_method(ids, arg_types, args_asm):
+  '''Call a static method Type.m off the identifiers'''
+  name, defn = ids.first_definition
+  if not isinstance(defn, ast_class.ASTClass):
+    raise Exception('Trying to do static method invocation on non-Class')
+
+  m, encl_type = defn.environment.lookup_method((ids.parts[-1], arg_types))
+  if m is None or not m.is_static:
+    raise Exception('Invalid static method invocation')
+
+  return common.invoke_static_method(defn, m, args_asm)
 
 def get_arg_list(args):
   '''Get the code to push a list of arguments onto the stack'''
