@@ -554,6 +554,26 @@ class ASTBinary(ASTExpression):
           '; eax contains a pointer to the result',
           '; end ||',
       ]
+    elif self.operator == '==' or self.operator == '!=':
+      # For == and !=, we have to handle primitive types and references types
+      # differently.
+      equality_ops = {
+        '==': ['_equals_prim', '_equals_ref'],
+        '!=': ['_not_equals_prim', '_not_equals_ref'],
+      }
+      if self.left_expr.expr_type.is_primitive:
+        op_function = equality_ops[self.operator][0]
+      else:
+        op_function = equality_ops[self.operator][1]
+
+      return [
+          left_operand,
+          right_operand,
+          'call {0}'.format(op_function),
+          'pop ebx  ; pop second param',
+          'pop ebx  ; pop first param',
+          '; eax contains a pointer to the result'
+      ]
 
     return []
 

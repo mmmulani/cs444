@@ -181,6 +181,114 @@ def eager_or():
     common.function_epilogue()
   ]
 
+def equals_prim():
+  '''Returns a boolean if both primitives are equal.
+
+  2 Params:
+    1. Address of a primitive (left operand)
+    2. Address of a primitive (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_equals_prim:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('ebx', 'eax'),
+    common.get_param('eax', 1, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    'cmp eax, ebx',
+    'je _equals_prim_same',
+    'push 0 ; only run if not the same',
+    'jmp _equals_prim_done',
+    '_equals_prim_same:',
+    'push 1 ; only run if the same',
+    '_equals_prim_done:',
+    'call _create_boolean',
+    'pop ebx ; pop to garbage',
+    common.function_epilogue(),
+  ]
+
+def equals_ref():
+  '''Returns a boolean if both references are equal.
+
+  2 Params:
+    1. Address of a reference (left operand)
+    2. Address of a reference (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_equals_ref:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.get_param('ebx', 1, N_PARAMS),
+    'cmp eax, ebx',
+    'je _equals_ref_same',
+    'push 0 ; only run if not the same',
+    'jmp _equals_ref_done',
+    '_equals_ref_same:',
+    'push 1 ; only run if the same',
+    '_equals_ref_done:',
+    'call _create_boolean',
+    'pop ebx ; pop to garbage',
+    common.function_epilogue(),
+  ]
+
+def not_equals_prim():
+  '''Returns a boolean if both primitives are not equal.
+
+  2 Params:
+    1. Address of a primitive (left operand)
+    2. Address of a primitive (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_not_equals_prim:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.unwrap_primitive('ebx', 'eax'),
+    common.get_param('eax', 1, N_PARAMS),
+    common.unwrap_primitive('eax', 'eax'),
+    'cmp eax, ebx',
+    'je _not_equals_prim_same',
+    'push 1 ; only run if not the same',
+    'jmp _not_equals_prim_done',
+    '_not_equals_prim_same:',
+    'push 0 ; only run if the same',
+    '_not_equals_prim_done:',
+    'call _create_boolean',
+    'pop ebx ; pop to garbage',
+    common.function_epilogue(),
+  ]
+
+def not_equals_ref():
+  '''Returns a boolean if both references are not equal.
+
+  2 Params:
+    1. Address of a reference (left operand)
+    2. Address of a reference (right operand)
+  '''
+  N_PARAMS = 2
+
+  return [
+    '_not_equals_ref:',
+    common.function_prologue(),
+    common.get_param('eax', 0, N_PARAMS),
+    common.get_param('ebx', 1, N_PARAMS),
+    'cmp eax, ebx',
+    'je _not_equals_ref_same',
+    'push 1 ; only run if not the same',
+    'jmp _not_equals_ref_done',
+    '_not_equals_ref_same:',
+    'push 0 ; only run if the same',
+    '_not_equals_ref_done:',
+    'call _create_boolean',
+    'pop ebx ; pop to garbage',
+    common.function_epilogue(),
+  ]
+
 NAMES = {
     '_add_int': add_int,
     '_sub_int': sub_int,
@@ -188,5 +296,9 @@ NAMES = {
     '_divide_int': divide_int,
     '_mod_int': mod_int,
     '_eager_and': eager_and,
-    '_eager_or': eager_or
+    '_eager_or': eager_or,
+    '_equals_prim': equals_prim,
+    '_equals_ref': equals_ref,
+    '_not_equals_prim': not_equals_prim,
+    '_not_equals_ref': not_equals_ref,
 }
