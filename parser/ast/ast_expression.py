@@ -292,27 +292,37 @@ class ASTAssignment(ASTExpression):
 
     # The left hand side is either an ASTArrayAccess, ASTFieldAccess or
     # ASTIdentifiers.
-    # We save the result from the right hand side in $eax.
-    # store_code is the code to store $eax in the left hand side.
+    # We save the result from the right hand side in $ebx.
+    # store_code is the code to store $ebx in the left hand side.
     store_code = []
     if isinstance(self.left, ASTIdentifiers):
+      import code_gen.access as access
       if self.left.is_simple:
-        import code_gen.access as access
-        store_code = access.set_simple_var(self.left.simple_decl, 'eax')
+        store_code = access.set_simple_var(self.left.simple_decl, 'ebx')
       else:
         import code_gen.annotate_ids as annotate_ids
-        import code_gen.access as access
 
         annotations = annotate_ids.annotate_identifier(self.left)
         # If we do not have any annotations then the left hand side is a static
         # field.
         if len(annotations) == 0:
-          store_code = access.set_simple_static_field(self.left, 'eax')
+          store_code = access.set_simple_static_field(self.left, 'ebx')
         else:
-          store_code = []
+          # _get_to_final provides code to store a pointer to the second last
+          # part of the identifier in $eax.
+          type_, code = access._get_to_final(self.left, annotations)
+          env = type_.definition.environment
+
+          final_part = str(self.left.parts[-1])
+          f, _ = env.lookup_field(final_part)
+          store_code = [
+            code,
+            common.save_instance_field('eax', f, 'ebx'),
+          ]
 
     return [
       result,
+      'mov ebx, eax ; store result in ebx',
       store_code,
     ]
 
