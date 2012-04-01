@@ -34,6 +34,11 @@ def make_subtype_table(asts):
     column = calculate_subtype_column(type_, indexed_types)
     type_.definition.c_subtype_column = column
 
+  for array_type in array_types:
+    if not array_type.is_primitive:
+      column = calculate_subtype_column(array_type, indexed_types)
+      array_type.definition.c_array_subtype_column = column
+
   # Store the indexed types on the CodeGenManager to allow lookups in both
   # directions.
   CodeGenManager._subtype_column_guide = indexed_types

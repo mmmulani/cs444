@@ -69,6 +69,7 @@ class ASTClass(ast_node.ASTNode):
 
     # Set by the Subtype Table script in the code gen stage.
     self.c_subtype_column = None
+    self.c_array_subtype_column = None
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Class: {0}'.format(self.name), depth)
@@ -235,8 +236,18 @@ class ASTClass(ast_node.ASTNode):
     return CodeGenManager.memoize_label(self, label)
 
   @property
+  def c_array_subtype_column_label(self):
+    label = 'array_subtype_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  @property
   def c_cit_label(self):
     label = 'class_info_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  @property
+  def c_array_cit_label(self):
+    label = 'array_cit_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
   @property
@@ -256,9 +267,11 @@ class ASTClass(ast_node.ASTNode):
       '', '',  # Padding before the SIT/Subtype columns.
       self.c_gen_code_sit_column(),
       '', '',  # Padding between tables.
-      self.c_gen_code_subtype_column(),
+      self.c_gen_code_subtype_columns(),
       '', '',
       cit.generate_cit(self),
+      '', '',
+      cit.generate_array_cit(self),
       '', '',
       self.c_gen_code_create_instance(),
     ]
@@ -288,12 +301,15 @@ class ASTClass(ast_node.ASTNode):
         table_entries
     ]
 
-  def c_gen_code_subtype_column(self):
+  def c_gen_code_subtype_columns(self):
     '''Generates assembly for the subtype table for this type'''
     # We use a helper as subtype columns for classes and interfaces are created
     # the same way.
-    return ASTClass.c_gen_code_subtype_column_helper(
+    subtype_column_code = ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
+    array_subtype_column_code = ASTClass.c_gen_code_subtype_column_helper(
+        self.c_array_subtype_column_label, self.c_array_subtype_column)
+    return [subtype_column_code, '', array_subtype_column_code]
 
   def c_calculate_field_offsets(self):
     '''Calculate the offsets for field instances'''

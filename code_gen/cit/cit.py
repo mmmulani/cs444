@@ -26,6 +26,24 @@ def generate_cit(t):
     field_defn
   ]
 
+def generate_array_cit(t):
+  '''Generates the array version of the Class Info Table (CIT) column from an
+  ASTClass.
+
+  Array Class Info Table:
+      - Pointer to SIT column (which is always java.lang.Object's SIT column)
+      - Pointer to Subtype column
+      - Methods (which all come directly from java.lang.Object)
+  '''
+  return [
+    '; ARRAY CLASS INFO TABLE: {0}'.format(t.canonical_name),
+    'global {0}'.format(t.c_array_cit_label),
+    '{0}:'.format(t.c_array_cit_label),
+    'dd 0', # TODO (gnleece) label for java.lang.Object SIT column goes here
+    'dd {0}'.format(t.c_array_subtype_column_label),
+    # TODO (gnleece) methods from java.lang.Object go here
+  ]
+
 def _get_offsets(t):
   '''Returns a list of pointers to the method implementations for the type'''
   offset_impl_list = []
