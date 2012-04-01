@@ -258,7 +258,8 @@ class ASTUnary(ASTExpression):
 class ASTAssignment(ASTExpression):
   def __init__(self, tree):
     # Two children:
-    #   0. The expression on the left side of the assignment.
+    #   0. The expression on the left side of the assignment. It should be one
+    #      of ASTIdentifiers, ASTFieldAccess or ASTArrayAccess.
     #   1. The expression on the right side of the assignment.
     self.children = [ASTExpression.get_expr_node(tree.children[0]),
                      ASTExpression.get_expr_node(tree.children[2])]
@@ -285,6 +286,24 @@ class ASTAssignment(ASTExpression):
   @property
   def right_expr(self):
     return self.children[1]
+
+  def c_gen_code(self):
+    result = self.right.c_gen_code()
+
+    # The left hand side is either an ASTArrayAccess, ASTFieldAccess or
+    # ASTIdentifiers.
+    # We save the result from the right hand side in $eax.
+    # store_code is the code to store $eax in the left hand side.
+    store_code = []
+    if isinstance(self.left, ASTIdentifiers):
+      if self.left.is_simple:
+        import code_gen.access as access
+        store_code = access.set_simple_var(self.left.simple_decl, 'eax')
+
+    return [
+      result,
+      store_code,
+    ]
 
 class ASTArrayAccess(ASTExpression):
   def __init__(self, tree):
@@ -579,13 +598,21 @@ class ASTIdentifiers(ASTExpression):
     '''Returns a list of all ASTExpression children.'''
     return []
 
+  @property
+  def is_simple(self):
+    '''Returns whether this set of identifiers is a simple name.'''
+    return self.first_definition[0] == str(self)
+
+  @property
+  def simple_decl(self):
+    return self.first_definition[1]
+
   def c_gen_code(self):
     import code_gen.annotate_ids as annotate_ids
     import code_gen.access as access
     # Handle the case of a simple name.
-    if self.first_definition[0] == str(self):
-      var_decl = self.first_definition[1]
-      return access.get_simple_var(var_decl)
+    if self.is_simple:
+      return access.get_simple_var(self.simple_decl)
 
     annotation = annotate_ids.annotate_identifier(self)
     if len(annotation) == 0:

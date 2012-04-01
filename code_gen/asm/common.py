@@ -60,6 +60,16 @@ def get_param(dest, index, num_params):
     'mov {0}, [ebp + {1}]'.format(dest, offset)
   ]
 
+def set_param(index, src, num_params):
+  '''Stores the value from src in the (index)th parameter.'''
+  if index < 0 or index >= num_params:
+    raise Exception('Invalid parameter index')
+
+  offset = 8 + 4 * (num_params - (index + 1))
+  return [
+    'mov [ebp + {0}], {1}'.format(offset, src)
+  ]
+
 def get_local_var(dest, local_var):
   '''Takes an ASTVariableDeclaration and stores the pointer to its data in
   dest.'''
