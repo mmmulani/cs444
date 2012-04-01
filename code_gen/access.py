@@ -11,7 +11,8 @@ def get_simple_var(decl):
   '''Given a declaration, return code to get the variable'''
   if isinstance(decl, ast_param.ASTParam):
     # Method param.
-    return ''
+    index = CodeGenManager.cur_method.c_get_param_index(decl)
+    return common.get_param('eax', index, CodeGenManager.N_PARAMS)
   elif decl.c_parent_method is not None:
     # Local variable.
     return common.get_local_var('eax', decl)

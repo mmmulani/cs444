@@ -197,7 +197,6 @@ class ASTMethod(ast_node.ASTNode):
       param_count += 1
     return param_count
 
-
   def c_gen_code(self):
     import code_gen.asm.common as common
     CodeGenManager.N_PARAMS = self.c_num_params
@@ -258,6 +257,21 @@ class ASTMethod(ast_node.ASTNode):
     CodeGenManager.N_PARAMS = 0
     CodeGenManager.cur_method = None
     return ret
+
+  def c_get_param_index(self, decl):
+    '''Returns the index of parameter given by decl'''
+    if decl not in self.params:
+      raise Exception('No param found for given declaration')
+
+    for ix, p in enumerate(self.params):
+      if p == decl:
+        if not self.is_static:
+          # Need to add 1 because of the 'this' parameter.
+          return ix + 1
+        return ix
+
+    # Should never reach here.
+    raise Exception('Programmer error')
 
 class ASTMethodError(Exception):
   pass
