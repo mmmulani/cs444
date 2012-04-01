@@ -276,10 +276,11 @@ class ASTClass(ast_node.ASTNode):
     for m in self.methods:
       methods.extend([m.c_gen_code(), ''])
 
+    import code_gen.sit.selector_index_table as sit
     return [
       methods,
       '', '',  # Padding before the SIT/Subtype columns.
-      self.c_gen_code_sit_column(),
+      sit.gen_code_sit_column(self.c_sit_column, self.c_sit_column_label),
       '', '',  # Padding between tables.
       self.c_gen_code_subtype_columns(),
       '', '',
@@ -290,32 +291,6 @@ class ASTClass(ast_node.ASTNode):
       cit.generate_array_cit(self),
       '', '',
       cit.generate_cit(self),  # THIS MUST BE LAST.
-    ]
-
-  def c_gen_code_sit_column(self):
-    '''Generates assembly for the SIT table for this type.'''
-    table_entries = []
-    for ix, m in enumerate(self.c_sit_column):
-      # Add an assembly comment to explain the row.
-      selector = CodeGenManager.get_selector(ix)
-      ret_type, (name, params) = selector
-      param_strs = [str(t) for t in params]
-      method_str = '{0} {1}({2})'.format(str(ret_type), name,
-          ', '.join(param_strs))
-      table_entries.append('; {0}'.format(method_str))
-
-      entry = ''
-      if m is None:
-        entry = 'dd 0x0'
-      else:
-        entry = 'dd {0}'.format(m.c_defn_label)
-
-      table_entries.append(entry)
-
-    return [
-        'global {0}'.format(self.c_sit_column_label),
-        '{0}:'.format(self.c_sit_column_label),
-        table_entries
     ]
 
   def c_gen_code_subtype_columns(self):

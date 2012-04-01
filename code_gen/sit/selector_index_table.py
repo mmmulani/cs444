@@ -55,3 +55,31 @@ def create_sit_column(indexed_selectors, class_):
     column[ix] = method
 
   return column
+
+def gen_code_sit_column(sit_column, label):
+  '''Generates assembly for the SIT table for this type.'''
+  table_entries = []
+  for ix, m in enumerate(sit_column):
+    # Add an assembly comment to explain the row.
+    selector = CodeGenManager.get_selector(ix)
+    ret_type, (name, params) = selector
+    param_strs = [str(t) for t in params]
+    method_str = '{0} {1}({2})'.format(str(ret_type), name,
+        ', '.join(param_strs))
+    table_entries.append('; {0}'.format(method_str))
+
+    entry = ''
+    if m is None:
+      entry = 'dd 0x0'
+    else:
+      entry = 'dd {0}'.format(m.c_defn_label)
+
+    table_entries.append(entry)
+
+  return [
+      'global {0}'.format(label),
+      '{0}:'.format(label),
+      table_entries
+  ]
+
+
