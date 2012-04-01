@@ -37,16 +37,22 @@ def generate_ast_code(ast, output_dir='output'):
   # generate the code header (externs, globals)
   externs = _get_helper_function_names().keys()
   externs.extend(runtime.NAMES.keys())
-  extern_asm = '\n'.join(['extern {0}'.format(x) for x in externs])
-  header_asm = extern_asm + '\n\n'
+  extern_asm = ['extern {0}'.format(x) for x in externs]
+  header_asm = [
+    'section .data',
+    '',
+    extern_asm,
+    '', '',
+  ]
 
   body_asm = _generate_body_code(ast)
+  asm = '\n'.join(flatten_asm([header_asm, body_asm]))
 
   # write out to a file:
   filename = os.path.basename(ast.filename).split('.')[0] + '.s'
   filepath = os.path.join(output_dir, filename)
   asm_file = open(filepath, 'w')
-  asm_file.write('\n'.join([header_asm, body_asm]))
+  asm_file.write(asm)
   asm_file.close()
 
   #TODO (gnleece) can there be subfolders in output? will we get name conflicts?
@@ -86,8 +92,6 @@ def _generate_body_code(ast):
   # generate the regular body code for the AST:
   body_asm.append(ast.c_gen_code())
 
-  # return the flattened & joined asm code:
-  body_asm = '\n'.join(flatten_asm(body_asm))
   return body_asm
 
 def generate_common_code(output_dir='output'):
