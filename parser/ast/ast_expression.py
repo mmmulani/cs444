@@ -335,6 +335,21 @@ class ASTArrayAccess(ASTExpression):
                      ASTExpression.get_expr_node(tree.children[2])]
     super(ASTArrayAccess, self).__init__()
 
+  def c_gen_code(self):
+    # Assume that we're doing an array read.
+    return [
+      self.array_expression.c_gen_code(),
+      'push eax',
+      self.index.c_gen_code(),
+      #TODO (gnleece) runtime check for array-out-of-bounds
+      'pop ebx   ; restore the pointer to the array',
+      '; calculate the offset into the array:',
+      common.unwrap_primitive('eax', 'eax'),
+      'imul eax, 4',
+      'add eax, 12',
+      'mov eax, [ebx + eax]'
+    ]
+
   @property
   def array_expression(self):
     return self.children[0]
@@ -708,13 +723,19 @@ class ASTArrayCreation(ASTExpression):
 
   def c_gen_code(self):
     class_defn = self.type_node.definition
+    array_create_fn_label = ''
     if class_defn is None:
-      return [] # TODO (gnleece) handle arrays of primitives
+      # This is a primitive type.
+      prim_name = self.type_node.children[0]
+      array_create_fn_label = \
+          manager.CodeGenManager.primitive_array_create_labels[prim_name]
+    else:
+      array_create_fn_label = class_defn.c_create_array_function_label
 
     return [
       self.children[1].c_gen_code(),
       'push eax  ; array length',
-      'call {0}'.format(class_defn.c_create_array_function_label),
+      'call {0}'.format(array_create_fn_label),
       'pop ebx  ; pop to garbage',
     ]
 
