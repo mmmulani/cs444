@@ -394,6 +394,13 @@ class ASTClass(ast_node.ASTNode):
     ]
 
   def c_gen_code_create_array(self):
+    return ASTClass.c_gen_code_create_array_helper(
+        self.c_create_array_function_label, self.c_array_cit_label,
+        self.c_cit_label)
+
+  @staticmethod
+  def c_gen_code_create_array_helper(function_label, array_cit_label,
+      cit_label):
     '''Create an array of this type in memory
 
     Structure of the created array object is as follows:
@@ -410,9 +417,9 @@ class ASTClass(ast_node.ASTNode):
     # and the length. Remaining bytes are for the array elements (4 bytes each)
 
     return [
-      'global {0}'.format(self.c_create_array_function_label),
-      '{0}:'.format(self.c_create_array_function_label),
-      array.create_array(False, self.c_array_cit_label, self.c_cit_label)     
+      'global {0}'.format(function_label),
+      '{0}:'.format(function_label),
+      array.create_array(False, array_cit_label, cit_label)     
     ]
 
 class ASTClassError(Exception):
