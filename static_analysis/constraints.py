@@ -141,4 +141,8 @@ def for_loop(ast, i, o):
   if ast.statement:
     reachability.check_block_or_statement(ast.statement, in_value=o)
 
+  # If there is no expression, the for loop runs forever.
+  if not has_expr:
+    return o, NO
+
   return o, o
