@@ -1,4 +1,5 @@
 import common
+from code_gen.manager import CodeGenManager
 
 def add_int():
   '''Adds two integers together and returns the address of a new integer with
@@ -86,6 +87,8 @@ def divide_int():
     2. The address of another integer (right operand - divisor)'''
   N_PARAMS = 2
 
+  div_not_zero = CodeGenManager.get_label('div_not_zero')
+
   return [
     '_divide_int:',
     common.function_prologue(),
@@ -95,6 +98,11 @@ def divide_int():
     '; get the value for the right operand and put in in ebx',
     common.get_param('ebx', 1, N_PARAMS),
     common.unwrap_primitive('ebx', 'ebx'),
+    '; check for division by zero:',
+    'cmp ebx, 0',
+    'jne {0}'.format(div_not_zero),
+    'call __exception',
+    '{0}:'.format(div_not_zero),
     common.fill_high_order_bit('eax', 'edx'),
     'idiv ebx  ; sets eax to edx:eax/ebx',
     '; create an int with the result',
