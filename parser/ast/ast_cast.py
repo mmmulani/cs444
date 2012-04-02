@@ -58,9 +58,52 @@ class ASTCast(ast_node.ASTNode):
     return [self.children[1]]
 
   def c_gen_code(self):
+    from ast_expression import ASTLiteral
+
     if self.type_node.is_primitive and not self.type_node.is_array:
+      primitive_sizes = {
+        'boolean': 0x1,
+        'byte': 0xff,
+        'char': 0xff,
+        'int': 0xffffffff,
+        'null': 0x0,
+        'short': 0xffff,
+      }
+
+      expr_size = primitive_sizes[str(self.expressions[0].expr_type)]
+      result_size = primitive_sizes[str(self.type_node)]
+
+      # Widen all numeric types but chars.
+      widen_code = []
+      if str(self.expressions[0].expr_type) in ['byte', 'short']:
+        done_label = CodeGenManager.get_label('cast_widen_done')
+        if expr_size == 0xff:
+          widen_code = [
+            'mov ebx, eax',
+            'and ebx, 0x80',
+            'cmp ebx, 0x80',
+            'jne {0}'.format(done_label),
+            'or eax, 0xffffff00',
+            '{0}:'.format(done_label),
+          ]
+        elif expr_size == 0xffff:
+          widen_code = [
+            'mov ebx, eax',
+            'and ebx, 0x8000',
+            'cmp ebx, 0x8000',
+            'jne {0}'.format(done_label),
+            'or eax, 0xffff0000',
+            '{0}:'.format(done_label),
+          ]
+
       return [
         self.expressions[0].c_gen_code(),
+        common.unwrap_primitive('eax', 'eax'),
+        widen_code,
+        'and eax, {0} ; narrow to {1}'.format(result_size, str(self.type_node)),
+        'push eax ; create new primitive with value',
+        'call _create_int',
+        'pop ebx ; pop param',
       ]
     else:
       subtype_offset = 4 * CodeGenManager.get_subtype_table_index(
