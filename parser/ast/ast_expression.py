@@ -347,20 +347,33 @@ class ASTAssignment(ASTExpression):
 
     # The left hand side is either an ASTArrayAccess, ASTFieldAccess or
     # ASTIdentifiers.
-    # We save the result from the right hand side in $ebx.
-    # store_code is the code to store $ebx in the left hand side.
-    store_code = []
     if isinstance(self.left, ASTIdentifiers):
+      # For assignment expressions, we evaluate the left hand side first. If
+      # the left hand side is an ASTIdentifiers, the same ASTIdentifiers could
+      # be used on the right hand side in an assignment.
+      # Thus, we must store a reference to where the left hand side points
+      # before evaluating the right hand side.
+
       if self.left.is_simple:
-        store_code = access.set_simple_var(self.left.simple_decl, 'ebx')
+        # If the left hand side is simple, it is either a method parameter,
+        # local variable or an instance field on the enclosing type. The
+        # location for all of these cannot be altered by the right hand side,
+        # so we can calculate the right hand side first.
+        return [
+          result,
+          access.set_simple_var(self.left.simple_decl, 'eax'),
+        ]
       else:
         import code_gen.annotate_ids as annotate_ids
 
         annotations = annotate_ids.annotate_identifier(self.left)
-        # If we do not have any annotations then the left hand side is a static
-        # field.
         if len(annotations) == 0:
-          store_code = access.set_simple_static_field(self.left, 'ebx')
+          # If we do not have any annotations then the left hand side is a
+          # static field. This address cannot change.
+          return [
+            result,
+            access.set_simple_static_field(self.left, 'eax'),
+          ]
         else:
           # _get_to_final provides code to store a pointer to the second last
           # part of the identifier in $eax.
@@ -369,16 +382,15 @@ class ASTAssignment(ASTExpression):
 
           final_part = str(self.left.parts[-1])
           f, _ = env.lookup_field(final_part)
-          store_code = [
+
+          return [
             code,
-            common.save_instance_field('eax', f, 'ebx'),
+            'push eax ; save instance that we want to store a field on',
+            result,
+            'pop ebx ; instance to store a field on',
+            common.save_instance_field('ebx', f, 'eax'),
           ]
 
-      return [
-        result,
-        'mov ebx, eax ; store result in ebx',
-        store_code,
-      ]
     if isinstance(self.left, ASTFieldAccess):
       left_asm = self.left.left.c_gen_code()
       left_t = self.left.left.expr_type
