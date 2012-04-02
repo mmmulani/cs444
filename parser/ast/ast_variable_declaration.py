@@ -104,6 +104,8 @@ class ASTVariableDeclaration(ast_node.ASTNode):
     # This is a local variable declaration.
     import code_gen.asm.common as common
     return [
+      '; VAR DECL: {0}'.format(self.identifier),
       self.expression.c_gen_code(),
-      common.save_local_var(self, 'eax')
+      common.save_local_var(self, 'eax'),
+      '; END VAR DECL'
     ]

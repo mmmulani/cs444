@@ -391,7 +391,7 @@ class ASTAssignment(ASTExpression):
             common.save_instance_field('ebx', f, 'eax'),
           ]
 
-    if isinstance(self.left, ASTFieldAccess):
+    elif isinstance(self.left, ASTFieldAccess):
       left_asm = self.left.left.c_gen_code()
       left_t = self.left.left.expr_type
       if left_t.is_array:
