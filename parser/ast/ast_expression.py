@@ -320,11 +320,17 @@ class ASTAssignment(ASTExpression):
             common.save_instance_field('eax', f, 'ebx'),
           ]
     elif isinstance(self.left, ASTArrayAccess):
-      store_code = [
-        'push ebx ; save result',
+      # The result is calculated after the array index offset.
+      return [
         self.left.c_gen_code_get_array_pointer(),
-        'pop ecx ; expr result is in ecx',
+        'push ebx ; save array pointer',
+        'push eax ; save array offset',
+        result,
+        'mov ecx, eax ; move result',
+        'pop eax ; restore array offset',
+        'pop ebx ; restore array pointer',
         'mov [ebx + eax], ecx',
+        'mov eax, ecx ; result should be in eax',
       ]
 
     return [
