@@ -327,6 +327,19 @@ class ASTAssignment(ASTExpression):
             code,
             common.save_instance_field('eax', f, 'ebx'),
           ]
+    elif isinstance(self.left, ASTArrayAccess):
+      # The result is calculated after the array index offset.
+      return [
+        self.left.c_gen_code_get_array_pointer(),
+        'push ebx ; save array pointer',
+        'push eax ; save array offset',
+        result,
+        'mov ecx, eax ; move result',
+        'pop eax ; restore array offset',
+        'pop ebx ; restore array pointer',
+        'mov [ebx + eax], ecx',
+        'mov eax, ecx ; result should be in eax',
+      ]
 
     return [
       result,
@@ -343,7 +356,10 @@ class ASTArrayAccess(ASTExpression):
                      ASTExpression.get_expr_node(tree.children[2])]
     super(ASTArrayAccess, self).__init__()
 
-  def c_gen_code(self):
+
+  def c_gen_code_get_array_pointer(self):
+    '''Creates code that will store the array a reference to the array in ebx
+    and the offset for the index in eax.'''
     array_check_pass = manager.CodeGenManager.get_label('array_check_pass')
     array_check_fail = manager.CodeGenManager.get_label('array_check_fail')
 
@@ -364,12 +380,17 @@ class ASTArrayAccess(ASTExpression):
       'jmp {0}'.format(array_check_pass),
       '{0}:'.format(array_check_fail),
       'call __exception',
-      
+
       '{0}:'.format(array_check_pass),
       '; calculate the offset into the array:',
       'imul eax, 4',
       'add eax, 12',
-      'mov eax, [ebx + eax]'
+    ]
+
+  def c_gen_code(self):
+    return [
+      self.c_gen_code_get_array_pointer(),
+      'mov eax, [ebx + eax]',
     ]
 
   @property
