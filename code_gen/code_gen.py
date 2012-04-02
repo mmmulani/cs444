@@ -25,6 +25,9 @@ def code_gen(asts, dir):
 
   # Find the definition of java.lang.Object and save it:
   for ast in asts:
+    t = ast.class_or_interface
+    if t is None:
+      continue
     if str(ast.children[2].canonical_name) == 'java.lang.Object':
       manager.CodeGenManager.java_lang_object_defn = ast.class_or_interface
     if str(ast.children[2].canonical_name) == 'java.lang.String':
