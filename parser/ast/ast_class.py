@@ -377,6 +377,7 @@ class ASTClass(ast_node.ASTNode):
 
     1. Allocate memory for the object.
     2. Sets a pointer to the CIT on the instance.
+    3. Initializes all fields to their default value.
 
     The following should be done by the ClassInstanceCreation:
     1. Call the parent constructor.
@@ -384,12 +385,27 @@ class ASTClass(ast_node.ASTNode):
     3. Run constructor body.'''
 
     import code_gen.asm.common as common
+    import code_gen.asm.object as object_
+
+    field_init_code = []
+    for f in self.get_all_fields():
+      type_node = f.type_node
+      field_init_code.extend([
+        'push eax ; save |this|',
+        object_.create_default_value(type_node.is_primitive,
+            type_node.is_array),
+        'mov ebx, eax ; store result in ebx',
+        'pop eax ; restore |this|',
+        common.save_instance_field('eax', f, 'ebx'),
+      ])
+
     return [
       'global {0}'.format(self.c_create_object_function_label),
       '{0}:'.format(self.c_create_object_function_label),
       common.malloc(self.c_object_size),
       # Class info table
       'mov dword [eax], {0}'.format(self.c_cit_label),
+      field_init_code,
       'ret',
     ]
 
