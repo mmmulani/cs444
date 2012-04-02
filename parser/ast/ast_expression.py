@@ -387,6 +387,7 @@ class ASTAssignment(ASTExpression):
 
           return [
             code,
+            common.check_null('eax'),
             'push eax ; save instance that we want to store a field on',
             result,
             'pop ebx ; instance to store a field on',
@@ -472,6 +473,7 @@ class ASTArrayAccess(ASTExpression):
     # Assume that we're doing an array read.
     return [
       self.array_expression.c_gen_code(),
+      common.check_null('eax'),
       'push eax',
       self.index.c_gen_code(),
       'pop ebx   ; restore the pointer to the array',

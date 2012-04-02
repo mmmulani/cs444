@@ -23,18 +23,25 @@ def create_array(is_primitive, array_cit_label, subtype_offset = 0):
   # offset, and the length. Remaining bytes are for the array elements
   # (4 bytes each)
 
+  array_length_pass = CodeGenManager.get_label('array_length_pass')
+
   return [
     common.function_prologue(),
     common.get_param('ebx', 0, N_PARAMS),
     common.unwrap_primitive('ebx', 'ebx'),
     '; ebx now contains the length of the array',
+    '; check that array length is not negative:',
+    'cmp ebx, 0',
+    'jge {0}'.format(array_length_pass),
+    'call __exception',
+    '{0}:'.format(array_length_pass),
     'push ebx  ; store the array length (# elems)',
     '; calculate how much memory to allocate, based on length of array:',
     'imul ebx, 4  ; 4 bytes for every element',
     'add ebx, 12  ; add an extra 12 bytes for pointers/length field',
     common.malloc_reg('ebx'),
     'pop ebx  ; restore length (# elems)',
-    'mov edx, eax  ; save pointer to array memory in edx', 
+    'mov edx, eax  ; save pointer to array memory in edx',
     'push eax',
     '; set array elems to their default values:',
     _array_init_loop(is_primitive),
@@ -54,13 +61,13 @@ def _array_init_loop(is_primitive):
   ''' Code that loops through array elements to initialize them.
   This code does not save/restore registers, it should only be called from
   create_array() '''
-  
+
   # Code that will create the default value for a single array element:
   default_value_code = asm_object.create_default_value(is_primitive, False)
 
   loop_start, loop_end = CodeGenManager.get_labels(
     'array_init_loop_start', 'array_init_loop_end')
-  
+
   # eax gets set to the an element'ss default value
   # ebx stores the length of the array (number of elements)
   # ecx is the loop counter

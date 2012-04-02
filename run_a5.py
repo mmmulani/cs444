@@ -153,5 +153,6 @@ if not ('not-test-asm') in sys.argv:
     for f in failing_tests:
       print f
 
+  print
   print '# of passing: {0}'.format(len(passing_tests))
   print '# of failing: {0}'.format(len(failing_tests))

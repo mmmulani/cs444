@@ -119,6 +119,7 @@ def save_instance_field(this_reg, field_decl, src):
     raise Exception('Warning: saving |this| as instance field on object')
 
   return [
+    check_null(this_reg),
     'mov [{0} + {1}], {2}'.format(this_reg, offset, src),
   ]
 
@@ -129,7 +130,19 @@ def get_instance_field(this_reg, dest, field_decl):
     raise Exception('Instance field does not have an offset')
 
   return [
+    check_null(this_reg),
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
+  ]
+
+def check_null(src):
+  '''Checks whether the value in src is null (0x0).'''
+  from code_gen.manager import CodeGenManager
+  check_pass = CodeGenManager.get_label('null_check_pass');
+  return [
+    'cmp {0}, 0'.format(src),
+    'jne {0}'.format(check_pass),
+    'call __exception',
+    '{0}:'.format(check_pass)
   ]
 
 def get_instance_field_addr(this_reg, dest, field_decl):
@@ -139,6 +152,7 @@ def get_instance_field_addr(this_reg, dest, field_decl):
     raise Exception('Instance field does not have an offset')
 
   return [
+    check_null(this_reg),
     '; Get instance field addr',
     'mov {0}, {1}'.format(dest, this_reg),
     'add {0}, {1}'.format(dest, offset)
@@ -173,6 +187,7 @@ def invoke_instance_method(this_reg, m, args_asm):
 
   return [
     '; Invoke instance method: {0}'.format(m.name),
+    check_null(this_reg),
     'push {0}  ; push "this" as the first param'.format(this_reg),
     args_asm,
     'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
@@ -192,6 +207,7 @@ def invoke_interface_method(this_reg, m, args_asm):
 
   return [
     '; Invoke interface method: {0}'.format(m.name),
+    check_null('eax'),
     'push eax  ; Push "this" as the first param',
     args_asm,
     'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
