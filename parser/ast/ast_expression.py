@@ -408,6 +408,31 @@ class ASTAssignment(ASTExpression):
       ]
 
     elif isinstance(self.left, ASTArrayAccess):
+      array_soundness_pass = manager.CodeGenManager.get_label('array_soundness_pass')
+
+      soundness_asm = []
+      if not self.left.array_expression.expr_type.is_primitive:
+        soundness_asm = [
+          'push eax',
+          'push ebx',
+          'push ecx',
+          '; Get CIT of right side',
+          'mov ecx, [ecx]'
+          '; Get subtype col of right side',
+          'mov ecx, [ecx + 4]',
+          '; get subtype offset',
+          'mov ebx, [ebx + 4]',
+          '; index into subtype col',
+          'mov ecx, [ecx + ebx]',
+          'cmp ecx, 1  ; 1 means that RHS is a subtype of LHS',
+          'je {0}'.format(array_soundness_pass),
+          'call __exception',
+          '{0}:'.format(array_soundness_pass),
+          'pop ecx',
+          'pop ebx',
+          'pop eax',
+        ]
+
       # The result is calculated after the array index offset.
       return [
         self.left.c_gen_code_get_array_pointer(),
@@ -417,6 +442,8 @@ class ASTAssignment(ASTExpression):
         'mov ecx, eax ; move result',
         'pop eax ; restore array offset',
         'pop ebx ; restore array pointer',
+        '; do array type soundness check',
+        soundness_asm,
         'mov [ebx + eax], ecx',
         'mov eax, ecx ; result should be in eax',
       ]
