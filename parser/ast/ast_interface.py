@@ -2,6 +2,7 @@ import ast_class
 import ast_method
 import ast_node
 import ast_type
+import code_gen.cit.cit as cit
 
 from ast_expression import ASTIdentifiers
 from ast_method import ASTMethod
@@ -36,6 +37,7 @@ class ASTInterface(ast_node.ASTNode):
 
     # Set by the Subtype Table script during the code gen stage.
     self.c_subtype_column = None
+    self.c_array_subtype_column = None
 
   def show(self, depth = 0, types = False):
     ast_node.ASTUtils.println('Interface: {0}'.format(self.name), depth)
@@ -194,8 +196,20 @@ class ASTInterface(ast_node.ASTNode):
   # ------ CODE GEN METHODS --------
 
   @property
+  def c_array_sit_column_label(self):
+    label = 'sit_column_{0}'.format(
+        CodeGenManager.java_lang_object_defn.canonical_name)
+    return CodeGenManager.memoize_label(CodeGenManager.java_lang_object_defn,
+        label)
+
+  @property
   def c_subtype_column_label(self):
     label = 'subtype_column_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  @property
+  def c_array_subtype_column_label(self):
+    label = 'array_subtype_column_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
   @property
@@ -203,20 +217,40 @@ class ASTInterface(ast_node.ASTNode):
     label = 'class_info_{0}'.format(self.canonical_name)
     return CodeGenManager.memoize_label(self, label)
 
+  @property
+  def c_array_cit_label(self):
+    label = 'array_cit_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+  @property
+  def c_create_array_function_label(self):
+    label = 'create_array_{0}'.format(self.canonical_name)
+    return CodeGenManager.memoize_label(self, label)
+
+ 
   def c_gen_code(self):
     '''Code generation for types'''
     return [
-      '', '',  # Padding before the Subtype column.
-      self.c_gen_code_subtype_column(),
+      '', '',  # Padding before the Subtype columns.
+      self.c_gen_code_subtype_columns(),
       '', '',
-      self.c_gen_class_info_table()
+      self.c_gen_class_info_table(),
+      '', '',
+      self.c_gen_code_create_array(),
+      '', '',
+      cit.generate_array_cit(self.canonical_name, self.c_array_cit_label,
+          self.c_array_sit_column_label, self.c_array_subtype_column_label),
     ]
 
-  def c_gen_code_subtype_column(self):
+  def c_gen_code_subtype_columns(self):
     # We use a helper as subtype columns for classes and interfaces are created
     # the same way.
-    return ast_class.ASTClass.c_gen_code_subtype_column_helper(
+    subtype_column_code = ast_class.ASTClass.c_gen_code_subtype_column_helper(
         self.c_subtype_column_label, self.c_subtype_column)
+    array_subtype_column_code = \
+        ast_class.ASTClass.c_gen_code_subtype_column_helper(
+        self.c_array_subtype_column_label, self.c_array_subtype_column)
+    return [subtype_column_code, '', array_subtype_column_code]
 
   def c_gen_class_info_table(self):
     '''Generats the class info table for the containing type
@@ -232,6 +266,11 @@ class ASTInterface(ast_node.ASTNode):
       'dd 0xdeadbeef', # Dummy value for no SIT
       'dd {0}'.format(self.c_subtype_column_label)
     ]
+
+  def c_gen_code_create_array(self):
+    return ast_class.ASTClass.c_gen_code_create_array_helper(
+        self.c_create_array_function_label, self.c_array_cit_label,
+        self.c_cit_label)
 
   def c_calculate_field_offsets(self):
     '''Calculate instance field offsets for this type.
