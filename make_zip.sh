@@ -3,6 +3,7 @@ files_to_zip=(\
   ax-test \
   code_gen \
   compiler.py \
+  exec_tests.py \
   joosc \
   Makefile \
   name_resolution \
