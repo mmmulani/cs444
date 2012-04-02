@@ -237,7 +237,7 @@ class ASTLiteral(ASTExpression):
       constructor = string_defn.methods[3]
 
       char_store_code = []
-      for ix, char in enumerate(self.const_value):
+      for ix, char in enumerate(self.const_value.decode('string_escape')):
         char_value = ord(char)
         char_offset = 12 + 4 * ix
         char_store_code.extend([
