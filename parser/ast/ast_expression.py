@@ -716,6 +716,11 @@ class ASTBinary(ASTExpression):
     return [self.children[0], self.children[1]]
 
   def c_gen_code(self):
+    # Quickly handle string concat to avoid multiple code gens of children.
+    if self.operator == '+' and str(self.expr_type) == 'java.lang.String':
+      import code_gen.string
+      return code_gen.string.string_concat(self)
+
     # We provide the code to generate the value of each operand separately as
     # some operators (e.g. &&) will not necessarily evaluate both.
     left_operand = common.store_param(self.left_expr)
@@ -736,10 +741,6 @@ class ASTBinary(ASTExpression):
     }
 
     if self.operator in lazy_ops.keys():
-      if self.operator == '+' and str(self.expr_type) == 'java.lang.String':
-        import code_gen.string
-        return code_gen.string.string_concat(self)
-
       op_function = lazy_ops[self.operator]
       return [
           left_operand,
