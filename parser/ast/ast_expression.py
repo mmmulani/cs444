@@ -137,6 +137,8 @@ class ASTFieldAccess(ASTExpression):
     import code_gen.access as access
     left_asm = self.left.c_gen_code()
     left_t = self.left.expr_type
+    if left_t.is_array:
+      return access.get_array_field(self.right, left_asm)
     return access.get_field_from_parts(left_t, self.right, left_asm)
 
 class ASTLiteral(ASTExpression):

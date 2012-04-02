@@ -89,7 +89,7 @@ def get_field_access_from_annotation(ids, annotation):
   ret.append(code)
   if t.is_array:
     # Crazy hack for arrays!
-    return get_array_field(ids, annotation, ret)
+    return get_array_field(ids, ret)
 
   return get_field_from_final(t.definition, ids, ret)
 
@@ -104,7 +104,7 @@ def get_field_from_final(t, ids, code):
 
   return code
 
-def get_array_field(ids, annotation, code):
+def get_array_field(ids, code):
   '''Get an array field.
 
   The "code" param should have the asm code that places the array object
@@ -121,6 +121,10 @@ def get_field_from_parts(t, ids, init_asm):
   import annotate_ids
   annotation = annotate_ids.annotate_from_type(t, ids.parts)
   t, field_asm = _get_to_final_from_type(t, annotation, init_asm)
+
+  # Handle array types.
+  if t.is_array:
+    return get_array_field(ids, field_asm)
 
   return [
     '; Get field off eax',

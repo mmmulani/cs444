@@ -44,7 +44,7 @@ def call_method_parts(t, ids, arg_types, arg_asm):
   t <= typeof(Foo.static_field.field)
   ids <= field, method'''
   annotation = annotate_ids.annotate_from_type(t, ids.parts)
-  t, code = access._get_to_final_from_type(t, annotation)
+  t, code = access._get_to_final_from_type(t, annotation, [])
 
   return call_method_with_final(t.definition, ids, code, arg_types, arg_asm)
 
