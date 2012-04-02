@@ -185,6 +185,7 @@ def invoke_instance_method(this_reg, m, args_asm):
 
   return [
     '; Invoke instance method: {0}'.format(m.name),
+    check_null(this_reg),
     'push {0}  ; push "this" as the first param'.format(this_reg),
     args_asm,
     'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
@@ -204,6 +205,7 @@ def invoke_interface_method(this_reg, m, args_asm):
 
   return [
     '; Invoke interface method: {0}'.format(m.name),
+    check_null('eax'),
     'push eax  ; Push "this" as the first param',
     args_asm,
     'mov dword eax, [esp + 4*{0}]  ; Get to "this"'.format(n_params),
