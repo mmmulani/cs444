@@ -37,14 +37,14 @@ def call_method_with_final(t, ids, code, arg_types, args_asm):
 
   return ret 
 
-def call_method_parts(t, ids, arg_types, arg_asm):
+def call_method_parts(t, ids, asm, arg_types, arg_asm):
   '''Calls a method starting from a type followed by a list of IDs
 
   ex. (Foo.static_field.field).field.method()
   t <= typeof(Foo.static_field.field)
   ids <= field, method'''
   annotation = annotate_ids.annotate_from_type(t, ids.parts)
-  t, code = access._get_to_final_from_type(t, annotation, [])
+  t, code = access._get_to_final_from_type(t, annotation, asm)
 
   return call_method_with_final(t.definition, ids, code, arg_types, arg_asm)
 

@@ -500,7 +500,7 @@ class ASTMethodInvocation(ASTExpression):
     left_asm = self.left.c_gen_code()
     left_t = self.left.expr_type
     return invoke.call_method_parts(
-        left_t, self.right, self.arg_types, args_asm)
+        left_t, self.right, left_asm, self.arg_types, args_asm)
 
 class ASTInstanceOf(ASTExpression):
   def __init__(self, tree):
