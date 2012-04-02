@@ -1,7 +1,10 @@
 import ast_statement
+import code_gen.asm.common as common
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
 import parser.ast.ast_variable_declaration as ast_variable_declaration
+
+from code_gen.manager import CodeGenManager
 
 class ASTFor(ast_statement.ASTStatement):
   def __init__(self, tree):
@@ -84,6 +87,41 @@ class ASTFor(ast_statement.ASTStatement):
       self.children[3].show(depth+2, types)
     else:
       ast_node.ASTUtils.println('<Nothing>', depth+2)
+
+  def c_gen_code(self):
+    before_expr_label = CodeGenManager.get_label('for_loop_expr')
+    done_for_label = CodeGenManager.get_label('for_loop_done')
+
+    init_code = []
+    if self.init is not None:
+      init_code = self.init.c_gen_code()
+
+    expr_code = []
+    if self.expression is not None:
+      expr_code = common.if_false(self.expression, done_for_label)
+
+    update_code = []
+    if self.update is not None:
+      update_code = self.update.c_gen_code()
+
+    body_code = []
+    if self.statement is not None:
+      body_code = self.statement.c_gen_code()
+
+    return [
+      '; for loop',
+      '; init code',
+      init_code,
+      '; expression',
+      '{0}:'.format(before_expr_label),
+      expr_code,
+      '; body: ',
+      body_code,
+      '; update',
+      update_code,
+      'jmp {0}'.format(before_expr_label),
+      '{0}:'.format(done_for_label),
+    ]
 
 class ASTForError(Exception):
   pass
