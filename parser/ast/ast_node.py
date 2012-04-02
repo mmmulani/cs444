@@ -18,8 +18,7 @@ class ASTNode(object):
     ASTUtils.println('{0} {1}'.format(type(self).__name__, type_str), depth)
 
   def c_gen_code(self):
-    # TODO: Make this throw an exception once all the gen_code functions are written.
-    return []
+    raise Exception('Somebody forgot to implement c_code_gen!')
 
 class ASTUtils():
   '''Namespace class for AST utilities'''
