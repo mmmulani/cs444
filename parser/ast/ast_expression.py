@@ -225,8 +225,50 @@ class ASTLiteral(ASTExpression):
       return [
         'mov eax, 0',
       ]
-    else:
-      return []
+    elif self.literal_type == ASTLiteral.STRING:
+      # For a string literal we want to call the java.lang.String constructor
+      # with an array of chars corresponding to the literal value.
+
+      # XXX: Hack to get the array label.
+      char_array_label = manager.CodeGenManager.primitive_array_create_labels['char']
+
+      string_defn = self.expr_type.definition
+      # XXX: Make this cleaner.
+      constructor = string_defn.methods[3]
+
+      char_store_code = []
+      for ix, char in enumerate(self.const_value):
+        char_value = ord(char.decode('string_escape'))
+        char_offset = 8 + 4 * ix
+        char_store_code.extend([
+          'push {0}'.format(char_value),
+          'call _create_int',
+          'pop ebx ; pop to garbage',
+          'mov [ecx + {0}], eax'.format(char_offset),
+        ])
+
+      return [
+        '; storing the string literal "{0}"'.format(self.const_value),
+        'push {0} ; string length'.format(len(self.const_value)),
+        'call _create_int',
+        'pop ebx ; pop to garbage',
+        'push eax',
+        'call {0}'.format(char_array_label),
+        'pop ebx ; pop to garbage',
+        'mov ecx, eax ; ecx points to char array',
+        '; start storing chars',
+        char_store_code,
+        '; done storing chars',
+        '; allocate a string object',
+        'call {0}'.format(string_defn.c_create_object_function_label),
+        'push eax ; push instance',
+        'push ecx ; push chars array',
+        'call {0} ; call constructor'.format(constructor.c_defn_label),
+        'pop ecx ; pop chars array',
+        'pop eax ; restore instance to eax',
+      ]
+
+    raise Exception('Unhandled literal code gen case.')
 
 
 class ASTUnary(ASTExpression):
