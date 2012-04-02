@@ -8,7 +8,8 @@ def initialize_static_fields():
   ret = []
   # First set default values.
   for t, f in CodeGenManager.static_inits:
-    init = asm.object.create_default_value(f)
+    init = asm.object.create_default_value(f.type_node.is_primitive,
+        f.type_node.is_array)
     code = [
       '; --- Default init for {0}.{1}'.format(t.canonical_name, f.identifier),
       init,

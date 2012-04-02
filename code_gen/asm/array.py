@@ -55,7 +55,7 @@ def _array_init_loop(is_primitive):
   create_array() '''
   
   # Code that will create the default value for a single array element:
-  default_value_code = asm_object.create_default_value(is_primitive)
+  default_value_code = asm_object.create_default_value(is_primitive, False)
 
   loop_start, loop_end = CodeGenManager.get_labels(
     'array_init_loop_start', 'array_init_loop_end')
