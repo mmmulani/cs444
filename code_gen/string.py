@@ -11,33 +11,29 @@ def string_concat(bin_expr):
   left_asm = left.c_gen_code()
   right_asm = right.c_gen_code()
 
-  left_convert_asm = [left_asm]
-  if not _is_expr_type_string(left.expr_type):
-    # Left is not a string, so we must convert it using String.valueOf
-    m = _get_valueof_method_from_type(left.expr_type)
-    left_convert_asm = [
-      '; Convert the left value to a string',
-      left_asm,
-      '; Left value in eax',
-      'push eax  ; push value as param',
-      'call {0}  ; call valueOf'.format(m.c_defn_label),
-      'pop ebx  ; pop param',
-      '; A pointer to a String is in eax',
-    ]
+  # We want to call valueOf on the left and right regardless of their type as
+  # valueOf handles the case where left or right is null.
+  m = _get_valueof_method_from_type(left.expr_type)
+  left_convert_asm = [
+    '; Convert the left value to a string',
+    left_asm,
+    '; Left value in eax',
+    'push eax  ; push value as param',
+    'call {0}  ; call valueOf'.format(m.c_defn_label),
+    'pop ebx  ; pop param',
+    '; A pointer to a String is in eax',
+  ]
 
-  right_convert_asm = [right_asm]
-  if not _is_expr_type_string(right.expr_type):
-    # Right is not a string, so we must convert it using String.valueOf
-    m = _get_valueof_method_from_type(right.expr_type)
-    right_convert_asm = [
-      '; Convert the right value to a string',
-      right_asm,
-      '; Right value in eax',
-      'push eax  ; push value as param',
-      'call {0}  ; call valueOf'.format(m.c_defn_label),
-      'pop ebx  ; pop param',
-      '; A pointer to a String is in eax',
-    ]
+  m = _get_valueof_method_from_type(right.expr_type)
+  right_convert_asm = [
+    '; Convert the right value to a string',
+    right_asm,
+    '; Right value in eax',
+    'push eax  ; push value as param',
+    'call {0}  ; call valueOf'.format(m.c_defn_label),
+    'pop ebx  ; pop param',
+    '; A pointer to a String is in eax',
+  ]
 
   concat_m = _get_concat_method_from_obj()
 
