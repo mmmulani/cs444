@@ -210,9 +210,13 @@ class ASTLiteral(ASTExpression):
           'pop ebx ; pop to garbage',
           '; _create_boolean will store the address in eax',
       ]
-    elif self.literal_type == ASTLiteral.INT:
+    elif self.literal_type in [ASTLiteral.INT, ASTLiteral.CHAR]:
+      value = self.const_value
+      if self.literal_type == ASTLiteral.CHAR:
+        value = ord(self.const_value.decode('string_escape'))
+
       return [
-          'push {0}'.format(self.const_value),
+          'push {0}'.format(value),
           'call _create_int',
           'pop ebx ; pop to garbage',
           '; _create_int will store the address in eax'
