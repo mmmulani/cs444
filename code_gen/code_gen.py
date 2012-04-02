@@ -26,10 +26,15 @@ def code_gen(asts, dir):
   # Find the definition of java.lang.Object and save it:
   for ast in asts:
     if str(ast.children[2].canonical_name) == 'java.lang.Object':
-      manager.CodeGenManager.java_lang_object_defn = ast.children[2]
-      break
+      manager.CodeGenManager.java_lang_object_defn = ast.class_or_interface
+    if str(ast.children[2].canonical_name) == 'java.lang.String':
+      manager.CodeGenManager.java_lang_string_defn = ast.class_or_interface
+
   if not manager.CodeGenManager.java_lang_object_defn:
     raise Exception('Could not find definition of java.lang.Object')
+
+  if not manager.CodeGenManager.java_lang_string_defn:
+    raise Exception('Could not find definition of java.lang.String')
 
   # Begin code generation.
   generate_primitive_array_code(dir) # this needs to run BEFORE the ASTs

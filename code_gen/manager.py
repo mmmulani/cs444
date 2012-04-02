@@ -6,6 +6,7 @@ class CodeGenManager(object):
 
   found_start_method = False
   java_lang_object_defn = None
+  java_lang_string_defn = None
 
   # ------ LABEL METHODS -------
   _label_count = 0

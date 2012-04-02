@@ -707,6 +707,10 @@ class ASTBinary(ASTExpression):
     }
 
     if self.operator in lazy_ops.keys():
+      if self.operator == '+' and str(self.expr_type) == 'java.lang.String':
+        import code_gen.string
+        return code_gen.string.string_concat(self)
+
       op_function = lazy_ops[self.operator]
       return [
           left_operand,
