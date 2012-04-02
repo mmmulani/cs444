@@ -210,6 +210,19 @@ def invoke_static_method(t, m, args_asm):
   if m.c_offset is None:
     raise Exception('Calling static method with no offset')
 
+  # Native method. Only used for java.io.OutputStream.
+  if 'native' in m.modifiers:
+    return [
+      '; Invoke static method: java.io.OutputStream.nativeWrite',
+      args_asm,
+      'pop eax ; put param into eax',
+      unwrap_primitive('eax', 'eax'),
+      'call NATIVEjava.io.OutputStream.nativeWrite',
+      'push eax ; create_int out of return type',
+      'call _create_int',
+      'pop ebx',
+    ]
+
   pop_asm = ['pop ebx ; Pop param to garbage' for x in range(m.c_num_params)]
 
   return [

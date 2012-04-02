@@ -238,7 +238,7 @@ class ASTLiteral(ASTExpression):
 
       char_store_code = []
       for ix, char in enumerate(self.const_value):
-        char_value = ord(char.decode('string_escape'))
+        char_value = ord(char)
         char_offset = 12 + 4 * ix
         char_store_code.extend([
           'push {0}'.format(char_value),
