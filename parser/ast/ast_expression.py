@@ -300,6 +300,7 @@ class ASTAssignment(ASTExpression):
     return self.children[1]
 
   def c_gen_code(self):
+    import code_gen.access as access
     result = self.right.c_gen_code()
 
     # The left hand side is either an ASTArrayAccess, ASTFieldAccess or
@@ -308,7 +309,6 @@ class ASTAssignment(ASTExpression):
     # store_code is the code to store $ebx in the left hand side.
     store_code = []
     if isinstance(self.left, ASTIdentifiers):
-      import code_gen.access as access
       if self.left.is_simple:
         store_code = access.set_simple_var(self.left.simple_decl, 'ebx')
       else:
@@ -331,6 +331,28 @@ class ASTAssignment(ASTExpression):
             code,
             common.save_instance_field('eax', f, 'ebx'),
           ]
+
+      return [
+        result,
+        'mov ebx, eax ; store result in ebx',
+        store_code,
+      ]
+    if isinstance(self.left, ASTFieldAccess):
+      left_asm = self.left.left.c_gen_code()
+      left_t = self.left.left.expr_type
+      if left_t.is_array:
+        raise Exception('Trying to write to array field')
+      return [
+        '; FieldAccess assignment',
+        access.get_field_from_parts(
+            left_t, self.left.right, left_asm, get_addr=True),
+        'push eax  ; Save field addr',
+        result,
+        '; RHS of assignment should be eax',
+        'pop ebx  ; Pop addr of field',
+        'mov [ebx], eax  ; Assign!'
+      ]
+
     elif isinstance(self.left, ASTArrayAccess):
       # The result is calculated after the array index offset.
       return [
@@ -345,11 +367,8 @@ class ASTAssignment(ASTExpression):
         'mov eax, ecx ; result should be in eax',
       ]
 
-    return [
-      result,
-      'mov ebx, eax ; store result in ebx',
-      store_code,
-    ]
+    raise Exception('Programmer error: trying to assign to invalid AST')
+
 
 class ASTArrayAccess(ASTExpression):
   def __init__(self, tree):
@@ -424,6 +443,11 @@ class ASTThis(ASTExpression):
   def show(self, depth = 0, types = False):
     ASTUtils.println('ASTThis {0}'.format(ASTUtils.type_string(
         self.expr_type)), depth)
+
+  def c_gen_code(self):
+    return [
+      common.get_param('eax', 0, manager.CodeGenManager.N_PARAMS)
+    ]
 
 class ASTMethodInvocation(ASTExpression):
   def __init__(self, tree):

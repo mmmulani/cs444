@@ -132,6 +132,18 @@ def get_instance_field(this_reg, dest, field_decl):
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
   ]
 
+def get_instance_field_addr(this_reg, dest, field_decl):
+  '''Gets the instance field address out of this_reg'''
+  offset = field_decl.c_offset
+  if offset is None:
+    raise Exception('Instance field does not have an offset')
+
+  return [
+    '; Get instance field addr',
+    'mov {0}, {1}'.format(dest, this_reg),
+    'add {0}, {1}'.format(dest, offset)
+  ]
+
 def set_static_field(field_decl, src):
   return [
     '; Set static var {0}'.format(field_decl.identifier),

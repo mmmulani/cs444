@@ -93,14 +93,19 @@ def get_field_access_from_annotation(ids, annotation):
 
   return get_field_from_final(t.definition, ids, ret)
 
-def get_field_from_final(t, ids, code):
+def get_field_from_final(t, ids, code, get_addr=False):
   '''Returns code to get the instance field using the final idens part'''
   env = t.environment
 
   # The final part should be an instance field acccess.
   final_part = str(ids.parts[-1])
   f, encl_type = env.lookup_field(final_part)
-  code.extend(common.get_instance_field('eax', 'eax', f))
+  if get_addr:
+    # Put the address of the field in eax.
+    code.extend(common.get_instance_field_addr('eax', 'eax', f))
+  else:
+    # Put the actual value in eax.
+    code.extend(common.get_instance_field('eax', 'eax', f))
 
   return code
 
@@ -117,18 +122,19 @@ def get_array_field(ids, code):
   code.append(common.get_array_length(dest='eax', src='eax'))
   return code
 
-def get_field_from_parts(t, ids, init_asm):
+def get_field_from_parts(t, ids, init_asm, get_addr=False):
   import annotate_ids
   annotation = annotate_ids.annotate_from_type(t, ids.parts)
   t, field_asm = _get_to_final_from_type(t, annotation, init_asm)
 
-  # Handle array types.
-  if t.is_array:
+  # Handle array field.  Note: You should never be getting the address
+  # of an array field.
+  if not get_addr and t.is_array:
     return get_array_field(ids, field_asm)
 
   return [
     '; Get field off eax',
-    get_field_from_final(t.definition, ids, field_asm)
+    get_field_from_final(t.definition, ids, field_asm, get_addr)
   ]
 
 def _get_to_final(ids, annotation):
