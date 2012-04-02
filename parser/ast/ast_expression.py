@@ -236,8 +236,10 @@ class ASTLiteral(ASTExpression):
       # XXX: Make this cleaner.
       constructor = string_defn.methods[3]
 
+      string_value = self.const_value.decode('string_escape')
+
       char_store_code = []
-      for ix, char in enumerate(self.const_value.decode('string_escape')):
+      for ix, char in enumerate(string_value):
         char_value = ord(char)
         char_offset = 12 + 4 * ix
         char_store_code.extend([
@@ -249,7 +251,7 @@ class ASTLiteral(ASTExpression):
 
       return [
         '; storing the string literal "{0}"'.format(self.const_value),
-        'push {0} ; string length'.format(len(self.const_value)),
+        'push {0} ; string length'.format(len(string_value)),
         'call _create_int',
         'pop ebx ; pop to garbage',
         'push eax',
