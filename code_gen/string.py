@@ -58,9 +58,11 @@ def _get_valueof_method_from_type(t):
   env = CodeGenManager.java_lang_string_defn.environment
   param_t = t
   if not t.is_primitive or t.is_array or t == ASTType.ASTNull:
-    return CodeGenManager.java_lang_string_defn.methods[10]
+    tmp = ASTType.from_str('java.lang.Object')
+    tmp.definition = CodeGenManager.java_lang_object_defn
+    param_t = tmp
 
-  m, encl_type = env.lookup_method(('valueOf', [t]))
+  m, encl_type = env.lookup_method(('valueOf', [param_t]))
   if m is None:
     raise Exception('No valueOf method found for type {0}.'.format(t))
 
