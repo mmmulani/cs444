@@ -1,6 +1,9 @@
 import ast_statement
+import code_gen.asm.common as common
 import parser.ast.ast_expression as ast_expression
 import parser.ast.ast_node as ast_node
+
+from code_gen.manager import CodeGenManager
 
 class ASTWhile(ast_statement.ASTStatement):
   def __init__(self, tree):
@@ -46,6 +49,24 @@ class ASTWhile(ast_statement.ASTStatement):
       self.children[1].show(depth + 1, types)
     else:
       ast_node.ASTUtils.println('<Nothing>', depth + 1)
+
+  def c_gen_code(self):
+    before_expr_label = CodeGenManager.get_label('while_loop_expr')
+    done_label = CodeGenManager.get_label('while_loop_done')
+
+    body_code = []
+    if self.statement is not None:
+      body_code = self.statement.c_gen_code()
+
+    return [
+      '; while loop',
+      '; expression',
+      '{0}:'.format(before_expr_label),
+      common.if_false(self.expression, done_label),
+      body_code,
+      'jmp {0}'.format(before_expr_label),
+      '{0}:'.format(done_label),
+    ]
 
 class ASTWhileError(Exception):
   pass
