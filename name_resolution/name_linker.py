@@ -180,6 +180,9 @@ def find_first_definition(ast_idens, env, is_static):
     # not be static.
     if ret.is_static:
       raise NameLinkingError('Static lookup in non-static context')
+    if is_static:
+      raise NameLinkingError(
+        'Using implicit this for {0} in static method'.format(full_name))
     return ret, full_name
 
   # Name is qualified, i.e. contains a dot character.
