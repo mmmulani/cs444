@@ -91,14 +91,18 @@ def get_field_access_from_annotation(ids, annotation):
     # Crazy hack for arrays!
     return get_array_field(ids, annotation, ret)
 
-  env = t.definition.environment
+  return get_field_from_final(t.definition, ids, ret)
+
+def get_field_from_final(t, ids, code):
+  '''Returns code to get the instance field using the final idens part'''
+  env = t.environment
 
   # The final part should be an instance field acccess.
   final_part = str(ids.parts[-1])
   f, encl_type = env.lookup_field(final_part)
-  ret.extend(common.get_instance_field('eax', 'eax', f))
+  code.extend(common.get_instance_field('eax', 'eax', f))
 
-  return ret
+  return code
 
 def get_array_field(ids, annotation, code):
   '''Get an array field.
@@ -112,6 +116,16 @@ def get_array_field(ids, annotation, code):
 
   code.append(common.get_array_length(dest='eax', src='eax'))
   return code
+
+def get_field_from_parts(t, ids, init_asm):
+  import annotate_ids
+  annotation = annotate_ids.annotate_from_type(t, ids.parts)
+  t, field_asm = _get_to_final_from_type(t, annotation, init_asm)
+
+  return [
+    '; Get field off eax',
+    get_field_from_final(t.definition, ids, field_asm)
+  ]
 
 def _get_to_final(ids, annotation):
   '''Resolve to the final part of the identifier
@@ -141,7 +155,7 @@ def _get_to_final(ids, annotation):
 
   return _get_to_final_from_type(t, annotation, code)
 
-def _get_to_final_from_type(t, annotation, code=[]):
+def _get_to_final_from_type(t, annotation, code):
   '''Resolve to the final part of the identifier starting at a type
   Returns (ASTType, asm_code)'''
 

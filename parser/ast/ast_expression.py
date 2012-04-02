@@ -133,6 +133,12 @@ class ASTFieldAccess(ASTExpression):
     self.children[0].show(depth + 1, types)
     self.children[1].show(depth + 1, False)
 
+  def c_gen_code(self):
+    import code_gen.access as access
+    left_asm = self.left.c_gen_code()
+    left_t = self.left.expr_type
+    return access.get_field_from_parts(left_t, self.right, left_asm)
+
 class ASTLiteral(ASTExpression):
   # Enum of different literal types.
   BOOLEAN = 'boolean'
