@@ -105,7 +105,7 @@ class ASTBlock(ast_statement.ASTStatement):
   def c_gen_code(self):
     asm = [c.c_gen_code() for c in self.children if c is not None]
     return asm
-   
+
 
 class ASTBlockError(Exception):
   pass

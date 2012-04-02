@@ -268,9 +268,13 @@ class ASTInterface(ast_node.ASTNode):
     ]
 
   def c_gen_code_create_array(self):
+    from parser.ast.ast_type import ASTType
+    type_ = ASTType.from_str(str(self.name), is_primitive=False)
+    type_.definition = self
+    offset = CodeGenManager.get_subtype_table_index(type_)
+
     return ast_class.ASTClass.c_gen_code_create_array_helper(
-        self.c_create_array_function_label, self.c_array_cit_label,
-        self.c_cit_label)
+        self.c_create_array_function_label, self.c_array_cit_label, offset)
 
   def c_calculate_field_offsets(self):
     '''Calculate instance field offsets for this type.

@@ -394,18 +394,20 @@ class ASTClass(ast_node.ASTNode):
     ]
 
   def c_gen_code_create_array(self):
+    from parser.ast.ast_type import ASTType
+    type_ = ASTType.from_str(str(self.name), is_primitive=False)
+    type_.definition = self
+    offset = CodeGenManager.get_subtype_table_index(type_)
     return ASTClass.c_gen_code_create_array_helper(
-        self.c_create_array_function_label, self.c_array_cit_label,
-        self.c_cit_label)
+        self.c_create_array_function_label, self.c_array_cit_label, offset)
 
   @staticmethod
-  def c_gen_code_create_array_helper(function_label, array_cit_label,
-      cit_label):
+  def c_gen_code_create_array_helper(function_label, array_cit_label, offset):
     '''Create an array of this type in memory
 
     Structure of the created array object is as follows:
       1. Pointer to Array CIT
-      2. Pointer to (regular) CIT
+      2. This type's offset into the subtype table
       3. Length (reference to a integer)
       4. Array elements
 
@@ -413,13 +415,12 @@ class ASTClass(ast_node.ASTNode):
       The length of the array'''
     N_PARAMS = 1
 
-    # The first 12 bytes are for the pointer to the Array CIT, the regular CIT,
+    # The first 12 bytes are for the pointer to the Array CIT, subtype offset,
     # and the length. Remaining bytes are for the array elements (4 bytes each)
-
     return [
       'global {0}'.format(function_label),
       '{0}:'.format(function_label),
-      array.create_array(False, array_cit_label, cit_label)     
+      array.create_array(False, array_cit_label, offset)     
     ]
 
 class ASTClassError(Exception):

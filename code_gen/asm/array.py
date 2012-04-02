@@ -3,7 +3,7 @@ import code_gen.asm.common as common
 
 from code_gen.manager import CodeGenManager
 
-def create_array(is_primitive, array_cit_label, cit_label = 0):
+def create_array(is_primitive, array_cit_label, subtype_offset = 0):
   ''' Returns code for a function that creates an array in memory.
   This function does NOT include a label, because each reference/primitive
   type will need their own version of this function. You should put your
@@ -11,7 +11,7 @@ def create_array(is_primitive, array_cit_label, cit_label = 0):
 
   Structure of the created array object is as follows:
     1. Pointer to Array CIT
-    2. Pointer to (regular) CIT for reference types, null for primitives
+    2. The type's subtype column offset for reference types, 0 for primitives
     3. Length (reference to a integer)
     4. Array elements
 
@@ -19,8 +19,9 @@ def create_array(is_primitive, array_cit_label, cit_label = 0):
     The length of the array (a reference to an integer)'''
   N_PARAMS = 1
 
-  # The first 12 bytes are for the pointer to the Array CIT, the regular CIT,
-  # and the length. Remaining bytes are for the array elements (4 bytes each)
+  # The first 12 bytes are for the pointer to the Array CIT, the subtype column
+  # offset, and the length. Remaining bytes are for the array elements
+  # (4 bytes each)
 
   return [
     common.function_prologue(),
@@ -44,7 +45,7 @@ def create_array(is_primitive, array_cit_label, cit_label = 0):
     'mov ebx, eax  ; ebx has pointer to integer representing array length',
     'pop eax  ; eax now has pointer to memory from malloc call',
     'mov dword [eax], {0}'.format(array_cit_label),
-    'mov dword [eax + 4], {0}'.format(cit_label),
+    'mov dword [eax + 4], {0}'.format(subtype_offset*4),
     'mov dword [eax + 8], ebx',
     common.function_epilogue()
   ]
