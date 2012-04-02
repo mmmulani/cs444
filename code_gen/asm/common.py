@@ -119,6 +119,7 @@ def save_instance_field(this_reg, field_decl, src):
     raise Exception('Warning: saving |this| as instance field on object')
 
   return [
+    check_null(this_reg),
     'mov [{0} + {1}], {2}'.format(this_reg, offset, src),
   ]
 

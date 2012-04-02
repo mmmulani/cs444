@@ -406,6 +406,7 @@ class ASTAssignment(ASTExpression):
         result,
         '; RHS of assignment should be eax',
         'pop ebx  ; Pop addr of field',
+        common.check_null('ebx'),
         'mov [ebx], eax  ; Assign!'
       ]
 
