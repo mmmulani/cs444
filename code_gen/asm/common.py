@@ -129,7 +129,19 @@ def get_instance_field(this_reg, dest, field_decl):
     raise Exception('Instance field does not have an offset')
 
   return [
+    check_null(this_reg),
     'mov {0}, [{1} + {2}]'.format(dest, this_reg, offset)
+  ]
+
+def check_null(src):
+  '''Checks whether the value in src is null (0x0).'''
+  from code_gen.manager import CodeGenManager
+  check_pass = CodeGenManager.get_label('null_check_pass');
+  return [
+    'cmp {0}, 0'.format(src),
+    'jne {0}'.format(check_pass),
+    'call __exception',
+    '{0}:'.format(check_pass)
   ]
 
 def get_instance_field_addr(this_reg, dest, field_decl):
