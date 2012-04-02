@@ -387,6 +387,7 @@ class ASTAssignment(ASTExpression):
 
           return [
             code,
+            common.check_null('eax'),
             'push eax ; save instance that we want to store a field on',
             result,
             'pop ebx ; instance to store a field on',
@@ -406,7 +407,6 @@ class ASTAssignment(ASTExpression):
         result,
         '; RHS of assignment should be eax',
         'pop ebx  ; Pop addr of field',
-        common.check_null('ebx'),
         'mov [ebx], eax  ; Assign!'
       ]
 

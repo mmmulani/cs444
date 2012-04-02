@@ -152,6 +152,7 @@ def get_instance_field_addr(this_reg, dest, field_decl):
     raise Exception('Instance field does not have an offset')
 
   return [
+    check_null(this_reg),
     '; Get instance field addr',
     'mov {0}, {1}'.format(dest, this_reg),
     'add {0}, {1}'.format(dest, offset)
