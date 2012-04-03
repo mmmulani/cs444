@@ -206,6 +206,10 @@ class ASTLiteral(ASTExpression):
             break
 
         if len(octal) > 0:
+          if len(octal) == 3 and octal[0] in list('4567'):
+            # Remove last digit.
+            octal.pop()
+
           escaped_chars.append(chr(int(''.join(octal), 8)))
           for x in octal:
             chars.pop(0)
