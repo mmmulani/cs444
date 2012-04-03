@@ -36,7 +36,7 @@ def calc_offset_from_defn(t):
       t.c_cit_offset += 4
 
   env = t.environment
-  for m in t.methods:
+  for sig, m in t.get_all_methods():
     offset = _get_inherited_offset(t, m)
     if offset is not None:
       # Method is overriding something from the parent. Use the offset given.

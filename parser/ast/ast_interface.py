@@ -230,7 +230,12 @@ class ASTInterface(ast_node.ASTNode):
  
   def c_gen_code(self):
     '''Code generation for types'''
+    methods = [
+        ['global {0}'.format(m.c_defn_label), '{0}:'.format(m.c_defn_label)] \
+      for m in self.methods]
     return [
+      '',
+      methods,
       '', '',  # Padding before the Subtype columns.
       self.c_gen_code_subtype_columns(),
       '', '',

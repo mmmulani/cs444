@@ -19,11 +19,12 @@ def set_global_labels(asts):
           canonical_name, t.c_create_array_function_label)
 
       # Add all the methods defined in this class to the CodeGenManager
+      for m in t.methods:
+        CodeGenManager.add_global_label(canonical_name, m.c_defn_label)
+
       if isinstance(t, ast_interface.ASTInterface):
         # Interfaces don't define any method bodies.
         continue
-      for m in t.methods:
-        CodeGenManager.add_global_label(canonical_name, m.c_defn_label)
 
       # Add static field labels to the CodeGenManager.
       for f in t.fields:
