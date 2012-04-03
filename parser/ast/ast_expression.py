@@ -182,13 +182,56 @@ class ASTLiteral(ASTExpression):
     if self.literal_type == ASTLiteral.BOOLEAN:
       return self.children[0] == 'true'
     elif self.literal_type == ASTLiteral.CHAR:
-      return self.children[0].strip('\'')
+      return self._handle_escapes(self.children[0])
     elif self.literal_type == ASTLiteral.INT:
       return int(self.children[0])
     elif self.literal_type == ASTLiteral.NULL:
       return None   # null is not considered a constant value (JLS 15.28)
     elif self.literal_type == ASTLiteral.STRING:
-      return self.children[0].strip('"')
+      return self._handle_escapes(self.children[0])
+
+  def _handle_escapes(self, string):
+    chars = list(string[1:-1])
+    escaped_chars = []
+
+    while len(chars) > 0:
+      if chars[0] == '\\' and len(chars) > 1:
+        # Check for octal digits.
+        numeric = list('01234567')
+        octal = []
+        for i in range(0, min(3, len(chars) - 1)):
+          if chars[1 + i] in numeric:
+            octal.append(chars[1 + i])
+          else:
+            break
+
+        if len(octal) > 0:
+          escaped_chars.append(chr(int(''.join(octal), 8)))
+          for x in octal:
+            chars.pop(0)
+          # Remove the starting slash.
+          chars.pop(0)
+          continue
+
+        new_chars = {
+          '\\': '\\',
+          '\'': '\'',
+          '"': '"',
+          'r': '\r',
+          'f': '\f',
+          'n': '\n',
+          't': '\t',
+          'b': '\b',
+        }
+        new_char = new_chars[chars[1]]
+        escaped_chars.append(new_char)
+        chars.pop(0)
+        chars.pop(0)
+      else:
+        new_char = chars.pop(0)
+        escaped_chars.append(new_char)
+
+    return ''.join(escaped_chars)
 
   @property
   def expressions(self):
@@ -212,8 +255,10 @@ class ASTLiteral(ASTExpression):
       ]
     elif self.literal_type in [ASTLiteral.INT, ASTLiteral.CHAR]:
       value = self.const_value
-      if self.literal_type == ASTLiteral.CHAR and value.endswith('\\'):
-        value = ord(self.const_value.decode('string_escape'))
+      if self.literal_type == ASTLiteral.CHAR:
+        if len(self.const_value) == 2:
+          import pdb; pdb.set_trace()
+        value = ord(self.const_value)
 
       return [
           'push {0}'.format(value),
@@ -237,8 +282,6 @@ class ASTLiteral(ASTExpression):
       constructor = string_defn.methods[3]
 
       string_value = self.const_value
-      if not self.const_value.endswith('\\'):
-        string_value = self.const_value.decode('string_escape')
 
       char_store_code = []
       for ix, char in enumerate(string_value):
@@ -252,7 +295,7 @@ class ASTLiteral(ASTExpression):
         ])
 
       return [
-        '; storing the string literal "{0}"'.format(self.const_value),
+        '; storing the string literal {0}'.format(self.children[0]),
         'push {0} ; string length'.format(len(string_value)),
         'call _create_int',
         'pop ebx ; pop to garbage',
