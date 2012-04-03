@@ -212,7 +212,7 @@ class ASTLiteral(ASTExpression):
       ]
     elif self.literal_type in [ASTLiteral.INT, ASTLiteral.CHAR]:
       value = self.const_value
-      if self.literal_type == ASTLiteral.CHAR:
+      if self.literal_type == ASTLiteral.CHAR and value.endswith('\\'):
         value = ord(self.const_value.decode('string_escape'))
 
       return [
@@ -236,7 +236,9 @@ class ASTLiteral(ASTExpression):
       # XXX: Make this cleaner.
       constructor = string_defn.methods[3]
 
-      string_value = self.const_value.decode('string_escape')
+      string_value = self.const_value
+      if not self.const_value.endswith('\\'):
+        string_value = self.const_value.decode('string_escape')
 
       char_store_code = []
       for ix, char in enumerate(string_value):
